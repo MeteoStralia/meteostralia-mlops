@@ -1,12 +1,8 @@
 numpy==2.2.3
 pandas==2.2.3
 requests==2.32.3
-fastapi==0.115.11
 apache-airflow==2.10.5
 notebook==7.3.2
 mlflow==2.20.4
 scikit-learn==1.6.1
 matplotlib==3.10.1
-pydantic==2.10.6
-pyJWT==2.10.1
-bcrypt==4.3.0
