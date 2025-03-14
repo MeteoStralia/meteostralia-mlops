@@ -19,9 +19,9 @@ ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
 USERS = {
     'user1' : {'username' : 'user1', 'name' : 'name1', 'hashed_password' : bcrypt.hashpw('password1'.encode('utf-8'), bcrypt.gensalt()), 'scope' : 'user', 'disabled' : False},
-    'user2' : {'username' : 'user1', 'name' : 'name2', 'hashed_password' : bcrypt.hashpw('password2'.encode('utf-8'), bcrypt.gensalt()), 'scope' : 'user', 'disabled' : False},
+    'user2' : {'username' : 'user2', 'name' : 'name2', 'hashed_password' : bcrypt.hashpw('password2'.encode('utf-8'), bcrypt.gensalt()), 'scope' : 'admin', 'disabled' : False},
     'user3' : {'username' : 'user3', 'name' : 'name3', 'hashed_password' : bcrypt.hashpw('password3'.encode('utf-8'), bcrypt.gensalt()), 'scope' : 'user', 'disabled' : True},
-    'user4' : {'username' : 'user3', 'name' : 'name4', 'hashed_password' : bcrypt.hashpw('password4'.encode('utf-8'), bcrypt.gensalt()), 'scope' : 'admin', 'disabled' : False}
+    'user4' : {'username' : 'user4', 'name' : 'name4', 'hashed_password' : bcrypt.hashpw('password4'.encode('utf-8'), bcrypt.gensalt()), 'scope' : 'admin', 'disabled' : False}
 }
 
 class User(BaseModel):
@@ -130,10 +130,17 @@ async def login_for_access_token(form_data: Annotated[OAuth2PasswordRequestForm,
 
 @app.get('/users/me')
 async def read_users_me(current_user: Annotated[User, Depends(get_current_active_user)]):
-    return {'fiche user'}
+    return current_user
 
 
 #cette page doit être accessible qu'après authentification
 @app.get('/previsions/')
 async def previsions_page(current_user: Annotated[str, Depends(get_current_active_user)]):
     return {'page prévision'}
+
+@app.get('/dashboard/')
+async def dashboard_page(current_user: Annotated[str, Depends(get_current_active_user)]):
+    if current_user.scope == 'admin':
+        return 'page autorisé'
+    else:
+        raise HTTPException(status_code = 401, detail = 'Unauthorized')
