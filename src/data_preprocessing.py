@@ -28,7 +28,7 @@ def preprocess_data(df):
     """
     # Gérer les valeurs manquantes
     df = df.dropna()
-
+    
     # Encoder les variables catégorielles
     df = pd.get_dummies(df, drop_first=True)
 
