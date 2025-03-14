@@ -1,0 +1,14 @@
+#syntax=docker/dockerfile:1
+FROM python:3.9-slim
+
+WORKDIR /app/
+
+COPY requirements_api.txt /app/
+
+RUN pip install --no-cache-dir -r /app/requirements_api.txt
+
+COPY . /app/
+
+EXPOSE 1111
+
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "1111"]
