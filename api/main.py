@@ -27,7 +27,7 @@ USERS = {
 class User(BaseModel):
     username : str
     name : Union[str, None] = None
-    scope : Union[str | None] = None
+    scope : Union[str, None] = None
     disabled : Union[bool, None] = None
 
 class UserInDB(User):
@@ -38,7 +38,7 @@ class Token(BaseModel):
     token_type : str
 
 class TokenData(BaseModel):
-    username : str | None = None
+    username : Union[str , None] = None
 
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl='login',
@@ -72,7 +72,7 @@ def authenticate_user(db, username : str, password : str):
         return False
     return user
 
-def create_access_token(data : dict, expires_delta : timedelta | None = None):
+def create_access_token(data : dict, expires_delta : Union[timedelta , None] = None):
     to_encode = data.copy()
     if expires_delta:
         expire = datetime.now(timezone.utc) + expires_delta
@@ -133,9 +133,9 @@ async def read_users_me(current_user: Annotated[User, Depends(get_current_active
     return current_user
 
 
-#cette page doit être accessible qu'après authentification
+#cette page doit être accessible tout le temps
 @app.get('/previsions/')
-async def previsions_page(current_user: Annotated[str, Depends(get_current_active_user)]):
+async def previsions_page():
     return {'page prévision'}
 
 @app.get('/dashboard/')
