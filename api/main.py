@@ -52,11 +52,8 @@ def get_password_hash(password):
     return bcrypt.hashpw(password, bcrypt.gensalt())
 
 def verify_password(plain_password, hashed_password):
-    # Vérifier que hashed_password est un objet bytes
     if isinstance(hashed_password, str):
-        hashed_password = hashed_password.encode('utf-8')  # Convertir en bytes si c'est un string
-
-    # Vérification avec bcrypt
+        hashed_password = hashed_password.encode('utf-8')
     return bcrypt.checkpw(plain_password.encode('utf-8'), hashed_password)
 
 def get_user(db, username: str):
@@ -83,9 +80,6 @@ def create_access_token(data : dict, expires_delta : Union[timedelta , None] = N
     return encoded_jwt
 
 async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
-
-    print(f"Token received: {token}")
-
     credentials_exception = HTTPException(status_code = status.HTTP_401_UNAUTHORIZED,
                                           detail = 'Could not validate credentials',
                                           headers = {'WWW-authenticate': "Bearer"})
@@ -117,7 +111,7 @@ async def welcome_page():
 @app.post('/login')
 async def login_for_access_token(form_data: Annotated[OAuth2PasswordRequestForm, Depends()],) -> Token:
     user = authenticate_user(USERS, form_data.username, form_data.password)
-    if not user:
+    if not user or user.disabled:
         raise HTTPException(status_code = status.HTTP_401_UNAUTHORIZED,
                             detail = 'Incorrect username or password',
                             headers={'WWW-Authenticate': 'Bearer'})
