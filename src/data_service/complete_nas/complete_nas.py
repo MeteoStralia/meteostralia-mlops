@@ -1,0 +1,139 @@
+import pandas as pd
+import numpy as np
+import sys
+from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import FunctionTransformer
+import emoji
+
+# TODO régler les paths pour inclure les fonctions d'autres modules
+sys.path.append('./src/')
+from data_service.ingest_data.ingest_new_data import load_data, reindex_data
+
+def complete_na_median_location_month(df, columns, verbose=False):
+    """
+    complete Na of columns with median by location and month.
+
+    Args:
+        df (pd.DataFrame) : dataset to complete
+        columns (str) : columns to complete (quantitative variable)
+
+    Returns:
+        pd.DataFrame: modified DataFrame
+    """
+
+    median_values = df.groupby(["Month", "Location"])[columns].median()
+    for col in columns:
+        df[col] = df.set_index(["Month", "Location"])[col].fillna(median_values[col]).values
+    
+    if verbose == True:
+        print("Remplacement de valeurs manquantes par la médiane par station et mois pour la variable ", columns, f"{emoji.emojize(':thumbs_up:')}")
+    return df
+
+
+def complete_na_mode_location_month(df, columns, verbose=False):
+    """
+    complete Na of columns with mode by location and month.
+
+    Args:
+        df (pd.DataFrame) : dataset to complete
+        columns (str) : columns to complete (qualitative variable)
+
+    Returns:
+        pd.DataFrame: modified DataFrame
+    """
+    mode_values = df.groupby(["Month", "Location"])[columns].agg(lambda x: pd.Series.mode(x, dropna=False)[0])
+    for col in columns:
+        
+        df[col] = df.set_index(["Month", "Location"])[col].fillna(mode_values[col]).values
+    
+    if verbose == True:
+         print("Remplacement de valeurs manquantes par le mode par station et mois pour la variable ", columns, f"{emoji.emojize(':thumbs_up:')}")
+    return df
+
+
+def create_pipeline_nas(verbose=False):
+    """
+    Create a pipeline to complete Nas.
+    Two different functions are applied to quantitative vars and qualitative vars
+    Other functions could be added... (nearest neighours, rolling mean...)
+
+    Args:
+        verbose : to print pipeline information
+
+    Returns:
+        pipeline with steps (each step is a FunctionTransformer on one column)
+    """
+
+    quant_var = ['MinTemp', 'MaxTemp', 'Rainfall',
+                'Evaporation','Sunshine',
+                'WindGustSpeed', 'WindSpeed9am', 'WindSpeed3pm',
+                'Humidity9am', 'Humidity3pm',
+                'Pressure9am', 'Pressure3pm',
+                'Temp9am','Temp3pm']
+    
+    qual_var = ["WindGustDir", 'WindDir9am','WindDir3pm','Cloud9am', 'Cloud3pm']
+
+    complete_nas_transformer = Pipeline(steps=[('init','')])
+
+    for col_select in quant_var:
+        complete_nas_transformer.steps.append(
+            (('median_location_month_' + col_select), 
+             FunctionTransformer(complete_na_median_location_month,
+                                 kw_args={'columns':[col_select], 'verbose':verbose})))
+        
+    for col_select in qual_var:
+        complete_nas_transformer.steps.append(
+            (('mode_location_month_' + col_select), 
+             FunctionTransformer(complete_na_mode_location_month,
+                                 kw_args={'columns':[col_select], 'verbose':verbose})))
+    
+    # drop first step
+    complete_nas_transformer.steps.pop(0)
+    return complete_nas_transformer
+
+
+if __name__ == '__main__':
+    # load current data
+    current_data_path = 'data/current_data/current_data.csv'
+    df_current = load_data(current_data_path)
+    df_current = reindex_data(df_current)
+    # add year and month (TODO add this in load data or before)
+    df_current["Year"] = df_current["Date"].dt.year
+    df_current["Month"] = df_current["Date"].dt.month
+    # changing cloud to string (this variable is an index) (TODO add this in load data or before)
+    df_current["Cloud3pm"] = df_current["Cloud3pm"].astype(str).replace('nan',np.nan)
+    df_current["Cloud9am"] = df_current["Cloud9am"].astype(str).replace('nan',np.nan)
+    # create Nas completion pipeline
+    complete_nas_pipeline = create_pipeline_nas()
+    # check Nas before 
+    nas_before = pd.DataFrame(df_current.isna().sum())
+    # apply pipeline
+    df_current = complete_nas_pipeline.fit_transform(df_current)
+    # print Nas after
+    nas_after = pd.DataFrame(df_current.isna().sum())
+    nas_after = pd.merge(nas_before,nas_after,left_index=True,right_index=True)
+    nas_after.columns = ['Avant', 'Après']
+    print(nas_after)
+    # save all data to process data
+    process_data_path = 'data/processed_data/nas_completed_data.csv'
+    df_current.to_csv(process_data_path, index = False)
+
+
+# # testing
+# current_data_path = '../../../data/current_data/current_data.csv'
+# df_current = load_data(current_data_path)
+# df_current = reindex_data(df_current)
+# df_current["Year"] = df_current["Date"].dt.year
+# df_current["Month"] = df_current["Date"].dt.month
+# df_current["Cloud3pm"] = df_current["Cloud3pm"].astype(str).replace('nan',np.nan)
+# df_current["Cloud9am"] = df_current["Cloud9am"].astype(str).replace('nan',np.nan)
+# complete_nas_pipeline = create_pipeline_nas()
+# complete_nas_pipeline
+# nas_before = pd.DataFrame(df_current.isna().sum())
+# df_current = complete_nas_pipeline.fit_transform(df_current)
+# nas_after = pd.DataFrame(df_current.isna().sum())
+# nas_after = pd.merge(nas_before,nas_after,left_index=True,right_index=True)
+# nas_after.columns = ['Avant', 'Après']
+# print(nas_after)
+# process_data_path = '../../../data/processed_data/nas_completed_data.csv'
+# df_current.to_csv(process_data_path, index = False)

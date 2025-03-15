@@ -1,6 +1,16 @@
 env/
 
+# python
+__pycache__/
+ *.pyc
+
+ 
 #dossier api
 ./api/__pycache__/
 ./api/src/__pycache__/
 ./api/.pytest_cache
+
+#data temporaire à suivre dans DVC
+data/current_data
+data/new_data
+data/processed_data
