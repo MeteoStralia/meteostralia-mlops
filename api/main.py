@@ -44,8 +44,9 @@ class TokenData(BaseModel):
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl='login',
                                      description = 'token pour authentifier l\'user lors de la conexion')
 
-app = FastAPI()
 
+
+app = FastAPI()
 
 
 def get_password_hash(password):
@@ -124,16 +125,19 @@ async def login_for_access_token(form_data: Annotated[OAuth2PasswordRequestForm,
 
 @app.get('/users/me')
 async def read_users_me(current_user: Annotated[User, Depends(get_current_active_user)]):
+    print(current_user)
     return current_user
 
 
 #cette page doit être accessible tout le temps
 @app.get('/previsions/')
 async def previsions_page():
-    return {'page prévision'}
+    a = prevision()
+    return a
 
 @app.get('/dashboard/')
 async def dashboard_page(current_user: Annotated[str, Depends(get_current_active_user)]):
+    print(current_user)
     if current_user.scope == 'admin':
         return 'page autorisé'
     else:
