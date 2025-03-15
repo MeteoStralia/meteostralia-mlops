@@ -1,4 +1,6 @@
 env/
 
+#dossier api
 ./api/__pycache__/
 ./api/src/__pycache__/
+./api/.pytest_cache
