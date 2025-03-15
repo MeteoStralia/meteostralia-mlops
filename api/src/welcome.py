@@ -1,2 +1,2 @@
 def welcome():
-    return 'Welcome to MLops Meteo'
+    return 'Welcome to MLops Meteo from fastapi call'
