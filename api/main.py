@@ -52,11 +52,8 @@ def get_password_hash(password):
     return bcrypt.hashpw(password, bcrypt.gensalt())
 
 def verify_password(plain_password, hashed_password):
-    # Vérifier que hashed_password est un objet bytes
     if isinstance(hashed_password, str):
-        hashed_password = hashed_password.encode('utf-8')  # Convertir en bytes si c'est un string
-
-    # Vérification avec bcrypt
+        hashed_password = hashed_password.encode('utf-8')
     return bcrypt.checkpw(plain_password.encode('utf-8'), hashed_password)
 
 def get_user(db, username: str):
