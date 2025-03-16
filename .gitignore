@@ -16,3 +16,6 @@ data/processed_data
 
 # saved models (big files)
 models/
+
+# local temporary files (Bruno)
+requirementstest.txt

@@ -103,7 +103,7 @@ if __name__ == '__main__':
     df = encode_data(data_to_encode=df)
     # save all data to process data
     process_data_path = 'data/processed_data/encoded_data.csv'
-    df.to_csv(process_data_path, index=False)
+    df.to_csv(process_data_path)
 
 # testing
 # df = load_data("../../../data/processed_data/nas_completed_data.csv")

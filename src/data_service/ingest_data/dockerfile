@@ -1,5 +1,0 @@
-FROM python:latest
-ADD load_data.py .
-RUN pip install --no-cache-dir --upgrade pip && pip3 install requests==2.32.3
-RUN mkdir /logs
-CMD ["python","authentication.py"]

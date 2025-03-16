@@ -29,7 +29,7 @@ def train_model(data_path="data/processed_data/",
     # Loading training data
     X_train = load_data(data_path + "X_train_scaled.csv")
     y_train = load_data(data_path + "y_train.csv")
-
+    
     # Entraîner le modèle
     model = classifier(**model_params)
     model.fit(X_train, y_train)

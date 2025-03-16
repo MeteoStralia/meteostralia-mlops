@@ -18,7 +18,6 @@ def scale_data(X_train, X_test, scaler = StandardScaler()):
 if __name__ == '__main__':
     # load data 
     process_data_folder = 'data/processed_data/'
-    
     X_train = load_data(process_data_folder + "X_train.csv")
     X_test = load_data(process_data_folder + "X_test.csv")
     
