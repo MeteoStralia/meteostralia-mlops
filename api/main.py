@@ -125,14 +125,20 @@ async def login_for_access_token(form_data: Annotated[OAuth2PasswordRequestForm,
 
 @app.get('/users/me')
 async def read_users_me(current_user: Annotated[User, Depends(get_current_active_user)]):
-    print(current_user)
-    return current_user
+    if current_user:
+        return current_user
+    else:
+        return HTTPException(status_code = 401,
+                             detail = 'Unauthorized')
 
 
 #cette page doit être accessible tout le temps
 @app.get('/previsions/')
-async def previsions_page():
-    a = prevision()
+async def previsions_page(current_user: Annotated[User, Depends(get_current_active_user)]):
+    if not current_user:
+        return HTTPException(status_code = 401, detail = 'Unauthorized')
+    else:
+        a = prevision()
     return a
 
 @app.get('/dashboard/')
