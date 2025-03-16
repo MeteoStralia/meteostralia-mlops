@@ -4,7 +4,6 @@ env/
 __pycache__/
  *.pyc
 
- 
 #dossier api
 ./api/__pycache__/
 ./api/src/__pycache__/
