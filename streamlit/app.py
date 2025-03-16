@@ -4,6 +4,9 @@ import requests
 
 token = st.session_state.get("token", None)
 
+
+
+# header de la page d'accueil
 col1, col2 = st.columns([5, 2], vertical_alignment = 'center')
 
 with col1:
@@ -45,16 +48,6 @@ with col2:
 
 
 
-
-
-
-
-
-
-
-
-
-
 st.write('########################')
 
 response = requests.get('http://localhost:1111/')
@@ -65,6 +58,8 @@ st.write('#######################')
 
 token = st.session_state.get("token", None)
 
+
+#accessibilité des boutons en fonction de la connection
 if token:
     col1, col2, col3= st.columns(3)
 
@@ -78,11 +73,7 @@ if token:
         st.page_link(page = 'pages/me.py', label = 'profil_page', icon = '1️⃣')
 
 else:
-
     col1, col2 = st.columns(2)
 
     with col1:
         st.page_link(page = 'app.py', label = 'Home', icon = '🏠')
-
-    with col2:
-        st.page_link(page = 'pages/prevision.py', label = 'prevision_page', icon = '1️⃣')
