@@ -11,7 +11,7 @@ __pycache__/
 
 # data temporaire à suivre dans DVC
 data/current_data
-data/new_data
+#data/new_data
 data/processed_data
 
 # saved models (big files)
