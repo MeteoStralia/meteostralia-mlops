@@ -20,13 +20,13 @@ def train_model(data_path="data/processed_data/",
     Entraîner un modèle RandomForest et le sauvegarder sur un fichier.
 
     Args:
-        data_path (str): Path to the input data CSV file.
+        data_path (str): Path to the training data CSV file.
         target_column (str): Name of the target column in the data.
         classifier (sklearn classifier class) : Classifier selected
         model_params (dict) : classifier parameters (default {} for default parameters)
         model_path (str): Path to save the trained model.
     """
-    # Charger et effectuer le preprocess de la donnée
+    # Loading training data
     X_train = load_data(data_path + "X_train_scaled.csv")
     y_train = load_data(data_path + "y_train.csv")
 
@@ -52,20 +52,3 @@ if __name__ == "__main__":
 
     # Entraîner le modèle
     train_model(data_path, target_column, classifier, model_params, model_path, )
-
-
-# data_path = "../../../data/processed_data/"
-# params = {"class_weight":{0: 0.3, 1: 0.7},
-#             "C":1, "max_iter":500, "penalty":'l1', 
-#             "solver":'liblinear',"n_jobs":-1}
-# classifier = LogisticRegression
-
-# model = classifier(**params)
-
-# # Charger et effectuer le preprocess de la donnée
-# X_train = load_data(data_path + "X_train_scaled.csv")
-# X_test = load_data(data_path + "X_test_scaled.csv")
-# y_train = load_data(data_path + "y_train.csv")
-# y_test = load_data(data_path + "y_test.csv")
-
-# model.fit(X_train, y_train)
