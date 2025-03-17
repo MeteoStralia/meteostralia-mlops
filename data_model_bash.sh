@@ -1,4 +1,4 @@
-
+# Ce script est temporaire 
 source ./env/Scripts/activate
 python ./src/data_service/ingest_data/reset_data.py # docker ok
 python ./src/data_service/ingest_data/ingest_new_data.py #docker ok
