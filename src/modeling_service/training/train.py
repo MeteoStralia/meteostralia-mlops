@@ -8,8 +8,7 @@ import os
 import sys
 sys.path.append('./src/')
 from data_service.ingest_data.ingest_new_data import load_data, reindex_data
-#from data_preprocessing import load_data, preprocess_data, split_data
-
+from global_functions import create_folder_if_necessary
 
 def train_model(data_path="data/processed_data/",
                 target_column="RainTomorrow",
@@ -39,6 +38,7 @@ def train_model(data_path="data/processed_data/",
     joblib.dump(model, model_path)
     print(f"Model saved to {model_path}")
 
+
 if __name__ == "__main__":
     # Définir les chemins et paramètres
     data_path = "data/processed_data/"
@@ -49,6 +49,7 @@ if __name__ == "__main__":
     classifier = LogisticRegression
     model_path = "models/"
     target_column = "RainTomorrow"
-
+    create_folder_if_necessary(model_path + target_column +"/")
     # Entraîner le modèle
-    train_model(data_path, target_column, classifier, model_params, model_path, )
+    train_model(data_path, target_column, classifier, 
+                model_params, model_path)

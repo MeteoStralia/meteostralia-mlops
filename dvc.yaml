@@ -18,5 +18,55 @@ stages:
     - .\data\current_data\uptodate_data.csv
     - ./src/data_service/complete_nas/complete_nas.py
     outs:
-    -  ./data/processed_data/nas_completed_data.csv
-
+    - ./data/processed_data/nas_completed_data.csv
+  add_features:
+    cmd: python ./src/data_service/features/add_features.py
+    deps:
+    - ./data/processed_data/nas_completed_data.csv
+    - ./src/data_service/features/add_features.py
+    outs:
+    - ./data/processed_data/augmented_data.csv
+  encode_data:
+    cmd: python ./src/data_service/encode_data/encode_data.py
+    deps:
+    - ./data/processed_data/augmented_data.csv
+    - ./src/data_service/encode_data/encode_data.py
+    outs:
+    - ./data/processed_data/encoded_data.csv
+  split_data:
+    cmd: python ./src/data_service/split_data/split_data.py
+    deps:
+    - ./data/processed_data/encoded_data.csv
+    - ./src/data_service/split_data/split_data.py
+    outs:
+    - ./data/processed_data/X_train.csv
+    - ./data/processed_data/X_test.csv
+    - ./data/processed_data/y_train.csv
+    - ./data/processed_data/y_test.csv
+  scale_data:
+    cmd: python ./src/data_service/scale_data/scale_data.py
+    deps:
+    - ./data/processed_data/X_train.csv
+    - ./data/processed_data/X_test.csv
+    - ./src/data_service/scale_data/scale_data.py
+    outs:
+    - ./data/processed_data/X_train_scaled.csv
+    - ./data/processed_data/X_test_scaled.csv
+  train:
+    cmd: python ./src/modeling_service/training/train.py
+    deps:
+    - ./data/processed_data/X_train_scaled.csv
+    - ./data/processed_data/y_train.csv
+    - ./src/modeling_service/training/train.py
+    outs:
+    - ./models/
+  evaluate:
+    cmd: python ./src/modeling_service/evaluate/evaluate.py
+    deps:
+    -  ./data/processed_data/X_test_scaled.csv
+    -  ./data/processed_data/y_test.csv
+    -  ./models/
+    -  ./src/modeling_service/evaluate/evaluate.py
+    metrics:
+    - metrics/RainTomorrow/LogisticRegression_metrics.json:
+        cache: false

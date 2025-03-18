@@ -10,6 +10,7 @@ import sys
 sys.path.append('./src/')
 from data_service.ingest_data.ingest_new_data import load_data, reindex_data
 import json
+from global_functions import create_folder_if_necessary
 
 def evaluate_model(
         model,
@@ -77,6 +78,7 @@ if __name__ == "__main__":
     target_column = "RainTomorrow"
     classifier = "LogisticRegression"
     metrics_path = "metrics/" + target_column + "/"+classifier
+    create_folder_if_necessary("metrics/" + target_column + "/")
     # Loading model
     model = import_model(model_path, target_column, classifier)
     # Evaluate model and save metrics

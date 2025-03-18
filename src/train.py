@@ -34,6 +34,8 @@ def train_model(data_path, target_column, model_path):
     joblib.dump(model, model_path)
     print(f"Model saved to {model_path}")
 
+
+
 if __name__ == "__main__":
     # Définir les chemins et paramètres
     data_path = os.path.join("data", "input_data.csv")

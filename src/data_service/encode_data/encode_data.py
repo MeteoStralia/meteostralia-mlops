@@ -100,15 +100,14 @@ def encode_data(data_to_encode,
 if __name__ == '__main__':
     # load data 
     process_data_path = 'data/processed_data/augmented_data.csv'
-    df = load_data(process_data_path)
-    df = reindex_data(df)
+    df = load_data(process_data_path, index =["id_Location","id_Date"])
     df = encode_data(data_to_encode=df)
     # save all data to process data
     process_data_path = 'data/processed_data/encoded_data.csv'
     df.to_csv(process_data_path)
 
 # # testing
-# df = load_data("../../../data/processed_data/nas_completed_data.csv")
+# df = load_data("../../../data/processed_data/augmented_data.csv")
 # df = reindex_data(df)
 # vars_binary = ["RainTomorrow","RainToday"]
 # vars_dummies = ["Year", "Location"]

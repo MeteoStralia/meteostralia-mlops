@@ -22,7 +22,7 @@ def get_season_AU(x):
 
 def add_features(df):
     # Ajout de la variable Season
-    df["Season"] = df["Date"].apply(lambda x: get_season_AU(x))
+    df["Season"] = pd.to_datetime(df["Date"]).apply(lambda x: get_season_AU(x))
     # Ajout de la variable climate
     Location_climate = pd.read_csv("data/add_data/Location_Climate.csv")
     df = pd.merge(df, Location_climate,  on="Location", how="left")
@@ -31,9 +31,9 @@ def add_features(df):
 if __name__ == '__main__':
     # load data 
     process_data_path = 'data/processed_data/nas_completed_data.csv'
-    df = load_data(process_data_path)
-    df = reindex_data(df)
+    df = load_data(process_data_path, index =["id_Location","id_Date"])
     df_test = add_features(df)
     # save all data to process data
     process_data_path = 'data/processed_data/augmented_data.csv'
-    df.to_csv(process_data_path, index=False)
+    df.to_csv(process_data_path)
+
