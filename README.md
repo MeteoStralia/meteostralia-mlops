@@ -36,6 +36,11 @@ Not needed if .dvc folder is already pulled
 dvc init
 ```
 
+Create remote storage folder
+```
+dvc remote add -d remote_storage ../remote_storage
+```
+
 ### Connexion Dagshub
 
 First connect Meteostralia github repo to dagshub (My repositories +New -> connect a repository -> Other -> set the adress to https://github.com/MeteoStralia/meteostralia-mlops -> identification needed with account name and password or token)
@@ -75,4 +80,69 @@ dvc remote default origin
 dvc add ./data/current_data
 dvc add ./data/processed_data
 dvc add ./models 
+```
+
+### Testing on current data
+
+removing local files
+```
+rm -rf ./data/current_data/
+rm -rf ./data/processed_data/
+rm -rf ./models
+rm -rf ./metrics
+rm -rf .dvc/cache
+```
+
+fetching remote files
+```
+dvc fetch data/current_data.dvc
+dvc fetch data/processed_data.dvc
+dvc fetch models.dvc
+dvc fetch metrics.dvc
+```
+
+downloading remote files
+```
+dvc checkout
+```
+
+data, models and metrics should appear on your local drive
+
+### pushing a new run on DVC
+First run a data and model pipeline
+For example
+```
+docker compose up
+```
+
+Commit changes in dvc metadata 
+```
+dvc commit
+```
+
+Commit changes in metadata to git
+```
+git add  data/current_data.dvc data/processed_data.dvc models.dvc metrics.dvc
+git commit -m "testing a dvc versioning"
+git tag -a versioning_test -m "testing a dvc versioning"
+git push origin --tags
+```
+
+Push changes to DVC and changes in metadata to git
+```
+dvc push
+git push
+```
+
+### Going back to a previous version
+Verifying log 
+```
+git log --since="2025-03-17" --all
+```
+
+Going back to a previous version with tag HASH_CODE 
+```
+git checkout <HASH_CODE>
+dvc fetch
+dvc checkout
 ```
