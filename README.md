@@ -54,3 +54,25 @@ then verify if the .dvc/config is modified. It should look like
     url = s3://dvc
     endpointurl = <REPODAGSHUBURL>
 ```
+
+In the repo Dasghub, in Remote/Data/DVC tab, copy and run the two lines under Setup credentials
+
+```
+dvc remote modify origin --local access_key_id your_token
+dvc remote modify origin --local secret_access_key your_token
+```
+
+This shoudld appear in .dvc/config.local file.
+Then run 
+
+```
+dvc remote default origin
+```
+
+### Adding tracking folders
+
+```
+dvc add ./data/current_data
+dvc add ./data/processed_data
+dvc add ./models 
+```
