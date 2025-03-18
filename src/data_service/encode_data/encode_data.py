@@ -12,6 +12,7 @@ import emoji
 # TODO régler les paths pour inclure les fonctions d'autres modules
 import sys
 sys.path.append('./src/')
+sys.path.append('../../')
 from data_service.ingest_data.ingest_new_data import load_data, reindex_data
 
 
@@ -84,7 +85,8 @@ def encode_data(data_to_encode,
     data_to_encode[vars_binary] = data_to_encode[vars_binary].apply(lambda x : (x == 'Yes').astype(int))
 
     # Encode dummies variables                                    
-    data_to_encode = pd.get_dummies(data_to_encode, columns=vars_dummies)
+    data_to_encode = pd.get_dummies(data_to_encode, 
+                                    columns=vars_dummies, dtype=int)
  
     # Encode sinus and cosinus variables
     for col in vars_trigo :
@@ -105,7 +107,7 @@ if __name__ == '__main__':
     process_data_path = 'data/processed_data/encoded_data.csv'
     df.to_csv(process_data_path)
 
-# testing
+# # testing
 # df = load_data("../../../data/processed_data/nas_completed_data.csv")
 # df = reindex_data(df)
 # vars_binary = ["RainTomorrow","RainToday"]

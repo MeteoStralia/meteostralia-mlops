@@ -19,3 +19,8 @@ models/
 
 # local temporary files (Bruno)
 requirementstest.txt
+
+# local dvc config
+.dvc/config
+/metrics
+/models
