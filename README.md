@@ -86,19 +86,12 @@ dvc add ./models
 
 removing local files
 ```
-rm -rf ./data/current_data/
-rm -rf ./data/processed_data/
-rm -rf ./models
-rm -rf ./metrics
-rm -rf .dvc/cache
+rm -rf ./data/current_data/ ./data/processed_data/ ./models ./metrics .dvc/cache
 ```
 
 fetching remote files
 ```
-dvc fetch data/current_data.dvc
-dvc fetch data/processed_data.dvc
-dvc fetch models.dvc
-dvc fetch metrics.dvc
+dvc fetch data/current_data.dvc data/processed_data.dvc models.dvc metrics.dvc
 ```
 
 downloading remote files
