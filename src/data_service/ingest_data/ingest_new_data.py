@@ -68,6 +68,7 @@ def add_data(file_path, df_origin):
 
 if __name__ == '__main__':
     current_data_path = 'data/current_data/current_data.csv'
+    uptodate_data_path = 'data/current_data/uptodate_data.csv'
     new_data_folder = 'data/new_data/'
     # load current data
     df_current = load_data(current_data_path)
@@ -77,8 +78,9 @@ if __name__ == '__main__':
     # add new data to current data
     for file in new_data_files:
         df_current = add_data(new_data_folder + file, df_current)
-    # save all data to current data
+    # save all data to current data and uptodate data
     df_current.to_csv(current_data_path)
+    df_current.to_csv(uptodate_data_path)
 
 # # testing  
 # raw_data_path = '../../../data/raw_data/weatherAUS.csv'

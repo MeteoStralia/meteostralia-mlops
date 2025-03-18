@@ -50,7 +50,7 @@ installing S3 bucket
 ```
 pip install "dvc[s3]"
 dvc remote add origin s3://dvc
-dvc remote modify origin endpointurl <REPODAGSHUBURL>
+dvc remote modify origin endpointurl <REPODAGSHUBURL>.s3
 ```
 then verify if the .dvc/config is modified. It should look like
 
@@ -82,7 +82,7 @@ dvc add ./data/processed_data
 dvc add ./models 
 ```
 
-### Testing on current data
+### Testing on current data and models
 
 removing local files
 ```

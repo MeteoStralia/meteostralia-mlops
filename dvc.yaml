@@ -1,0 +1,14 @@
+stages:
+  reset_data:
+    cmd: python .\src\data_service\ingest_data\reset_data.py
+    deps:
+    - .\src\data_service\ingest_data\reset_data.py
+    outs:
+    - .\data\current_data\current_data.csv
+  ingest_new_data:
+    cmd: python .\src\data_service\ingest_data\ingest_new_data.py
+    deps:
+    - .\data\current_data\current_data.csv
+    - .\src\data_service\ingest_data\ingest_new_data.py
+    outs:
+    - .\data\current_data\uptodate_data.csv

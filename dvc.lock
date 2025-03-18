@@ -1,0 +1,30 @@
+schema: '2.0'
+stages:
+  reset_data:
+    cmd: python .\src\data_service\ingest_data\reset_data.py
+    deps:
+    - path: .\src\data_service\ingest_data\reset_data.py
+      hash: md5
+      md5: ae75c885f849bb87bb8bde2b666b51bf
+      size: 465
+    outs:
+    - path: .\data\current_data\current_data.csv
+      hash: md5
+      md5: fd4a4967435ea45016153a3798313485
+      size: 15746458
+  ingest_new_data:
+    cmd: python .\src\data_service\ingest_data\ingest_new_data.py
+    deps:
+    - path: .\data\current_data\current_data.csv
+      hash: md5
+      md5: a560dec90d8b7b63ec2c91b5b0b9f970
+      size: 18912152
+    - path: .\src\data_service\ingest_data\ingest_new_data.py
+      hash: md5
+      md5: a8c751d50709118b6d29ee0cfe11f0d5
+      size: 3115
+    outs:
+    - path: .\data\current_data\uptodate_data.csv
+      hash: md5
+      md5: a560dec90d8b7b63ec2c91b5b0b9f970
+      size: 18912152
