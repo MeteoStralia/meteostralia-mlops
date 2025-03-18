@@ -118,9 +118,9 @@ station_ID = station_ID.dropna(subset = ["Location"])
 station_ID["IDCJDW"] = station_ID["IDCJDW"].astype(int).astype(str)
 
 # Choix de la location puis du mois et de l'année
-location_name = "Melbourne"
+location_name = "Perth"
 year = "2025"
-month = "02"
+month = "01"
 id_location_test = station_ID.loc[station_ID.Location == location_name,"IDCJDW"]
 id_location_test = str(id_location_test.iloc[0])
 

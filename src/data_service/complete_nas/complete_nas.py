@@ -116,7 +116,7 @@ if __name__ == '__main__':
     print(nas_after)
     # save all data to process data
     process_data_path = 'data/processed_data/nas_completed_data.csv'
-    df_current.to_csv(process_data_path, index = False)
+    df_current.to_csv(process_data_path)
 
 
 # # testing

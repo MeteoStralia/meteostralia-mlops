@@ -36,12 +36,12 @@ Not needed if .dvc folder is already pulled
 dvc init
 ```
 
-Create remote storage folder
+Create local remote storage folder (not needed if you use dagshub remote storage)
 ```
 dvc remote add -d remote_storage ../remote_storage
 ```
 
-### Connexion Dagshub
+### Connexion to Dagshub
 
 First connect Meteostralia github repo to dagshub (My repositories +New -> connect a repository -> Other -> set the adress to https://github.com/MeteoStralia/meteostralia-mlops -> identification needed with account name and password or token)
 
@@ -74,12 +74,15 @@ Then run
 dvc remote default origin
 ```
 
+to ensure that the remote storage is origin (dagshub)
+
 ### Adding tracking folders
 
 ```
 dvc add ./data/current_data
 dvc add ./data/processed_data
 dvc add ./models 
+dvc add ./metrics
 ```
 
 ### Testing on current data and models
@@ -91,7 +94,7 @@ rm -rf ./data/current_data/ ./data/processed_data/ ./models ./metrics .dvc/cache
 
 fetching remote files
 ```
-dvc fetch data/current_data.dvc data/processed_data.dvc models.dvc metrics.dvc
+dvc fetch 
 ```
 
 downloading remote files
@@ -106,6 +109,10 @@ First run a data and model pipeline
 For example
 ```
 docker compose up
+```
+OR
+```
+DVC repro
 ```
 
 Commit changes in dvc metadata 
