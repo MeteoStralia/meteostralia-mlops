@@ -1,10 +1,9 @@
 FROM python:3.10-slim
-
 WORKDIR /app/
 #COPY src/ src/
 COPY requirements.txt .
 ADD reset_data.py .
 ADD ingest_new_data.py .
 ADD scrap_data.py .
-RUN pip install -r requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
 CMD ["python","reset_data.py", "ingest_new_data.py"]
