@@ -28,4 +28,4 @@ jobs:
           pip install -r ./api/requirements_api.txt
 
       - name: run test
-        run: python api/test_api.py
+        run: pytest api/test_api.py
