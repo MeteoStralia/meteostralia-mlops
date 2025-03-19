@@ -50,18 +50,22 @@ with col2:
 
 st.write('########################')
 
-response = requests.get('http://localhost:1111/')
-st.write(response.json())
-st.write('status_code :', response.status_code)
+response = requests.get(
+        'http://localhost:1111/',
+        headers={"Authorization": f"Bearer {token}"}  # Ajout du token dans l'en-tête Authorization
+    )
+st.write('Welcome to Meteostralia mlops')
+# st.write(response.json())
 
 st.write('#######################')
-
-token = st.session_state.get("token", None)
 
 
 #accessibilité des boutons en fonction de la connection
 if token:
-    col1, col2, col3= st.columns(3)
+    if response.json()['scope'] =='admin':
+            col1, col2, col3, col4 = st.columns(4)
+    else:
+        col1, col2, col3 = st.columns(3)
 
     with col1 :
         st.page_link(page = 'app.py', label = 'Home', icon = '🏠')
@@ -71,6 +75,10 @@ if token:
 
     with col3:
         st.page_link(page = 'pages/me.py', label = 'profil_page', icon = '1️⃣')
+
+    if response.json()['scope'] == 'admin':
+        with col4:
+            st.page_link(page = 'pages/dashboard.py', label = 'dashboard', icon = '1️⃣')
 
 else:
     col1, col2 = st.columns(2)

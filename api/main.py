@@ -1,5 +1,5 @@
 from datetime import datetime, timedelta, timezone
-from .src import *
+from src import *
 
 
 from fastapi import FastAPI, Depends, HTTPException, status
@@ -103,10 +103,9 @@ async def get_current_active_user(current_user : Annotated[User, Depends(get_cur
     return current_user
 
 
-@app.get('/home')
-async def welcome_page():
-    a = welcome()
-    return a
+@app.get('/')
+async def welcome_page(current_user: Annotated[User, Depends(get_current_user)]):
+    return current_user
 
 
 @app.post('/login')
@@ -128,18 +127,14 @@ async def read_users_me(current_user: Annotated[User, Depends(get_current_active
     if current_user:
         return current_user
     else:
-        return HTTPException(status_code = 401,
-                             detail = 'Unauthorized')
+        return HTTPException(status_code = 401, detail = 'Unauthorized')
 
-
-#cette page doit être accessible tout le temps
 @app.get('/previsions/')
 async def previsions_page(current_user: Annotated[User, Depends(get_current_active_user)]):
-    if not current_user:
-        return HTTPException(status_code = 401, detail = 'Unauthorized')
+    if current_user:
+        return current_user
     else:
-        a = prevision()
-    return a
+        return HTTPException(status_code = 401, detail = 'Unauthorized')
 
 @app.get('/dashboard/')
 async def dashboard_page(current_user: Annotated[str, Depends(get_current_active_user)]):

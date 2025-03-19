@@ -5,14 +5,16 @@ import requests
 
 st.write('Previsions Page (from streamlit)')
 
+token = st.session_state.get("token", None)
+headers = {'Authorization' :f'Bearer {token}'}
+response = requests.get('http://localhost:1111/previsions', headers = headers )
 
 
+if token:
+    st.write(response.status_code)
 
-
-st.write('################################################')
-
-response = requests.get(url = 'http://localhost:1111/previsions')
-st.write(response.json())
-st.write('status_code :', response.status_code)
-
-st.write('#############################################')
+    st.write('################### from api prevision.py')
+    st.write('name :', response.json()['name'])
+    st.write('scope :', response.json()['scope'])
+else:
+    st.write(response.status_code)
