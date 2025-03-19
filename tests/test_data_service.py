@@ -5,7 +5,7 @@ import sys
 import os
 from sklearn.preprocessing import StandardScaler, MinMaxScaler
 
-sys.path.append('.')
+#sys.path.append('.')
 # import des fonctions à tester
 from src.data_service.ingest_data.reset_data import reset_data
 from src.data_service.ingest_data.ingest_new_data import load_data, add_data, reindex_data
