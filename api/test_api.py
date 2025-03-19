@@ -9,7 +9,7 @@ client = TestClient(app)
 ###### test des enpoints
 
 def test_home_page():
-    response = client.get('/')
+    response = client.get('/home')
     assert response.status_code == 200
 
 

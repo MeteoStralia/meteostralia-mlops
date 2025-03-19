@@ -103,7 +103,7 @@ async def get_current_active_user(current_user : Annotated[User, Depends(get_cur
     return current_user
 
 
-@app.get('/')
+@app.get('/home')
 async def welcome_page():
     a = welcome()
     return a
