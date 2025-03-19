@@ -1,5 +1,2 @@
-def welcome(connected :str = False):
-    if connected:
-        return 'connected'
-
+def welcome():
     return 'Welcome to MLops Meteo from fastapi call'

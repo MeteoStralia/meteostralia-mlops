@@ -9,8 +9,15 @@ client = TestClient(app)
 ###### test des enpoints
 
 def test_home_page():
-    response = client.get('/home')
+    response = client.get('/')
+    assert response.status_code == 401
+
+
+    response = client.post('/login', data = {'username' : 'user2', 'password' : 'password2'})
+    token = response.json()['access_token']
+    response = client.get('/', headers = {'Authorization' : f'Bearer {token}'})
     assert response.status_code == 200
+
 
 
 def test_prevision():

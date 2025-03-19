@@ -1,5 +1,5 @@
 from datetime import datetime, timedelta, timezone
-from src import *
+# from .src import *
 
 
 from fastapi import FastAPI, Depends, HTTPException, status
@@ -106,7 +106,6 @@ async def get_current_active_user(current_user : Annotated[User, Depends(get_cur
 @app.get('/')
 async def welcome_page(current_user: Annotated[User, Depends(get_current_user)]):
     return current_user
-
 
 @app.post('/login')
 async def login_for_access_token(form_data: Annotated[OAuth2PasswordRequestForm, Depends()],) -> Token:
