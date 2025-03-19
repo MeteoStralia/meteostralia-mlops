@@ -1,5 +1,5 @@
 from datetime import datetime, timedelta, timezone
-from src import *
+from .src import *
 
 
 from fastapi import FastAPI, Depends, HTTPException, status

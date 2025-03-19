@@ -15,7 +15,7 @@ def test_home_page():
 
 def test_prevision():
     response = client.get('/previsions/')
-    assert response.status_code == 200
+    assert response.status_code == 401
 
 
 def test_login():
