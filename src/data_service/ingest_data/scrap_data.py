@@ -33,7 +33,7 @@ def scrap_data(location_name = str, id_location = str, year = str, month = str):
         for line in range(len(lines)) :
             if lines[line][2:6] == "Date":
                 skiprows = line-1
-                print(skiprows)  
+                #print(skiprows)  
                 break
         
         datatmp = pd.read_csv(url_csv, skiprows= skiprows, index_col=0, encoding = "ISO-8859-1")
@@ -41,6 +41,7 @@ def scrap_data(location_name = str, id_location = str, year = str, month = str):
         if datatmp.columns[0] == "Date":
             datatmp["Location"] = location_name
             datatmp.index = range(1,datatmp.shape[0]+1)
+            print("Data scrapped for", location_name)
             return datatmp
 
 def format_scrapped_data(data_to_format):
@@ -108,30 +109,30 @@ def save_new_data(data_to_save, file_folder):
     data_to_save.to_csv(file_folder + "weatherAU_scrapdata_" + timestamp + ".csv")
 
 
-# testing 
-# reading station IDS
-station_ID = pd.read_csv("../../../data/add_data/station_ID.csv", sep=",")
-# drop les stations sans ID
-station_ID = station_ID.dropna(subset = ["IDCJDW"])
-# drop les nouvelles stations pour le moment
-station_ID = station_ID.dropna(subset = ["Location"])
-station_ID["IDCJDW"] = station_ID["IDCJDW"].astype(int).astype(str)
+# # testing 
+# # reading station IDS
+# station_ID = pd.read_csv("../../../data/add_data/station_ID.csv", sep=";")
+# # drop les stations sans ID
+# station_ID = station_ID.dropna(subset = ["IDCJDW"])
+# # drop les nouvelles stations pour le moment
+# station_ID = station_ID.dropna(subset = ["Location"])
+# station_ID["IDCJDW"] = station_ID["IDCJDW"].astype(int).astype(str)
 
-# Choix de la location puis du mois et de l'année
-location_name = "Perth"
-year = "2025"
-month = "01"
-id_location_test = station_ID.loc[station_ID.Location == location_name,"IDCJDW"]
-id_location_test = str(id_location_test.iloc[0])
+# # Choix de la location puis du mois et de l'année
+# location_name = "Perth"
+# year = "2025"
+# month = "01"
+# id_location_test = station_ID.loc[station_ID.Location == location_name,"IDCJDW"]
+# id_location_test = str(id_location_test.iloc[0])
 
-# data save folder
-new_data_folder = "../../../data/new_data/"
+# # data save folder
+# new_data_folder = "../../../data/new_data/"
 
-# scrapping
-data_location = scrap_data(location_name, id_location_test, year, month)
-print(data_location)
-# formatting
-data_location = format_scrapped_data(data_location)
-print(data_location)
-# saving
-save_new_data(data_location, new_data_folder)
+# # scrapping
+# data_location = scrap_data(location_name, id_location_test, year, month)
+# print(data_location)
+# # formatting
+# data_location = format_scrapped_data(data_location)
+# print(data_location)
+# # saving
+# save_new_data(data_location, new_data_folder)

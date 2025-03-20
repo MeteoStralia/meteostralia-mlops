@@ -20,6 +20,7 @@ models/
 # local temporary files (Bruno)
 requirementstest.txt
 data_model_bash.sh
+old_BV
 
 # local dvc config
 .dvc/config

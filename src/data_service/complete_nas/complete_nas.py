@@ -94,8 +94,8 @@ def create_pipeline_nas(verbose=False):
 
 if __name__ == '__main__':
     # load current data
-    current_data_path = 'data/current_data/current_data.csv'
-    df_current = load_data(current_data_path)
+    current_data_path = 'data/current_data/uptodate_data.csv'
+    df_current = load_data(current_data_path, index =["id_Location","id_Date"])
     df_current = reindex_data(df_current)
     # add year and month (TODO add this in load data or before)
     df_current["Year"] = df_current["Date"].dt.year

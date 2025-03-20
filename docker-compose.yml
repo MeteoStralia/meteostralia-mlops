@@ -2,10 +2,28 @@ networks:
   my_network:
     external: true
 services:
+  reset_data:
+      build:
+        context: ./src/data_service/ingest_data
+        dockerfile: ./reset_data_dockerfile
+      volumes:
+        - ./src:/src
+        - type: bind
+          source: ./src
+          target: /app/src
+        - ./data:/data
+        - type: bind
+          source: ./data
+          target: /app/data
+      image: reset_data:latest
+      container_name: reset_data
   ingest_data:
       build:
         context: ./src/data_service/ingest_data
         dockerfile: ./ingest_data_dockerfile
+      depends_on:
+        reset_data:
+          condition: service_completed_successfully
       volumes:
         - ./src:/src
         - type: bind

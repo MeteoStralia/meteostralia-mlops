@@ -8,7 +8,7 @@ def reset_data(raw_data_path="data/raw_data/weatherAUS.csv",
 
     # récupère les données raw et les mets dans current
     raw_data = load_data(raw_data_path)
-    raw_data.to_csv(current_data_path, index=False)
+    raw_data.to_csv(current_data_path)
 
 if __name__ == '__main__':
     reset_data()

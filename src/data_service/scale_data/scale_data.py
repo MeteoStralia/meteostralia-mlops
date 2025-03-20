@@ -6,7 +6,7 @@ from data_service.ingest_data.ingest_new_data import load_data
 
 from sklearn.preprocessing import StandardScaler, MinMaxScaler
 
-def scale_data(X_train, X_test, scaler = StandardScaler()):
+def scale_data(X_train, X_test, scaler = MinMaxScaler()):
 
     # Scale features
     X_train_scaled = scaler.fit_transform(X_train)
@@ -14,6 +14,14 @@ def scale_data(X_train, X_test, scaler = StandardScaler()):
     X_train_scaled = pd.DataFrame(X_train_scaled, index=X_train.index, columns = X_train.columns)
     X_test_scaled = pd.DataFrame(X_test_scaled, index=X_test.index, columns = X_test.columns)
     return X_train_scaled, X_test_scaled
+
+def scale_dataframe(data_to_scale, scaler = MinMaxScaler()):
+
+    # Scale features
+    data_scaled = scaler.fit_transform(data_to_scale)
+    data_scaled = pd.DataFrame(data_scaled , index=data_to_scale.index, columns = data_to_scale.columns)
+    return data_scaled
+
 
 if __name__ == '__main__':
     # load data 

@@ -5,7 +5,6 @@ import os
 import sys
 sys.path.append('./src/')
 
-
 def load_data(file_path, index = None):
     """
     Charger les données depuis un fichier CSV.
@@ -37,7 +36,6 @@ def reindex_data(df):
     # changing index name
     df = df.reindex(df.index.rename({"Location" : "id_Location", "Date" : "id_Date"}))
     return df
-
 
 def add_data(file_path, df_origin):
     """
@@ -78,9 +76,13 @@ if __name__ == '__main__':
     # add new data to current data
     for file in new_data_files:
         df_current = add_data(new_data_folder + file, df_current)
+    
+    df_current = df_current.drop(columns='Unnamed: 0')
     # save all data to current data and uptodate data
     df_current.to_csv(current_data_path)
+    print("new data saved to current")
     df_current.to_csv(uptodate_data_path)
+    print("new data saved to uptodate")
 
 # # testing  
 # raw_data_path = '../../../data/raw_data/weatherAUS.csv'
