@@ -1,5 +1,11 @@
 import streamlit as st
 import requests
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+api_url = os.getenv('API_URL')
+
 
 
 token = st.session_state.get("token", None)
@@ -26,7 +32,7 @@ with col2:
                     data = {'username' : username,
                             'password' : password}
 
-                    response = requests.post('http://localhost:1111/login', data = data)
+                    response = requests.post(f'http://{api_url}:2222/login', data = data)
                     st.write(response.status_code)
 
                     if response.status_code == 200:
@@ -51,7 +57,7 @@ with col2:
 st.write('########################')
 
 response = requests.get(
-        'http://localhost:1111/',
+        f'http://{api_url}:2222/',
         headers={"Authorization": f"Bearer {token}"}  # Ajout du token dans l'en-tête Authorization
     )
 st.write('Welcome to Meteostralia mlops')
