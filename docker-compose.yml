@@ -71,7 +71,7 @@ services:
           target: /app/data
       image: encode_data:latest
       container_name: encode_data
-  
+
   split_data:
       build:
         context: ./src/data_service/split_data
@@ -132,7 +132,7 @@ services:
           target: /app/models
       image: training:latest
       container_name: training
-    
+
   evaluate:
     build:
       context: ./src/modeling_service/evaluate
@@ -159,7 +159,34 @@ services:
         target: /app/metrics
     image: evaluate:latest
     container_name: evaluate
-    
 
 
+# version: '3.8'
 
+# services:
+
+#   api:
+#     build:
+#       context: ./api
+#       dockerfile: Dockerfile-api
+#     container_name: api
+#     networks:
+#       - api/streamlit
+#     ports:
+#       - "2222:2222"
+#   streamlit:
+#     build:
+#       context: ./streamlit
+#       dockerfile: Dockerfile-streamlit
+#     container_name: streamlit
+#     environment:
+#       - API_URL=api
+#     networks:
+#       - api/streamlit
+#     ports:
+#       - "1111:1111"
+
+
+# networks:
+#   api/streamlit:
+#     driver: bridge
