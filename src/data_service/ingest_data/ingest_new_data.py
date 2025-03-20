@@ -50,7 +50,7 @@ def add_data(file_path, df_origin):
     """
 
     df_new = load_data(file_path)
-    df_new = reindex_data(df_new )
+    df_new = reindex_data(df_new)
     # verify if data does not already exist
     
     if set(df_new.index.values)  - set(df_origin.index.values) != set():
@@ -77,11 +77,14 @@ if __name__ == '__main__':
     for file in new_data_files:
         df_current = add_data(new_data_folder + file, df_current)
     
+    # drop columns not needed
     df_current = df_current.drop(columns='Unnamed: 0')
+    df_current = df_current.drop(columns = ['id_Location', 'id_Date'])
+    
     # save all data to current data and uptodate data
-    df_current.to_csv(current_data_path)
+    df_current.reset_index().to_csv(current_data_path, index = False)
     print("new data saved to current")
-    df_current.to_csv(uptodate_data_path)
+    df_current.to_csv(uptodate_data_path, index = True)
     print("new data saved to uptodate")
 
 # # testing  

@@ -189,6 +189,8 @@ def encode_newdata(data_origin, new_data,
     # Encode dummies variables                                    
     data_origin = pd.get_dummies(data_origin, 
                                  columns=vars_dummies, dtype=int)
+    new_data = pd.get_dummies(new_data, 
+                                 columns=vars_dummies, dtype=int)
     
     # Encode sinus and cosinus variables
     for col in vars_trigo:
@@ -199,9 +201,9 @@ def encode_newdata(data_origin, new_data,
     # Encode ordinal variables
     encoder = OrdinalEncoder()
     data_origin[vars_ordinal] = encoder.fit_transform(data_origin[vars_ordinal])
-    new_data[vars_ordinal] = encoder.transform(new_data)
+    new_data[vars_ordinal] = encoder.transform(new_data[vars_ordinal])
 
-    return data_origin
+    return new_data
 
 if __name__ == '__main__':
     # load data 
@@ -210,7 +212,8 @@ if __name__ == '__main__':
     df = encode_data(data_to_encode=df)
     # save all data to process data
     process_data_path = 'data/processed_data/encoded_data.csv'
-    df.to_csv(process_data_path)
+    df.to_csv(process_data_path, index=True)
+    print("Encoded data saved to ", process_data_path)
 
 # # testing
 # df = load_data("../../../data/processed_data/augmented_data.csv")

@@ -10,7 +10,7 @@ def scale_data(X_train, X_test, scaler = MinMaxScaler()):
 
     # Scale features
     X_train_scaled = scaler.fit_transform(X_train)
-    X_test_scaled = scaler.fit_transform(X_test)
+    X_test_scaled = scaler.transform(X_test)
     X_train_scaled = pd.DataFrame(X_train_scaled, index=X_train.index, columns = X_train.columns)
     X_test_scaled = pd.DataFrame(X_test_scaled, index=X_test.index, columns = X_test.columns)
     return X_train_scaled, X_test_scaled
@@ -36,3 +36,4 @@ if __name__ == '__main__':
 
     X_train_scaled.to_csv(process_data_folder + "X_train_scaled.csv", index=False)
     X_test_scaled.to_csv(process_data_folder + "X_test_scaled.csv", index=False)
+    print("Scaled training and test features saved to ", process_data_folder)

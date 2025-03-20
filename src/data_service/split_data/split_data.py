@@ -67,3 +67,4 @@ if __name__ == '__main__':
     X_test.to_csv(process_data_folder + "X_test.csv", index=False)
     y_train.to_csv(process_data_folder + "y_train.csv", index=False)
     y_test.to_csv(process_data_folder + "y_test.csv", index=False)
+    print("Training and test data saved to ", process_data_folder)

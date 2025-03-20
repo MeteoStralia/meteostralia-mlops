@@ -31,6 +31,7 @@ def train_model(data_path="data/processed_data/",
     
     # Entraîner le modèle
     model = classifier(**model_params)
+    print("Fitting ", type(model).__name__)
     model.fit(X_train, y_train)
 
     # save target and model name in model path

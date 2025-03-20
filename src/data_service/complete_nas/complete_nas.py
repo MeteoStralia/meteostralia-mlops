@@ -8,6 +8,7 @@ import emoji
 # TODO régler les paths pour inclure les fonctions d'autres modules
 sys.path.append('./src/')
 from data_service.ingest_data.ingest_new_data import load_data, reindex_data
+from global_functions import create_folder_if_necessary
 
 def complete_na_median_location_month(df, columns, verbose=False):
     """
@@ -20,7 +21,7 @@ def complete_na_median_location_month(df, columns, verbose=False):
     Returns:
         pd.DataFrame: modified DataFrame
     """
-
+    
     median_values = df.groupby(["Month", "Location"])[columns].median()
     for col in columns:
         df[col] = df.set_index(["Month", "Location"])[col].fillna(median_values[col]).values
@@ -95,45 +96,37 @@ def create_pipeline_nas(verbose=False):
 if __name__ == '__main__':
     # load current data
     current_data_path = 'data/current_data/uptodate_data.csv'
-    df_current = load_data(current_data_path, index =["id_Location","id_Date"])
-    df_current = reindex_data(df_current)
+    df_uptodate = load_data(current_data_path, 
+                            index =["id_Location","id_Date"])
+    #df_uptodate = reindex_data(df_uptodate)
+    
     # add year and month (TODO add this in load data or before)
-    df_current["Year"] = df_current["Date"].dt.year
-    df_current["Month"] = df_current["Date"].dt.month
+    df_uptodate["Year"] = pd.to_datetime(df_uptodate["Date"]).dt.year
+    df_uptodate["Month"] = pd.to_datetime(df_uptodate["Date"]).dt.month
+    
     # changing cloud to string (this variable is an index) (TODO add this in load data or before)
-    df_current["Cloud3pm"] = df_current["Cloud3pm"].astype(str).replace('nan',np.nan)
-    df_current["Cloud9am"] = df_current["Cloud9am"].astype(str).replace('nan',np.nan)
+    df_uptodate["Cloud3pm"] = df_uptodate["Cloud3pm"].astype(str).replace('nan',np.nan)
+    df_uptodate["Cloud9am"] = df_uptodate["Cloud9am"].astype(str).replace('nan',np.nan)
+    
     # create Nas completion pipeline
     complete_nas_pipeline = create_pipeline_nas()
+   
     # check Nas before 
-    nas_before = pd.DataFrame(df_current.isna().sum())
+    nas_before = pd.DataFrame(df_uptodate.isna().sum())
+    
     # apply pipeline
-    df_current = complete_nas_pipeline.fit_transform(df_current)
+    df_uptodate = complete_nas_pipeline.fit_transform(df_uptodate)
+    
     # print Nas after
-    nas_after = pd.DataFrame(df_current.isna().sum())
-    nas_after = pd.merge(nas_before,nas_after,left_index=True,right_index=True)
+    nas_after = pd.DataFrame(df_uptodate.isna().sum())
+    nas_after = pd.merge(nas_before, nas_after, left_index=True, right_index=True)
     nas_after.columns = ['Avant', 'Après']
     print(nas_after)
+    
     # save all data to process data
     process_data_path = 'data/processed_data/nas_completed_data.csv'
-    df_current.to_csv(process_data_path)
+    create_folder_if_necessary("data/processed_data/")
+    df_uptodate.to_csv(process_data_path, index=True)
+    print("Completed data saved to ", process_data_path)
 
 
-# # testing
-# current_data_path = '../../../data/current_data/current_data.csv'
-# df_current = load_data(current_data_path)
-# df_current = reindex_data(df_current)
-# df_current["Year"] = df_current["Date"].dt.year
-# df_current["Month"] = df_current["Date"].dt.month
-# df_current["Cloud3pm"] = df_current["Cloud3pm"].astype(str).replace('nan',np.nan)
-# df_current["Cloud9am"] = df_current["Cloud9am"].astype(str).replace('nan',np.nan)
-# complete_nas_pipeline = create_pipeline_nas()
-# complete_nas_pipeline
-# nas_before = pd.DataFrame(df_current.isna().sum())
-# df_current = complete_nas_pipeline.fit_transform(df_current)
-# nas_after = pd.DataFrame(df_current.isna().sum())
-# nas_after = pd.merge(nas_before,nas_after,left_index=True,right_index=True)
-# nas_after.columns = ['Avant', 'Après']
-# print(nas_after)
-# process_data_path = '../../../data/processed_data/nas_completed_data.csv'
-# df_current.to_csv(process_data_path, index = False)

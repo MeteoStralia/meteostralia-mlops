@@ -5,7 +5,7 @@ import joblib
 import os
 import datetime
 from sklearn.linear_model import LogisticRegression
-
+from global_functions import create_folder_if_necessary
 
 import sys
 sys.path.append('./src/')
@@ -37,6 +37,8 @@ if __name__ == "__main__":
     data_to_add_path = "../../data/add_data/" # à modifier
     model_path = "../../models/"
     classifier = "LogisticRegression"
+    predictions_folder = "../../data/predictions/" 
+
     # predict date
     predict_date = datetime.datetime.today()
 
@@ -53,18 +55,21 @@ if __name__ == "__main__":
         data_to_add_path,
         data_path,
         target_column)
-    # Definir les chemins
-    data_path = os.path.join("data", "new_data.csv")
     
-
     # Charger le modèle
     model = import_model(model_path,
                          target_column,
                          classifier)
     
-    model.predict(features)
+    predictions=model.predict(features)
+    predictions = pd.DataFrame(predictions, index = features.index, columns=[target_column + "pred"])
+    predictions["Date"] = predictions.index.get_level_values(1)
+    predictions["Location"] = predictions.index.get_level_values(1)
 
-    # Démarrer l'inférence
-    predictions = run_inference(model, df)
-    print(predictions)
+    # saving predictions
+    create_folder_if_necessary(predictions_folder)
+    timestamp = datetime.datetime.now().timestamp()
+    timestamp = str(int(round(timestamp)))
+    predictions.to_csv(predictions_folder +target_column+"_"+timestamp + ".csv")
+    
 
