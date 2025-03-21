@@ -1,0 +1,5 @@
+FROM ubuntu:latest
+WORKDIR /app_data/
+COPY ./docker-compose.yml .
+COPY --from=docker/compose-bin:v2.20.2 /docker-compose /usr/bin/compose
+RUN compose version

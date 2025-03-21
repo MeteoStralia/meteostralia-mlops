@@ -8,12 +8,13 @@ services:
         - type: bind
           source: ../../src
           target: /app/src
-        - ../../data:/data
+        - ../data/:/data
         - type: bind
           source: ../../data
           target: /app/data
       image: reset_data:latest
       container_name: reset_data
+      
   ingest_data:
       build:
         context: ./ingest_data

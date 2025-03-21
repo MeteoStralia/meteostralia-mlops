@@ -1,5 +1,7 @@
+networks:
+  api/streamlit:
+    driver: bridge
 services:
-
   api:
     build:
       context: ./api
@@ -21,6 +23,24 @@ services:
     ports:
       - "1111:1111"
 
-networks:
-  api/streamlit:
-    driver: bridge
+  # Not working yet
+  # data_service:
+  #   build :
+  #     context: src/data_service/
+  #     dockerfile: data_service_dockerfile
+  #   image: data_service:latest
+  #   container_name: data_service
+  #   command: compose -f docker-compose.yml build 
+  #   volumes:
+  #       - ./src/:/src
+  #       - type: bind
+  #         source: src/
+  #         target: /app_data/src
+  #       - ./data/:/data
+  #       - type: bind
+  #         source: data/
+  #         target: /app_data/data
+  #       - /var/run/docker.sock:/var/run/docker.sock
+  
+ 
+
