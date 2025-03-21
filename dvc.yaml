@@ -2,6 +2,8 @@ stages:
   reset_data:
     cmd: python .\src\data_service\ingest_data\reset_data.py
     deps:
+    - .\data\raw_data\weatherAUS.csv
+    - .\data\new_data\
     - .\src\data_service\ingest_data\reset_data.py
     outs:
     - .\data\current_data\current_data.csv
