@@ -17,15 +17,23 @@ TODO
 
 TODO
 
+## Inference service (src/inference_service)
+
+TODO
+
 ## Configuration data_service et modeling_service
 Run at root (if first time)
 ```
-docker compose build 
+docker compose -f .\src\data_service\docker-compose.yml build 
+docker compose -f .\src\modeling_service\docker-compose.yml build 
+docker compose -f .\src\inference_service\docker-compose.yml build 
 ```
 Then run (or directly run if build is already done)
 
 ```
-docker compose up
+docker compose -f .\src\data_service\docker-compose.yml up 
+docker compose -f .\src\modeling_service\docker-compose.yml up
+docker compose -f .\src\inference_service\docker-compose.yml up
 ```
 
 ## Configuration suivi DVC
