@@ -45,6 +45,8 @@ def evaluate_model(
     save_metrics(metrics_path, metrics)
     print(f"metrics saved to {metrics_path}")
 
+    return metrics
+
 
 def save_metrics(metrics_path, metrics):
     metrics_path = metrics_path + "_metrics.json"
