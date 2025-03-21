@@ -172,5 +172,5 @@ stages:
     outs:
     - path: metrics/RainTomorrow/LogisticRegression_metrics.json
       hash: md5
-      md5: b1e004f8fb92278e078f791e503487ef
-      size: 222
+      md5: 0cd3b8b2628b7fda69a8d6aab96e33ed
+      size: 221
