@@ -122,7 +122,7 @@ dvc commit
 
 Commit changes in metadata to git
 ```
-git add  data/current_data.dvc data/processed_data.dvc models.dvc metrics.dvc
+git add dvc.lock
 git commit -m "testing a dvc versioning"
 git tag -a versioning_test -m "testing a dvc versioning"
 git push origin --tags
