@@ -1,0 +1,20 @@
+services:
+  inference:
+      build:
+        context: ./
+        dockerfile: ./inference_dockerfile
+      volumes:
+        - ../../src:/src
+        - type: bind
+          source: ../../src
+          target: /app/src
+        - ../../data:/data
+        - type: bind
+          source: ../../data
+          target: /app/data
+        - ../../models:/models
+        - type: bind
+          source: ../../models
+          target: /app/models
+      image: inference:latest
+      container_name: inference

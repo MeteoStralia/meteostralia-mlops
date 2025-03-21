@@ -1,0 +1,47 @@
+services:
+  training:
+      build:
+        context: /training
+        dockerfile: ./training_dockerfile
+      volumes:
+        - ../../src:/src
+        - type: bind
+          source: ../../src
+          target: /app/src
+        - ../../data:/data
+        - type: bind
+          source: ../../data
+          target: /app/data
+        - ../../models:/models
+        - type: bind
+          source: ../../models
+          target: /app/models
+      image: training:latest
+      container_name: training
+
+  evaluate:
+    build:
+      context: /evaluate
+      dockerfile: ./evaluate_dockerfile
+    depends_on:
+      training:
+        condition: service_completed_successfully
+    volumes:
+      - ../../src:/src
+      - type: bind
+        source: ../../src
+        target: /app/src
+      - ../../data:/data
+      - type: bind
+        source: ../../data
+        target: /app/data
+      - ../../models:/models
+      - type: bind
+        source: ../../models
+        target: /app/models
+      - ./metrics:/metrics
+      - type: bind
+        source: ./metrics
+        target: /app/metrics
+    image: evaluate:latest
+    container_name: evaluate

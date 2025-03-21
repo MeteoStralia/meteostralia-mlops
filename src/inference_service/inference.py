@@ -1,16 +1,14 @@
 # inference.py
 
 import pandas as pd
-import joblib
-import os
 import datetime
 from sklearn.linear_model import LogisticRegression
-from global_functions import create_folder_if_necessary
+from src.global_functions import create_folder_if_necessary
 
 import sys
 sys.path.append('./src/')
-sys.path.append('../') # a virer 
-sys.path.append('../../') # à virer
+# sys.path.append('../') # a virer 
+# sys.path.append('../../') # à virer
 
 from scrap_last_data import scrap_last_predictdata, process_scrapped_data
 from modeling_service.evaluate.evaluate import import_model

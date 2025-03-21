@@ -2,8 +2,8 @@ import pandas as pd
 import datetime
 import sys
 sys.path.append('./src/')
-sys.path.append('../') # a virer 
-sys.path.append('../../') # à virer
+# sys.path.append('../') # a virer 
+# sys.path.append('../../') # à virer
 
 # import needed functions
 from data_service.ingest_data.ingest_new_data import load_data, reindex_data
