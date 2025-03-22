@@ -39,9 +39,9 @@ services:
       - type: bind
         source: ../../models
         target: /app/models
-      - ./metrics:/metrics
+      - ../../metrics:/metrics
       - type: bind
-        source: ./metrics
+        source: ../../metrics
         target: /app/metrics
     image: evaluate:latest
     container_name: evaluate

@@ -53,10 +53,6 @@ save_data = scrapped_data_c
 save_new_data(save_data, new_data_folder)
 
 
-"https://reg.bom.gov.au/climate/dwo/" + \
-        year_scrap + month_scrap + "/text/IDCJDW" + str(id_location) + \
-              "." + year_scrap + month_scrap + ".csv"
-
 
 # # testing 
 # # reading station IDS
