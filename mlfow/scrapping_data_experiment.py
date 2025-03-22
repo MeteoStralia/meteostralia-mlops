@@ -7,8 +7,9 @@ from src.data_service.ingest_data.ingest_new_data import reindex_data
 
 new_data_folder = "../data/new_data/"
 # set year and month of data
-month_scrap = "01"
-year_scrap = "2024"
+
+months_scrap = {"2024": ["02","05","08","11"],
+                "2025": ["01"]}
 # Locations to request
 location_list = ["Canberra","Sydney","Melbourne","Brisbane"]
 station_ID = pd.read_csv("../data/add_data/station_ID.csv", sep=";")
@@ -18,18 +19,11 @@ station_ID = station_ID.dropna(subset = ["Location"])
 station_ID = station_ID.dropna(subset = ["IDCJDW"])
 # convert location ID to string
 station_ID["IDCJDW"] = station_ID["IDCJDW"].astype(int).astype(str)
-id_list = station_ID.loc[station_ID["Location"].isin(location_list),["IDCJDW"]] 
+id_list = station_ID.loc[station_ID["Location"].isin(location_list)] 
 scrapped_data = pd.DataFrame()
 # scrap data for all locations
 
 for location_name in id_list:
-
-    id_location = station_ID.loc[station_ID.Location == location_name,
-                                    "IDCJDW"]
-    id_location = str(id_location.iloc[0])
-    lastdata_location = scrap_data(
-        location_name=location_name,
-        id_location=id_location,
         year=year_scrap,
         month=month_scrap)
     lastdata_location_c = lastdata_location.copy()
@@ -39,20 +33,19 @@ for location_name in id_list:
     # concatenate with all stations data
     scrapped_data = pd.concat([scrapped_data, 
                                         lastdata_location_c])
+            # concatenate with all stations data
+            scrapped_data = pd.concat([scrapped_data, 
+                                                data_location_c])
 
 # copy scrapped data
 scrapped_data_c = scrapped_data.copy()
-
-# print(scrapped_data)
-# keep data only for predict_date and predict date d-1
-predict_data = scrapped_data_c.loc[
-    scrapped_data_c["Date"].dt.strftime('%Y-%m-%d').isin([predict_date, predict_date_yesterday])]
 
 # save scrapped data to new_data path to be added in training data (except data for predict_date)
 save_data = scrapped_data_c.loc[
     scrapped_data_c["Date"].dt.strftime('%Y-%m-%d').isin([predict_date, predict_date_yesterday]) == False]
 
 save_new_data(save_data, new_data_folder)
+
 
 # # testing 
 # # reading station IDS

@@ -82,8 +82,8 @@ def scrap_last_predictdata(
 
 def process_scrapped_data(
         predict_data,
-        data_to_add_path="../../data/add_data/",
-        data_path = "data/processed_data/",
+        data_to_add_folder,
+        processed_data_folder = "data/processed_data/",
         target_column = "RainTomorrow"):
     
     # # drop data if target is na
@@ -94,13 +94,13 @@ def process_scrapped_data(
 
     # add_features
     predict_data = add_features(predict_data,
-                                data_to_add_path=data_to_add_path)
+                                data_to_add_folder=data_to_add_folder)
     
     predict_data["Year"] = pd.to_datetime(predict_data["Date"]).dt.year
     predict_data["Month"] = pd.to_datetime(predict_data["Date"]).dt.month
     
     # encode data
-    data_tmp = pd.read_csv(data_path + "augmented_data.csv")
+    data_tmp = pd.read_csv(processed_data_folder + "augmented_data.csv")
     predict_data = encode_newdata(
         data_origin=data_tmp,
         new_data=predict_data
@@ -119,7 +119,7 @@ def process_scrapped_data(
     target.index = predict_index
     features.index = predict_index
 
-    X_train = load_data(data_path + "X_train.csv")
+    X_train = load_data(processed_data_folder + "X_train.csv")
     # drop columns not in current train data
     cols_to_drop = features.columns[[x not in X_train.columns for x in features.columns ]]
     features = features.drop(columns=cols_to_drop)
@@ -143,12 +143,13 @@ def process_scrapped_data(
 
 # testing (à virer)
 if __name__ == "__main__":
-    # Définir les chemins et paramètres
-    data_path = "../../data/processed_data/" # à modifier
+    # path and parameters
+    processed_data_folder = "data/processed_data/" 
     target_column = "RainTomorrow"
-    new_data_folder = "../../data/new_data/" # à modifier
-    station_ID_path = "../../data/add_data/station_ID.csv" # à modifier
-    data_to_add_path = "../../data/add_data/" # à modifier
+    new_data_folder = "data/new_data/" 
+    station_ID_path = "data/add_data/station_ID.csv"
+    data_to_add_folder = "data/add_data/"
+
     # predict date
     predict_date = datetime.datetime.today()
 
@@ -160,8 +161,8 @@ if __name__ == "__main__":
 
     target, features = process_scrapped_data(
         predict_data,
-        data_to_add_path,
-        data_path,
+        data_to_add_folder,
+        processed_data_folder,
         target_column)
 
 

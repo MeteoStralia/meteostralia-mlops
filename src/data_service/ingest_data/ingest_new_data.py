@@ -1,6 +1,4 @@
 import pandas as pd
-from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import StandardScaler
 import os
 import sys
 sys.path.append('./src/')
@@ -65,42 +63,29 @@ def add_data(file_path, df_origin):
 
 
 if __name__ == '__main__':
+    # Paths and parameters
     current_data_path = 'data/current_data/current_data.csv'
     uptodate_data_path = 'data/current_data/uptodate_data.csv'
     new_data_folder = 'data/new_data/'
+
     # load current data
     df_current = load_data(current_data_path)
     df_current = reindex_data(df_current)
     # list data files in new data folder
     new_data_files = os.listdir(new_data_folder)
+
     # add new data to current data
     for file in new_data_files:
         df_current = add_data(new_data_folder + file, df_current)
     
     # drop columns not needed
-    df_current = df_current.drop(columns='Unnamed: 0')
-    df_current = df_current.drop(columns = ['id_Location', 'id_Date'])
+    if 'Unnamed: 0' in df_current.columns:
+        df_current = df_current.drop(columns='Unnamed: 0')
+    if ('id_Location' in df_current.columns) and ('id_Date' in df_current.columns):
+        df_current = df_current.drop(columns=['id_Location', 'id_Date'])
     
     # save all data to current data and uptodate data
-    df_current.reset_index().to_csv(current_data_path, index = False)
+    df_current.reset_index().to_csv(current_data_path, index=False)
     print("new data saved to current")
-    df_current.to_csv(uptodate_data_path, index = True)
+    df_current.to_csv(uptodate_data_path, index=True)
     print("new data saved to uptodate")
-
-# # testing  
-# raw_data_path = '../../../data/raw_data/weatherAUS.csv'
-# current_data_path = '../../../data/current_data/current_data.csv'
-# new_data_folder = '../../../data/new_data/'
-
-# # récupère les données raw et les mets dans current
-# raw_data = load_data(raw_data_path)
-# raw_data.to_csv(current_data_path, index=False)
-
-# # get current data
-# df_current = load_data(current_data_path)
-# df_current = reindex_data(df_current)
-# new_data_files = os.listdir(new_data_folder)
-# for file in new_data_files:
-#     df_current = add_data(new_data_folder + file, df_current)
-
-# df_current.to_csv(current_data_path, index=False)

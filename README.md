@@ -113,10 +113,10 @@ dvc checkout
 data, models and metrics should appear on your local drive
 
 ### pushing a new run on DVC
-First run a data and model pipeline
+First run a data or model pipeline
 For example
 ```
-docker compose up
+docker compose -f .\src\modeling_service\docker-compose.yml build 
 ```
 OR
 ```

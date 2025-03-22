@@ -176,8 +176,8 @@ stages:
       nfiles: 1
     - path: ./src/modeling_service/evaluate/evaluate.py
       hash: md5
-      md5: 9fa80a34434cddc7e1753d61baba527b
-      size: 2859
+      md5: 9f1d7083d472ad6c33eab2ae80e17371
+      size: 2881
     outs:
     - path: metrics/RainTomorrow/LogisticRegression_metrics.json
       hash: md5
