@@ -98,8 +98,8 @@ if __name__ == '__main__':
     # paths and parameters
     index_load =["id_Location","id_Date"]
     uptodate_data_path = 'data/current_data/uptodate_data.csv'
-    process_data_folder = "data/processed_data/"
-    process_data_path = 'data/processed_data/nas_completed_data.csv'
+    processed_data_folder = "data/processed_data/"
+    processed_data_path = 'data/processed_data/nas_completed_data.csv'
 
     # load current data
     df_uptodate = load_data(uptodate_data_path, index=index_load)
@@ -128,8 +128,8 @@ if __name__ == '__main__':
     print(nas_after)
     
     # save all data to process data
-    create_folder_if_necessary(process_data_folder)
-    df_uptodate.to_csv(process_data_path, index=True)
-    print("Completed data saved to ", process_data_path)
+    create_folder_if_necessary(processed_data_folder)
+    df_uptodate.to_csv(processed_data_path, index=True)
+    print("Completed data saved to ", processed_data_path)
 
 

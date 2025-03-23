@@ -51,7 +51,7 @@ if __name__ == '__main__':
     test_size = 0.2
     random_state = 1234
     sep_method = "classic"
-    process_data_folder = 'data/processed_data/'
+    processed_data_folder = 'data/processed_data/'
 
     # load data 
     df = load_data(encoded_data_path, index=index_load)
@@ -73,8 +73,8 @@ if __name__ == '__main__':
         split_data(df, target_column, test_size, random_state, sep_method)
                                                   
     # save all data to process data
-    X_train.to_csv(process_data_folder + "X_train.csv", index=False)
-    X_test.to_csv(process_data_folder + "X_test.csv", index=False)
-    y_train.to_csv(process_data_folder + "y_train.csv", index=False)
-    y_test.to_csv(process_data_folder + "y_test.csv", index=False)
-    print("Training and test data saved to ", process_data_folder)
+    X_train.to_csv(processed_data_folder + "X_train.csv", index=False)
+    X_test.to_csv(processed_data_folder + "X_test.csv", index=False)
+    y_train.to_csv(processed_data_folder + "y_train.csv", index=False)
+    y_test.to_csv(processed_data_folder + "y_test.csv", index=False)
+    print("Training and test data saved to ", processed_data_folder)

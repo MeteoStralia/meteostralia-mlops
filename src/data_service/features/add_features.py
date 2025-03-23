@@ -31,13 +31,13 @@ def add_features(df, data_to_add_folder="data/add_data/"):
 
 if __name__ == '__main__':
     # paths and parameters
-    process_data_path = 'data/processed_data/nas_completed_data.csv'
+    processed_data_path = 'data/processed_data/nas_completed_data.csv'
     data_to_add_folder = "data/add_data/"
     index_load = ["id_Location", "id_Date"]
     augmented_data_path = 'data/processed_data/augmented_data.csv'
 
     # load data 
-    df = load_data(process_data_path, index=index_load)
+    df = load_data(processed_data_path, index=index_load)
     df_augmented = add_features(df, data_to_add_folder)
     df_augmented = reindex_data(df_augmented)
 

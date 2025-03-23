@@ -25,13 +25,13 @@ new_data_folder = 'data/new_data/'
 # complete nas
 uptodate_data_path = 'data/current_data/uptodate_data.csv'
 index = ["id_Location","id_Date"]
-process_data_folder = "data/processed_data/"
-process_data_path = 'data/processed_data/nas_completed_data.csv'
+processed_data_folder = "data/processed_data/"
+processed_data_path = 'data/processed_data/nas_completed_data.csv'
     
 # add features
 index = ["id_Location","id_Date"]
 
-process_data_path = 'data/processed_data/nas_completed_data.csv'
+processed_data_path = 'data/processed_data/nas_completed_data.csv'
 data_to_add_folder = "data/add_data/"
 augmented_data_path = 'data/processed_data/augmented_data.csv'
 
@@ -53,10 +53,10 @@ target_column = "RainTomorrow"
 test_size = 0.2
 random_state = 1234
 sep_method = "classic"             
-process_data_folder = 'data/processed_data/'
+processed_data_folder = 'data/processed_data/'
 
 # scale data
-process_data_folder = 'data/processed_data/'
+processed_data_folder = 'data/processed_data/'
 scaler = MinMaxScaler()
 
 ######################

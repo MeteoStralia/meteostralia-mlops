@@ -15,9 +15,10 @@ from data_service.scale_data.scale_data import scale_data
 
 def scrap_last_predictdata(
         new_data_folder = "=data/new_data/",
-        predict_date = datetime.datetime.today,
+        predict_date = datetime.datetime.today().strftime('%Y-%m-%d'),
         station_ID_path = "../../data/add_data/station_ID.csv"):
     
+    predict_date = pd.to_datetime(predict_date)
     # get previous day date
     predict_date_yesterday = (predict_date + 
                               datetime.timedelta(days=-1)).strftime('%Y-%m-%d')
