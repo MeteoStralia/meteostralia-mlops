@@ -6,24 +6,22 @@ import json
 from src.global_functions import create_folder_if_necessary
 from src.modeling_service.evaluate.evaluate import evaluate_model
 from src.modeling_service.training.train import import_model
-
+import os
 
 mlflow.set_tracking_uri('https://dagshub.com/bruno.vermont/meteostralia-mlops.mlflow')
 
 dagshub.init(repo_owner='bruno.vermont', repo_name='meteostralia-mlops', mlflow=True)
 
-# with mlflow.start_run():
+# # Setting experiment parameters
+# experiment_name = "default"
+# params_folder = "data/parameters/"
+# # Define experiment name, run name and artifact_path name
+# apple_experiment = mlflow.set_experiment("Apple_Models")
+# run_name = "first_run"
+# artifact_path = "rf_apples"
 
-#     # Définir les chemins et paramètres
-#     data_path = "data/processed_data/"
-#     model_path = "models/"
-#     target_column = "RainTomorrow"
-#     classifier = "LogisticRegression"
-#     metrics_path = "metrics/" + target_column + "/"+classifier
-#     create_folder_if_necessary("metrics/" + target_column + "/")
-#     # Loading model
-#     model = import_model(model_path, target_column, classifier)
-#     # Evaluate model and save metrics
-#     metrics = evaluate_model(model, data_path, metrics_path)
-
-#     mlflow.
+# with mlflow.start_run(run_name=run_name) as run:
+# mlflow.log_params(params)
+# mlflow.log_metrics(metrics)
+# mlflow.sklearn.log_model(
+# sk_model=rf, input_example=X_val, artifact_path=artifact_path)

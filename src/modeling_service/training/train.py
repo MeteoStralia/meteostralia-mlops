@@ -1,4 +1,9 @@
 # train.py
+import os
+experiment_name = "default"
+os.environ["EXPERIMENT_NAME"] = experiment_name
+params_folder = "data/parameters/"
+os.environ["PARAMS_FOLDER"] = params_folder
 
 import pandas as pd
 from sklearn.linear_model import LogisticRegression
@@ -6,9 +11,9 @@ from sklearn.base import ClassifierMixin
 from sklearn.ensemble import RandomForestClassifier
 import joblib
 import sys
-sys.path.append('./src/')
-from data_service.ingest_data.ingest_new_data import load_data
-from global_functions import create_folder_if_necessary
+sys.path.append('./')
+from src.data_service.ingest_data.ingest_new_data import load_data
+from src.global_functions import create_folder_if_necessary, get_params_service
 
 def train_model(processed_data_folder="data/processed_data/",
                 target_column="RainTomorrow",
@@ -42,15 +47,23 @@ def train_model(processed_data_folder="data/processed_data/",
 
 if __name__ == "__main__":
     # paths and parameters
-    processed_data_folder = "data/processed_data/"
-    model_params = {
-        "class_weight": {0: 0.3, 1: 0.7},
-        "C": 1, "max_iter": 500, "penalty": 'l1',
-        "solver": 'liblinear', "n_jobs": -1}
-    classifier = LogisticRegression
-    model_folder = "models/"
-    target_column = "RainTomorrow"
-
+    params_model = get_params_service(service="modeling_service")
+    processed_data_folder = params_model["processed_data_folder"]
+    model_params = params_model["model_params"]
+    classifier = params_model["classifier"]
+    model_folder = params_model["model_folder"]
+    target_column = params_model["target_column"]
+    
+    # correction for class_weight
+    if "class_weight" in model_params.keys():
+        copy = model_params["class_weight"].copy()
+        for key in model_params["class_weight"].keys():
+            copy[int(key)] = copy[key]
+            del copy[key]
+    
+    model_params["class_weight"] = copy
+    
+    print(model_params)
     # create models folder
     create_folder_if_necessary(model_folder + target_column +"/")
     # training

@@ -3,9 +3,10 @@ from sklearn.model_selection import train_test_split
 import sys
 sys.path.append('./src/')
 from data_service.ingest_data.ingest_new_data import load_data
+from src.global_functions import get_params_service
 
 def split_data(df, target_column=str, test_size=float, 
-               random_state=int, sep_method="classic"):
+               random_state=int, sep_method="classic", **kwargs):
     """
     Diviser les données en training et testing sets.
 
@@ -44,14 +45,16 @@ def split_data(df, target_column=str, test_size=float,
 if __name__ == '__main__':
 
     # Paths and parameters
-    encoded_data_path = 'data/processed_data/encoded_data.csv'
-    index_load = ["id_Location", "id_Date"]
-    threshold = 0.25
-    target_column = "RainTomorrow"
-    test_size = 0.2
-    random_state = 1234
-    sep_method = "classic"
-    processed_data_folder = 'data/processed_data/'
+    params_data = get_params_service(service="data_service")
+    encoded_data_path = params_data['encoded_data_path']
+    processed_data_folder = params_data['processed_data_folder']
+    index_load = params_data["index_load"]
+    threshold = params_data["threshold"]
+    # target_column = "RainTomorrow"
+    # test_size = 0.2
+    # random_state = 1234
+    # sep_method = "classic"
+   
 
     # load data 
     df = load_data(encoded_data_path, index=index_load)
@@ -70,7 +73,7 @@ if __name__ == '__main__':
         df = df.drop(columns="Date")
 
     X_train, X_test, y_train, y_test = \
-        split_data(df, target_column, test_size, random_state, sep_method)
+        split_data(df, **params_data)
                                                   
     # save all data to process data
     X_train.to_csv(processed_data_folder + "X_train.csv", index=False)

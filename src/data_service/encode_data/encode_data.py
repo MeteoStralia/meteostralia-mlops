@@ -8,8 +8,8 @@ from sklearn.base import BaseEstimator, TransformerMixin
 # TODO régler les paths pour inclure les fonctions d'autres modules
 import sys
 sys.path.append('./src/')
-sys.path.append('../../')
 from data_service.ingest_data.ingest_new_data import load_data
+from src.global_functions import get_params_service
 class trigo_encoder(BaseEstimator, TransformerMixin):
     """
     Class to convert cyclical or categorical variable to sinus and cosinus
@@ -201,15 +201,14 @@ def encode_newdata(data_origin, new_data,
 
 if __name__ == '__main__':
     # Paths and parameters
-    augmented_data_path = 'data/processed_data/augmented_data.csv'
-    encoded_data_path = 'data/processed_data/encoded_data.csv'
-    index_load = ["id_Location", "id_Date"]
-
-    vars_binary = ["RainTomorrow", "RainToday"]
-    vars_dummies = ["Year", "Location", "Climate"] 
-    vars_ordinal = ['Cloud9am', 'Cloud3pm']
-    vars_trigo = ["WindGustDir", "WindDir9am", "WindDir3pm", 
-                  "Month", "Season"]
+    params_data = get_params_service(service="data_service")
+    augmented_data_path = params_data['augmented_data_path']
+    encoded_data_path = params_data['encoded_data_path']
+    index_load = params_data["index_load"]
+    vars_binary = params_data["vars_binary"]
+    vars_dummies = params_data["vars_dummies"]
+    vars_ordinal = params_data["vars_ordinal"]
+    vars_trigo = params_data["vars_trigo"]
     
     # load data 
     df = load_data(augmented_data_path, index=index_load)

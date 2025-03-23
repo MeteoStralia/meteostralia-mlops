@@ -7,7 +7,7 @@ import sys
 sys.path.append('./src/')
 from data_service.ingest_data.ingest_new_data import load_data
 import json
-from global_functions import create_folder_if_necessary
+from global_functions import create_folder_if_necessary, get_params_service
 
 def evaluate_model(
         model,
@@ -72,11 +72,13 @@ def import_model(
 
 if __name__ == "__main__":
     # paths and parameters
-    processed_data_folder = "data/processed_data/"
-    model_folder = "models/"
-    target_column = "RainTomorrow"
-    classifier_name = "LogisticRegression"
-    metrics_path = "metrics/" + target_column + "/"+classifier_name
+    params_model = get_params_service(service="modeling_service")
+    processed_data_folder = params_model["processed_data_folder"]
+    model_folder = params_model["model_folder"]
+    target_column = params_model["target_column"]
+    classifier_name = params_model["classifier_name"]
+    metrics_path = params_model["metrics_path"]
+
     create_folder_if_necessary("metrics/" + target_column + "/")
     # Loading model
     model = import_model(model_folder, target_column, classifier_name)

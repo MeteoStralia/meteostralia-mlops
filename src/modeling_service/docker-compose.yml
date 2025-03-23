@@ -18,6 +18,8 @@ services:
           target: /app/models
       image: training:latest
       container_name: training
+      env_file:
+        - path: ../docker.env
 
   evaluate:
     build:
@@ -45,3 +47,5 @@ services:
         target: /app/metrics
     image: evaluate:latest
     container_name: evaluate
+    env_file:
+        - path: ../docker.env

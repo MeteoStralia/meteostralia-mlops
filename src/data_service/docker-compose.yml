@@ -1,3 +1,5 @@
+# env_file:
+#   - path: ../docker.env
 services:
   reset_data:
       build:
@@ -14,7 +16,8 @@ services:
           target: /app/data
       image: reset_data:latest
       container_name: reset_data
-      
+      env_file:
+        - path: ../docker.env
   ingest_data:
       build:
         context: ./ingest_data
@@ -33,6 +36,8 @@ services:
           target: /app/data
       image: ingest_data:latest
       container_name: ingest_data
+      env_file:
+        - path: ../docker.env
   complete_nas:
       build:
         context: ./complete_nas
@@ -51,6 +56,8 @@ services:
           target: /app/data
       image: complete_nas:latest
       container_name: complete_nas
+      env_file:
+        - path: ../docker.env
   features:
       build:
         context: ./features
@@ -69,6 +76,8 @@ services:
           target: /app/data
       image: features:latest
       container_name: features
+      env_file:
+        - path: ../docker.env
   encode_data:
       build:
         context: ./encode_data
@@ -87,6 +96,8 @@ services:
           target: /app/data
       image: encode_data:latest
       container_name: encode_data
+      env_file:
+        - path: ../docker.env
 
   split_data:
       build:
@@ -106,6 +117,8 @@ services:
           target: /app/data
       image: split_data:latest
       container_name: split_data
+      env_file:
+        - path: ../docker.env
 
   scale_data:
       build:
@@ -125,3 +138,5 @@ services:
           target: /app/data
       image: scale_data:latest
       container_name: scale_data
+      env_file:
+        - path: ../docker.env

@@ -2,6 +2,7 @@ import pandas as pd
 import os
 import sys
 sys.path.append('./src/')
+from src.global_functions import get_params_service
 
 def load_data(file_path, index = None):
     """
@@ -63,20 +64,21 @@ def add_data(file_path, df_origin):
 
 
 if __name__ == '__main__':
-    # Paths and parameters
-    current_data_path = 'data/current_data/current_data.csv'
-    uptodate_data_path = 'data/current_data/uptodate_data.csv'
-    new_data_folder = 'data/new_data/'
+    # # Paths and parameters
+    # current_data_path = 'data/current_data/current_data.csv'
+    # uptodate_data_path = 'data/current_data/uptodate_data.csv'
+    # new_data_folder = 'data/new_data/'
+    params_data = get_params_service(service="data_service")
 
     # load current data
-    df_current = load_data(current_data_path)
+    df_current = load_data(params_data["current_data_path"])
     df_current = reindex_data(df_current)
     # list data files in new data folder
-    new_data_files = os.listdir(new_data_folder)
+    new_data_files = os.listdir(params_data["new_data_folder"])
 
     # add new data to current data
     for file in new_data_files:
-        df_current = add_data(new_data_folder + file, df_current)
+        df_current = add_data(params_data["new_data_folder"] + file, df_current)
     
     # drop columns not needed
     if 'Unnamed: 0' in df_current.columns:
@@ -85,7 +87,7 @@ if __name__ == '__main__':
         df_current = df_current.drop(columns=['id_Location', 'id_Date'])
     
     # save all data to current data and uptodate data
-    df_current.reset_index().to_csv(current_data_path, index=False)
+    df_current.reset_index().to_csv(params_data["current_data_path"], index=False)
     print("new data saved to current")
-    df_current.to_csv(uptodate_data_path, index=True)
+    df_current.to_csv(params_data["uptodate_data_path"], index=True)
     print("new data saved to uptodate")

@@ -8,7 +8,7 @@ import emoji
 # TODO régler les paths pour inclure les fonctions d'autres modules
 sys.path.append('./src/')
 from data_service.ingest_data.ingest_new_data import load_data
-from global_functions import create_folder_if_necessary
+from global_functions import create_folder_if_necessary, get_params_service
 
 def complete_na_median_location_month(df, columns, verbose=False):
     """
@@ -96,13 +96,15 @@ def create_pipeline_nas(verbose=False):
 if __name__ == '__main__':
 
     # paths and parameters
-    index_load =["id_Location","id_Date"]
-    uptodate_data_path = 'data/current_data/uptodate_data.csv'
-    processed_data_folder = "data/processed_data/"
-    processed_data_path = 'data/processed_data/nas_completed_data.csv'
-
+    params_data = get_params_service(service="data_service")
+    index_load = params_data["index_load"]
+    uptodate_data_path = params_data["uptodate_data_path"]
+    processed_data_folder = params_data["processed_data_folder"]
+    processed_data_path = params_data["processed_data_path"]
+    
     # load current data
-    df_uptodate = load_data(uptodate_data_path, index=index_load)
+    df_uptodate = load_data(uptodate_data_path, 
+                            index=index_load)
     
     # add year and month (TODO add this in load data or before)
     df_uptodate["Year"] = pd.to_datetime(df_uptodate["Date"]).dt.year

@@ -18,3 +18,5 @@ services:
           target: /app/models
       image: inference:latest
       container_name: inference
+      env_file:
+        - path: ../docker.env
