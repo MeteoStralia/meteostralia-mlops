@@ -1,0 +1,29 @@
+networks:
+  api/streamlit:
+    driver: bridge
+services:
+  mflow:
+      build:
+        context: /mlfow
+        dockerfile: ./tracking_dockerfile
+      volumes:
+        - ../../src:/src
+        - type: bind
+          source: ../../src
+          target: /app/src
+        - ../../data:/data
+        - type: bind
+          source: ../../data
+          target: /app/data
+        - ../../models:/models
+        - type: bind
+          source: ../../models
+          target: /app/models
+      image: tracking:latest
+      container_name: tracking
+      env_file:
+        - ../mlflow.env
+      networks:
+      - api/streamlit
+      ports:
+      - "3333:3333"

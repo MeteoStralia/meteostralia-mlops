@@ -1,13 +1,27 @@
-# train.py
-from sklearn.linear_model import LogisticRegression
-from sklearn.ensemble import RandomForestClassifier
+import os
+# A SUPPRIMER
+# experiment_name = "default"
+# os.environ["EXPERIMENT_NAME"] = experiment_name
+# params_folder = "data/parameters/"
+# os.environ["PARAMS_FOLDER"] = params_folder
+# run_name = "Logistic_Regression_run"
+# os.environ["RUN_NAME"] = run_name
+# artifact_path = "lr_raintomorrow"
+# os.environ["ARTIFACT_PATH"] = artifact_path
+# os.environ['MLFLOW_TRACKING_USERNAME'] = "fde7dcd7368ad7d679356e489a202cb0dbbd4464"
+# DAGSHUB_USER_TOKEN = "fde7dcd7368ad7d679356e489a202cb0dbbd4464"
+# os.environ['MLFLOW_TRACKING_URI'] = "https://dagshub.com/bruno.vermont/meteostralia-mlops.mlflow"
+
 from sklearn.metrics import accuracy_score, f1_score, precision_score, recall_score, roc_auc_score
+import mlflow
+import dagshub
 import joblib
-import sys
-sys.path.append('./src/')
-from data_service.ingest_data.ingest_new_data import load_data
 import json
-from global_functions import create_folder_if_necessary, get_params_service
+import sys
+
+sys.path.append('./')
+from src.data_service.ingest_data.ingest_new_data import load_data
+from src.global_functions import create_folder_if_necessary, get_params_service
 
 def evaluate_model(
         model,
@@ -25,7 +39,7 @@ def evaluate_model(
     # loading test data
     X_test = load_data(processed_data_folder + "X_test_scaled.csv")
     y_test = load_data(processed_data_folder + "y_test.csv")
-
+    
     # Evaluer le modèle
     y_pred = model.predict(X_test)
 
@@ -35,13 +49,26 @@ def evaluate_model(
        "class 1 precision": precision_score(y_test, y_pred, pos_label=1),
        "class 1 recall":recall_score(y_test, y_pred, pos_label=1),
        "class 0 precision": precision_score(y_test, y_pred, pos_label=0),
-       "class 0 recall":recall_score(y_test, y_pred, pos_label=0)
+       "class 0 recall":recall_score(y_test, y_pred, pos_label=0),
+       "roc_auc_score":roc_auc_score(y_test, y_pred)
     }
 
     # Saving metrics to json file
     save_metrics(metrics_path, metrics)
     print(f"metrics saved to {metrics_path}")
 
+    #mflow tracking
+    dagshub.auth.add_app_token(os.environ['MLFLOW_TRACKING_USERNAME'], host=None)
+    mlflow.set_tracking_uri(os.environ['MLFLOW_TRACKING_URI'])
+    dagshub.init(url=os.environ['MLFLOW_TRACKING_URI'], mlflow=True)
+    mlflow.set_experiment(os.environ["EXPERIMENT_NAME"])
+    with mlflow.start_run(run_name=os.environ["RUN_NAME"]) as run:
+        mlflow.log_metrics(metrics)
+        mlflow.log_params(model.get_params())
+        mlflow.sklearn.log_model(
+            sk_model=model, input_example=X_test,
+              artifact_path=os.environ["ARTIFACT_PATH"])
+        
     return metrics
 
 

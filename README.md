@@ -8,7 +8,18 @@ python3 -m venv env
 .\env\Scripts\activate
 pip install -r requirements.txt
 ```
+## Connexion to Dagshub
 
+First connect Meteostralia github repo to dagshub (My repositories +New -> connect a repository -> Other -> set the adress to https://github.com/MeteoStralia/meteostralia-mlops -> identification needed with account name and password or token)
+
+## Setup MLFLOW
+run at root
+```
+docker compose -f .\src\tracking_service\docker-compose.yml build
+```
+```
+docker compose -f .\src\tracking_service\docker-compose.yml up
+```
 ## Data service (src/data_service)
 
 TODO
@@ -48,10 +59,6 @@ Create local remote storage folder (not needed if you use dagshub remote storage
 ```
 dvc remote add -d remote_storage ../remote_storage
 ```
-
-### Connexion to Dagshub
-
-First connect Meteostralia github repo to dagshub (My repositories +New -> connect a repository -> Other -> set the adress to https://github.com/MeteoStralia/meteostralia-mlops -> identification needed with account name and password or token)
 
 ### Configurer le stockage distant sur Dagshub
 installing S3 bucket

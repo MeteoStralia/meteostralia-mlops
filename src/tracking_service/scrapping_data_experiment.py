@@ -53,33 +53,3 @@ save_data = scrapped_data_c
 
 save_new_data(save_data, new_data_folder)
 
-
-
-# # testing 
-# # reading station IDS
-# station_ID = pd.read_csv("../../../data/add_data/station_ID.csv", sep=";")
-# # drop les stations sans ID
-# station_ID = station_ID.dropna(subset = ["IDCJDW"])
-# # drop les nouvelles stations pour le moment
-# station_ID = station_ID.dropna(subset = ["Location"])
-# station_ID["IDCJDW"] = station_ID["IDCJDW"].astype(int).astype(str)
-
-# # Choix de la location puis du mois et de l'année
-# location_name = "Perth"
-# year = "2025"
-# month = "01"
-# id_location_test = station_ID.loc[station_ID.Location == location_name,"IDCJDW"]
-# id_location_test = str(id_location_test.iloc[0])
-
-# # data save folder
-# new_data_folder = "../../../data/new_data/"
-
-# # scrapping
-# data_location = scrap_data(location_name, id_location_test, year, month)
-# print(data_location)
-# # formatting
-# data_location = format_scrapped_data(data_location)
-# print(data_location)
-# # saving
-# save_new_data(data_location, new_data_folder)
-

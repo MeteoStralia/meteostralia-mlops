@@ -1,10 +1,3 @@
-# train.py
-import os
-experiment_name = "default"
-os.environ["EXPERIMENT_NAME"] = experiment_name
-params_folder = "data/parameters/"
-os.environ["PARAMS_FOLDER"] = params_folder
-
 import pandas as pd
 from sklearn.linear_model import LogisticRegression
 from sklearn.base import ClassifierMixin 
@@ -43,8 +36,7 @@ def train_model(processed_data_folder="data/processed_data/",
     model_path = model_folder+target_column+"/"+type(model).__name__+".pkl"    # Sauvegarder le modèle
     joblib.dump(model, model_path)
     print(f"Model saved to {model_path}")
-
-
+    
 if __name__ == "__main__":
     # paths and parameters
     params_model = get_params_service(service="modeling_service")
@@ -54,6 +46,8 @@ if __name__ == "__main__":
     model_folder = params_model["model_folder"]
     target_column = params_model["target_column"]
     
+
+
     # correction for class_weight
     if "class_weight" in model_params.keys():
         copy = model_params["class_weight"].copy()
@@ -62,10 +56,12 @@ if __name__ == "__main__":
             del copy[key]
     
     model_params["class_weight"] = copy
-    
+
     print(model_params)
     # create models folder
     create_folder_if_necessary(model_folder + target_column +"/")
     # training
     train_model(processed_data_folder, target_column, classifier=classifier, 
                 model_params=model_params, model_folder=model_folder)
+    
+    
