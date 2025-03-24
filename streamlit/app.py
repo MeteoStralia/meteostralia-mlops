@@ -2,25 +2,21 @@ import streamlit as st
 import requests
 import os
 from dotenv import load_dotenv
+import json
+import time
 
 load_dotenv()
 api_url = os.getenv('API_URL')
 
 
-
 token = st.session_state.get("token", None)
 
 
+if not token:
+    col1, col2 = st.columns(2, vertical_alignment = 'center')
 
-# header de la page d'accueil
-col1, col2 = st.columns([5, 2], vertical_alignment = 'center')
+    with col1:
 
-with col1:
-    st.title('Welcome MeteoStralia MLops (from streamlit)')
-
-with col2:
-
-    if not token:
         with st.expander(label = 'login', expanded = False):
             with st.form(key="login_form"):
                 username = st.text_input("Nom d'utilisateur")
@@ -44,31 +40,71 @@ with col2:
                     else:
                         st.write('acces pas accordé')
 
-    if token:
-        logout_button = st.button('logout')
+    with col2 :
 
-        if logout_button:
-            del st.session_state["token"]
-            st.session_state["authenticated"] = False
-            st.switch_page('app.py')
+        with st.expander(label = 'sign up', expanded = False):
+            with st.form(key = "sign_up_form"):
+                email = st.text_input('courriel')
+                username = st.text_input("Nom d'utilisateur")
+                password = st.text_input("Mot de passe", type = "password")
 
+                sign_up_button = st.form_submit_button(label = "sign up")
+
+                if sign_up_button:
+                    data = {
+                            'username' : username,
+                            'email' : email,
+                            'hashed_password' : password}
+
+                    response = requests.post(f'http://{api_url}:2222/sign_up',
+                                             headers={'Content-Type': 'application/json'},
+                                             data=json.dumps(data)
+                                             )
+
+                    if response.status_code == 400:
+                        st.write(response.json()['detail'])
+
+                    if response.status_code == 422:
+                        st.write(response.json()['detail'][0]['msg'])
+
+                    if response.status_code == 200:
+                        data.pop('email')
+                        data['password'] = data.pop('hashed_password')
+                        st.write(response.json()['message'])
+                        time.sleep(2)
+
+                        response = requests.post(f'http://{api_url}:2222/login', data = data)
+                        st.session_state["token"] = response.json()["access_token"]
+                        st.session_state["authenticated"] = True
+                        st.session_state["expander_state"] = False
+                        st.switch_page('app.py')
+
+
+if token:
+    logout_button = st.button('logout')
+
+    if logout_button:
+        del st.session_state["token"]
+        st.session_state["authenticated"] = False
+        st.switch_page('app.py')
+
+st.title('Welcome MeteoStralia MLops (from streamlit)')
 
 
 st.write('########################')
 
 response = requests.get(
         f'http://{api_url}:2222/',
-        headers={"Authorization": f"Bearer {token}"}  # Ajout du token dans l'en-tête Authorization
+        headers={"Authorization": f"Bearer {token}"}
     )
 st.write('Welcome to Meteostralia mlops')
-# st.write(response.json())
 
 st.write('#######################')
 
-
-#accessibilité des boutons en fonction de la connection
 if token:
-    if response.json()['scope'] =='admin':
+    st.write(response.json()['message'])
+
+    if response.json()['current_user']['scope'] =='admin':
             col1, col2, col3, col4 = st.columns(4)
     else:
         col1, col2, col3 = st.columns(3)
@@ -82,7 +118,7 @@ if token:
     with col3:
         st.page_link(page = 'pages/me.py', label = 'profil_page', icon = '1️⃣')
 
-    if response.json()['scope'] == 'admin':
+    if response.json()['current_user']['scope'] == 'admin':
         with col4:
             st.page_link(page = 'pages/dashboard.py', label = 'dashboard', icon = '1️⃣')
 
