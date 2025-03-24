@@ -29,13 +29,13 @@ if not token:
                             'password' : password}
 
                     response = requests.post(f'http://{api_url}:2222/login', data = data)
-                    st.write(response.status_code)
 
                     if response.status_code == 200:
                         st.session_state["token"] = response.json()["access_token"]
                         st.session_state["authenticated"] = True
                         st.session_state["expander_state"] = False
                         st.switch_page('app.py')
+                        st.write(response.json())
 
                     else:
                         st.write('acces pas accordé')
@@ -54,7 +54,8 @@ if not token:
                     data = {
                             'username' : username,
                             'email' : email,
-                            'hashed_password' : password}
+                            'hashed_password' : password,
+                            'disabled' : False}
 
                     response = requests.post(f'http://{api_url}:2222/sign_up',
                                              headers={'Content-Type': 'application/json'},
