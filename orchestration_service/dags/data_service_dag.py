@@ -143,9 +143,9 @@ with DAG(
 
         scale_data = DockerOperator(
             task_id='scale_data_data',
-            image='scale_data_data:latest',
+            image='scale_data:latest',
             auto_remove=True,
-            command='python3 src/data_service/scale_data_data/scale_data_data.py',
+            command='python3 src/data_service/scale_data/scale_data.py',
             docker_url=f"tcp://host.docker.internal:2375",
             network_mode="bridge",
             mounts=[
