@@ -12,7 +12,7 @@ pip install -r requirements.txt
 
 First connect Meteostralia github repo to dagshub (My repositories +New -> connect a repository -> Other -> set the adress to https://github.com/MeteoStralia/meteostralia-mlops -> identification needed with account name and password or token)
 
-## Setup MLFLOW
+## Setup MLFLOW and run parameters
 run at root
 ```
 docker compose -f .\src\tracking_service\docker-compose.yml build
@@ -139,7 +139,7 @@ Commit changes in metadata to git
 ```
 git add dvc.lock metrics/
 git commit -m "testing a dvc versioning"
-git tag -a versioning_test -m "testing a dvc versioning"
+git tag -a new_tag -m "testing a dvc versioning"
 git push origin --tags
 ```
 
