@@ -77,6 +77,8 @@ stages:
     -  ./data/processed_data/y_test.csv
     -  ./models/
     -  ./src/modeling_service/evaluate/evaluate.py
+    outs:
+    -  ./metrics/
     metrics:
     - metrics/RainTomorrow/LogisticRegression_metrics.json:
         cache: false
