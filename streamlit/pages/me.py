@@ -15,10 +15,8 @@ response = requests.get(f'http://{api_url}:2222/users/me', headers = headers )
 
 
 if token:
-    st.write(response.status_code)
-
     st.write('################### from api me.py')
-    st.write('name :', response.json()['name'])
-    st.write('scope :', response.json()['scope'])
+    st.write(response.status_code)
+    st.write(response.json())
 else:
     st.write(response.status_code)

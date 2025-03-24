@@ -1,27 +1,40 @@
-networks:
-  api/streamlit:
-    driver: bridge
+version: '3.8'
+
 services:
   api:
     build:
       context: ./api
       dockerfile: Dockerfile-api
     container_name: api
+    env_file:
+      - ./api/.env
+    environment:
+      - DB_PATH=/app/database.db
+    volumes:
+      - ./database.db:/app/database.db
     networks:
-      - api/streamlit
+      - api_streamlit
     ports:
       - "2222:2222"
+
   streamlit:
     build:
       context: ./streamlit
       dockerfile: Dockerfile-streamlit
     container_name: streamlit
+    env_file:
+      - ./streamlit/.env
     environment:
       - API_URL=api
     networks:
-      - api/streamlit
+      - api_streamlit
     ports:
       - "1111:1111"
+
+networks:
+  api_streamlit:
+    name: api_streamlit
+    driver: bridge
 
   # Not working yet
   # data_service:
@@ -30,7 +43,7 @@ services:
   #     dockerfile: data_service_dockerfile
   #   image: data_service:latest
   #   container_name: data_service
-  #   command: compose -f docker-compose.yml build 
+  #   command: compose -f docker-compose.yml build
   #   volumes:
   #       - ./src/:/src
   #       - type: bind
@@ -41,6 +54,3 @@ services:
   #         source: data/
   #         target: /app_data/data
   #       - /var/run/docker.sock:/var/run/docker.sock
-  
- 
-
