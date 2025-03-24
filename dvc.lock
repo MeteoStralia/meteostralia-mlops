@@ -179,6 +179,11 @@ stages:
       md5: e57d67bce9ac95cf05eb5bcf940efcda
       size: 4238
     outs:
+    - path: ./metrics/
+      hash: md5
+      md5: 5f6404946be618b4b2bf28334b147e42.dir
+      size: 517
+      nfiles: 2
     - path: metrics/RainTomorrow/LogisticRegression_metrics.json
       hash: md5
       md5: 964dd29af8e727cd725e8df0de443f20
