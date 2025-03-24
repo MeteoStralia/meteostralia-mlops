@@ -17,7 +17,7 @@ dagshub.init(url=os.environ['MLFLOW_TRACKING_URI'], mlflow=True)
 # Setting experiment parameters
 experiment_name = "default"
 params_folder = "data/parameters/"
-run_name = "Logistic_Regression_run"
+run_name = "Logistic_Regression_run2"
 artifact_path = "lr_raintomorrow"
 
 #mlflow.create_experiment(experiment_name)
@@ -82,6 +82,11 @@ model_params = {
     "class_weight": {0 : 0.3, 1 : 0.7},
     "C": 1, "max_iter": 500, "penalty": 'l1',
     "solver": 'liblinear', "n_jobs": -1}
+model_params = {
+    "class_weight": {0 : 1, 1 : 1},
+    "C": 1, "max_iter": 500, "penalty": 'l1',
+    "solver": 'liblinear', "n_jobs": -1}
+
 target_column = "RainTomorrow"
 
 # predict date

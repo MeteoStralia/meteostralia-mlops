@@ -1,33 +1,33 @@
 networks:
   api/streamlit:
     driver: bridge
-# services:
-#   training:
-#       build:
-#         context: /training
-#         dockerfile: ./training_dockerfile
-#       volumes:
-#         - ../../src:/src
-#         - type: bind
-#           source: ../../src
-#           target: /app/src
-#         - ../../data:/data
-#         - type: bind
-#           source: ../../data
-#           target: /app/data
-#         - ../../models:/models
-#         - type: bind
-#           source: ../../models
-#           target: /app/models
-#       image: training:latest
-#       container_name: training
-#       env_file:
-#         - ../docker.env
-#         - ../mlflow.env
-#       networks:
-#       - api/streamlit
-#       ports:
-#       - "4444:4444"
+services:
+  training:
+      build:
+        context: /training
+        dockerfile: ./training_dockerfile
+      volumes:
+        - ../../src:/src
+        - type: bind
+          source: ../../src
+          target: /app/src
+        - ../../data:/data
+        - type: bind
+          source: ../../data
+          target: /app/data
+        - ../../models:/models
+        - type: bind
+          source: ../../models
+          target: /app/models
+      image: training:latest
+      container_name: training
+      env_file:
+        - ../docker.env
+        - ../mlflow.env
+      networks:
+      - api/streamlit
+      ports:
+      - "4444:4444"
 
   evaluate:
     build:
