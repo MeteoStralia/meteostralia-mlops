@@ -1,34 +1,36 @@
 from datetime import datetime, timedelta, timezone
-# from .src import *
 
+import sqlite3
+import os
+from dotenv import load_dotenv
 
 from fastapi import FastAPI, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 
-from typing import Annotated, Union
-from pydantic import BaseModel
+from typing import Annotated, Union, Literal, Optional
+from pydantic import BaseModel, EmailStr
 import bcrypt
 import jwt
 from jwt.exceptions import InvalidTokenError
+
+import json
 
 SECRET_KEY = '94229c6c19e9ae7adebf61f8e7565d1990727ce8f13b8f11bf1aa3e481a94947'
 ALGORITHM = 'HS256'
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
-#hashed_password = secret
 
-USERS = {
-    'user1' : {'username' : 'user1', 'name' : 'name1', 'hashed_password' : bcrypt.hashpw('password1'.encode('utf-8'), bcrypt.gensalt()), 'scope' : 'user', 'disabled' : False},
-    'user2' : {'username' : 'user2', 'name' : 'name2', 'hashed_password' : bcrypt.hashpw('password2'.encode('utf-8'), bcrypt.gensalt()), 'scope' : 'admin', 'disabled' : False},
-    'user3' : {'username' : 'user3', 'name' : 'name3', 'hashed_password' : bcrypt.hashpw('password3'.encode('utf-8'), bcrypt.gensalt()), 'scope' : 'user', 'disabled' : True},
-    'user4' : {'username' : 'user4', 'name' : 'name4', 'hashed_password' : bcrypt.hashpw('password4'.encode('utf-8'), bcrypt.gensalt()), 'scope' : 'admin', 'disabled' : False}
-}
+load_dotenv()
+db_url = os.getenv('DB_PATH')
+
 
 class User(BaseModel):
     username : str
-    name : Union[str, None] = None
-    scope : Union[str, None] = None
+    email : EmailStr
+    scope : Literal['user', 'admin'] = 'user'
     disabled : Union[bool, None] = None
+
+
 
 class UserInDB(User):
     hashed_password : str
@@ -49,21 +51,33 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl='login',
 app = FastAPI()
 
 
-def get_password_hash(password):
-    return bcrypt.hashpw(password, bcrypt.gensalt())
+def get_hash(password):
+    return bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
 
 def verify_password(plain_password, hashed_password):
     if isinstance(hashed_password, str):
         hashed_password = hashed_password.encode('utf-8')
     return bcrypt.checkpw(plain_password.encode('utf-8'), hashed_password)
 
-def get_user(db, username: str):
-    if username in db:
-        user_dict = db[username]
-        return UserInDB(**user_dict)
+def get_user(username: str):
+    con = sqlite3.connect(f'{db_url}')
+    con.row_factory = sqlite3.Row
+    cur = con.cursor()
+    try:
+        res = cur.execute("""SELECT username, email, scope, password as hashed_password
+                          FROM users
+                          WHERE username = ?""",
+                          (username,))
+        user = res.fetchone()
+    except sqlite3.IntegrityError:
+        return 'pas trouvé'
+    con.close()
+    if user:
+        return UserInDB(**dict(user))
+    return None
 
-def authenticate_user(db, username : str, password : str):
-    user = get_user(db, username)
+def authenticate_user(username : str, password : str):
+    user = get_user(username)
     if not user:
         return False
     if not verify_password(password, user.hashed_password):
@@ -81,9 +95,11 @@ def create_access_token(data : dict, expires_delta : Union[timedelta , None] = N
     return encoded_jwt
 
 async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
-    credentials_exception = HTTPException(status_code = status.HTTP_401_UNAUTHORIZED,
-                                          detail = 'Could not validate credentials',
-                                          headers = {'WWW-authenticate': "Bearer"})
+    credentials_exception = HTTPException(
+        status_code = status.HTTP_401_UNAUTHORIZED,
+        detail = 'Could not validate credentials',
+        headers = {'WWW-authenticate': "Bearer"}
+    )
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms = [ALGORITHM])
         username = payload.get('sub')
@@ -92,7 +108,7 @@ async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
         token_data = TokenData(username=username)
     except InvalidTokenError:
         raise credentials_exception
-    user = get_user(USERS, username = token_data.username)
+    user = get_user(token_data.username)
     if user is None:
         raise credentials_exception
     return user
@@ -104,15 +120,21 @@ async def get_current_active_user(current_user : Annotated[User, Depends(get_cur
 
 
 @app.get('/')
-async def welcome_page(current_user: Annotated[User, Depends(get_current_user)]):
-    return current_user
+async def welcome_page(current_user: Annotated[Optional[User], Depends(get_current_user)]):
+    if current_user:
+        return {'message' : f'Welcome to Meteostralia from API {current_user.username}',
+                'current_user' : current_user}
+    # else:
+    #     return{'message' : 'Welcome to Meteostralia from API disconnected'}
+
 
 @app.post('/login')
-async def login_for_access_token(form_data: Annotated[OAuth2PasswordRequestForm, Depends()],) -> Token:
-    user = authenticate_user(USERS, form_data.username, form_data.password)
+async def login_for_access_token(data: Annotated[OAuth2PasswordRequestForm,
+                                                 Depends()],) -> Token:
+    user = authenticate_user(data.username, data.password)
     if not user or user.disabled:
         raise HTTPException(status_code = status.HTTP_401_UNAUTHORIZED,
-                            detail = 'Incorrect username or password',
+                            detail = 'Incorrect username or password or email',
                             headers={'WWW-Authenticate': 'Bearer'})
 
     access_token_expires = timedelta(minutes = ACCESS_TOKEN_EXPIRE_MINUTES)
@@ -120,6 +142,36 @@ async def login_for_access_token(form_data: Annotated[OAuth2PasswordRequestForm,
                                        expires_delta = access_token_expires)
 
     return Token(access_token = access_token, token_type = 'bearer')
+
+@app.post('/sign_up')
+async def register_user(data : UserInDB):
+    username = data.username
+    hashed_password = get_hash(data.hashed_password)
+    email = data.email
+    scope = 'user'
+
+    con = sqlite3.connect(f'{db_url}')
+    cur = con.cursor()
+
+    try:
+        cur.execute("SELECT 1 FROM users WHERE email = ?", (email,))
+        existing_user = cur.fetchone()
+        if existing_user:
+            raise HTTPException(status_code=400, detail="Email already in use")
+
+        cur.execute("SELECT 1 FROM users WHERE username = ?", (username,))
+        existing_username = cur.fetchone()
+        if existing_username:
+            raise HTTPException(status_code=400, detail="Username already in use")
+
+        cur.execute("""INSERT INTO users(username, email, password, scope)
+                        VALUES(?, ?, ?, ?)""",
+                        (username, email, hashed_password, scope))
+        con.commit()
+    finally:
+        con.close()
+
+    return {'message': 'User created successfully'}
 
 @app.get('/users/me')
 async def read_users_me(current_user: Annotated[User, Depends(get_current_active_user)]):
