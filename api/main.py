@@ -28,7 +28,7 @@ class User(BaseModel):
     username : str
     email : EmailStr
     scope : Literal['user', 'admin'] = 'user'
-    disabled :Literal['0', '1'] = '0'
+    disabled : bool = False
 
 
 
@@ -132,8 +132,8 @@ async def welcome_page(current_user: Annotated[Optional[User], Depends(get_curre
 async def login_for_access_token(data: Annotated[OAuth2PasswordRequestForm,
                                                  Depends()],) -> Token:
     user = authenticate_user(data.username, data.password)
-
-    if not user or user.disabled == 1:
+    print(user)
+    if not user or user.disabled:
         raise HTTPException(status_code = status.HTTP_401_UNAUTHORIZED,
                             detail = 'Incorrect username or password or email',
                             headers={'WWW-Authenticate': 'Bearer'})
@@ -146,7 +146,7 @@ async def login_for_access_token(data: Annotated[OAuth2PasswordRequestForm,
     access_token_expires = timedelta(minutes = ACCESS_TOKEN_EXPIRE_MINUTES)
     access_token = create_access_token(data = {'sub' : user.username},
                                        expires_delta = access_token_expires)
-    print('user ici', user)
+
     return Token(access_token = access_token, token_type = 'bearer')
 
 @app.post('/sign_up')
@@ -193,7 +193,7 @@ async def disable_user(current_user: Annotated[User, Depends(get_current_active_
 
 
 
-    return {'ancien': current_user,
+    return {'ancien': current_user.dict(),
             'nouveau' : new_current_user}
 
 
