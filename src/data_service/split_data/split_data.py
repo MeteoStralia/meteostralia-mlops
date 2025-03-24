@@ -2,9 +2,11 @@ import pandas as pd
 from sklearn.model_selection import train_test_split
 import sys
 sys.path.append('./src/')
-from data_service.ingest_data.ingest_new_data import load_data, reindex_data
+from data_service.ingest_data.ingest_new_data import load_data
+from src.global_functions import get_params_service
 
-def split_data(df, target_column, test_size=0.2, random_state=42, sep_method = "classique"):
+def split_data(df, target_column=str, test_size=float, 
+               random_state=int, sep_method="classic", **kwargs):
     """
     Diviser les données en training et testing sets.
 
@@ -41,30 +43,41 @@ def split_data(df, target_column, test_size=0.2, random_state=42, sep_method = "
     return X_train, X_test, y_train, y_test
 
 if __name__ == '__main__':
-    # load data 
-    process_data_path = 'data/processed_data/encoded_data.csv'
-    df = load_data(process_data_path, index =["id_Location","id_Date"])
+
+    # Paths and parameters
+    params_data = get_params_service(service="data_service")
+    encoded_data_path = params_data['encoded_data_path']
+    processed_data_folder = params_data['processed_data_folder']
+    index_load = params_data["index_load"]
+    threshold = params_data["threshold"]
+    # target_column = "RainTomorrow"
+    # test_size = 0.2
+    # random_state = 1234
+    # sep_method = "classic"
    
-    # drop na (TODO : add a dropna function)
+
+    # load data 
+    df = load_data(encoded_data_path, index=index_load)
+
+    # drop columns with a lot a na (TODO : add a dropna function)
     missing_percentages = df.isna().mean()
     # Colonnes à conserver
-    threshold = 0.25
     columns_to_keep = missing_percentages[missing_percentages <= threshold].index
     columns_dropped = missing_percentages[missing_percentages > threshold].index
     df = df[columns_to_keep]
+
+    # drop remaining na
     df = df.dropna()
-    df = df.drop(columns = "Date")
+
+    if "Date" in df.columns:
+        df = df.drop(columns="Date")
 
     X_train, X_test, y_train, y_test = \
-        split_data(df, target_column = "RainTomorrow", 
-                   test_size=0.2, random_state=1234,
-                   sep_method="classic")
+        split_data(df, **params_data)
                                                   
     # save all data to process data
-    process_data_folder = 'data/processed_data/'
-
-    X_train.to_csv(process_data_folder + "X_train.csv", index=False)
-    X_test.to_csv(process_data_folder + "X_test.csv", index=False)
-    y_train.to_csv(process_data_folder + "y_train.csv", index=False)
-    y_test.to_csv(process_data_folder + "y_test.csv", index=False)
-    print("Training and test data saved to ", process_data_folder)
+    X_train.to_csv(processed_data_folder + "X_train.csv", index=False)
+    X_test.to_csv(processed_data_folder + "X_test.csv", index=False)
+    y_train.to_csv(processed_data_folder + "y_train.csv", index=False)
+    y_test.to_csv(processed_data_folder + "y_test.csv", index=False)
+    print("Training and test data saved to ", processed_data_folder)

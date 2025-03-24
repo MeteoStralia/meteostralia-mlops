@@ -7,8 +7,8 @@ import emoji
 
 # TODO régler les paths pour inclure les fonctions d'autres modules
 sys.path.append('./src/')
-from data_service.ingest_data.ingest_new_data import load_data, reindex_data
-from global_functions import create_folder_if_necessary
+from data_service.ingest_data.ingest_new_data import load_data
+from global_functions import create_folder_if_necessary, get_params_service
 
 def complete_na_median_location_month(df, columns, verbose=False):
     """
@@ -94,16 +94,22 @@ def create_pipeline_nas(verbose=False):
 
 
 if __name__ == '__main__':
+
+    # paths and parameters
+    params_data = get_params_service(service="data_service")
+    index_load = params_data["index_load"]
+    uptodate_data_path = params_data["uptodate_data_path"]
+    processed_data_folder = params_data["processed_data_folder"]
+    processed_data_path = params_data["processed_data_path"]
+    
     # load current data
-    current_data_path = 'data/current_data/uptodate_data.csv'
-    df_uptodate = load_data(current_data_path, 
-                            index =["id_Location","id_Date"])
-    #df_uptodate = reindex_data(df_uptodate)
+    df_uptodate = load_data(uptodate_data_path, 
+                            index=index_load)
     
     # add year and month (TODO add this in load data or before)
     df_uptodate["Year"] = pd.to_datetime(df_uptodate["Date"]).dt.year
     df_uptodate["Month"] = pd.to_datetime(df_uptodate["Date"]).dt.month
-    
+
     # changing cloud to string (this variable is an index) (TODO add this in load data or before)
     df_uptodate["Cloud3pm"] = df_uptodate["Cloud3pm"].astype(str).replace('nan',np.nan)
     df_uptodate["Cloud9am"] = df_uptodate["Cloud9am"].astype(str).replace('nan',np.nan)
@@ -113,7 +119,7 @@ if __name__ == '__main__':
    
     # check Nas before 
     nas_before = pd.DataFrame(df_uptodate.isna().sum())
-    
+
     # apply pipeline
     df_uptodate = complete_nas_pipeline.fit_transform(df_uptodate)
     
@@ -124,9 +130,8 @@ if __name__ == '__main__':
     print(nas_after)
     
     # save all data to process data
-    process_data_path = 'data/processed_data/nas_completed_data.csv'
-    create_folder_if_necessary("data/processed_data/")
-    df_uptodate.to_csv(process_data_path, index=True)
-    print("Completed data saved to ", process_data_path)
+    create_folder_if_necessary(processed_data_folder)
+    df_uptodate.to_csv(processed_data_path, index=True)
+    print("Completed data saved to ", processed_data_path)
 
 

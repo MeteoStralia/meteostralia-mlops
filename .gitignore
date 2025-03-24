@@ -13,6 +13,7 @@ __pycache__/
 data/current_data
 #data/new_data
 data/processed_data
+#data/raw_data
 
 # saved models (big files)
 models/
@@ -25,3 +26,4 @@ old_BV
 # local dvc config
 .dvc/config
 /models
+/metrics

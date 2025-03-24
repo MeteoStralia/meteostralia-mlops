@@ -8,7 +8,18 @@ python3 -m venv env
 .\env\Scripts\activate
 pip install -r requirements.txt
 ```
+## Connexion to Dagshub
 
+First connect Meteostralia github repo to dagshub (My repositories +New -> connect a repository -> Other -> set the adress to https://github.com/MeteoStralia/meteostralia-mlops -> identification needed with account name and password or token)
+
+## Setup MLFLOW and run parameters
+run at root
+```
+docker compose -f .\src\tracking_service\docker-compose.yml build
+```
+```
+docker compose -f .\src\tracking_service\docker-compose.yml up
+```
 ## Data service (src/data_service)
 
 TODO
@@ -17,15 +28,23 @@ TODO
 
 TODO
 
+## Inference service (src/inference_service)
+
+TODO
+
 ## Configuration data_service et modeling_service
 Run at root (if first time)
 ```
-docker compose build 
+docker compose -f .\src\data_service\docker-compose.yml build 
+docker compose -f .\src\modeling_service\docker-compose.yml build 
+docker compose -f .\src\inference_service\docker-compose.yml build 
 ```
 Then run (or directly run if build is already done)
 
 ```
-docker compose up
+docker compose -f .\src\data_service\docker-compose.yml up 
+docker compose -f .\src\modeling_service\docker-compose.yml up
+docker compose -f .\src\inference_service\docker-compose.yml up
 ```
 
 ## Configuration suivi DVC
@@ -40,10 +59,6 @@ Create local remote storage folder (not needed if you use dagshub remote storage
 ```
 dvc remote add -d remote_storage ../remote_storage
 ```
-
-### Connexion to Dagshub
-
-First connect Meteostralia github repo to dagshub (My repositories +New -> connect a repository -> Other -> set the adress to https://github.com/MeteoStralia/meteostralia-mlops -> identification needed with account name and password or token)
 
 ### Configurer le stockage distant sur Dagshub
 installing S3 bucket
@@ -105,10 +120,10 @@ dvc checkout
 data, models and metrics should appear on your local drive
 
 ### pushing a new run on DVC
-First run a data and model pipeline
+First run a data or model pipeline
 For example
 ```
-docker compose up
+docker compose -f .\src\modeling_service\docker-compose.yml build 
 ```
 OR
 ```
@@ -122,9 +137,9 @@ dvc commit
 
 Commit changes in metadata to git
 ```
-git add  data/current_data.dvc data/processed_data.dvc models.dvc metrics.dvc
+git add dvc.lock
 git commit -m "testing a dvc versioning"
-git tag -a versioning_test -m "testing a dvc versioning"
+git tag -a new_tag -m "testing a dvc versioning"
 git push origin --tags
 ```
 

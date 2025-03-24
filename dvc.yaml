@@ -1,7 +1,17 @@
 stages:
+  mlflow_setup:
+    cmd: python .\src\tracking_service\mlflow\mlflow_setup.py
+    deps:
+    #- .\src\mlflow.env
+    - .\src\tracking_service\mlfow\mlflow_setup.py
+    outs:
+    - .\data\parameters
+    #- .\src\docker.env
   reset_data:
     cmd: python .\src\data_service\ingest_data\reset_data.py
     deps:
+    - .\data\raw_data\weatherAUS.csv
+    - .\data\new_data\
     - .\src\data_service\ingest_data\reset_data.py
     outs:
     - .\data\current_data\current_data.csv
@@ -67,6 +77,8 @@ stages:
     -  ./data/processed_data/y_test.csv
     -  ./models/
     -  ./src/modeling_service/evaluate/evaluate.py
+    outs:
+    -  ./metrics/
     metrics:
     - metrics/RainTomorrow/LogisticRegression_metrics.json:
         cache: false
