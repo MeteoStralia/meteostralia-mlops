@@ -8,6 +8,24 @@ python3 -m venv env
 .\env\Scripts\activate
 pip install -r requirements.txt
 ```
+## Orchestration with Airflow
+
+On windows, you have to enable on docker desktop the following option "Expose Daemon in tcp://localhost:2375 without TLS" cf(https://nickjanetakis.com/blog/setting-up-docker-for-windows-and-wsl-to-work-flawlessly#configure-docker-for-windows)
+
+To launch the airflow services, run at root
+```
+docker compose -f docker-compose-airflow.yml up -d
+```
+
+Check if all containers are healthy
+```
+docker container ls
+```
+
+then go to http://localhost:8080/
+
+TODO -> Environment variable os.environ['PROJECTPATH'] = <project path>
+
 ## Connexion to Dagshub
 
 First connect Meteostralia github repo to dagshub (My repositories +New -> connect a repository -> Other -> set the adress to https://github.com/MeteoStralia/meteostralia-mlops -> identification needed with account name and password or token)
@@ -17,6 +35,7 @@ run at root
 ```
 docker compose -f .\src\tracking_service\docker-compose.yml build
 ```
+Then
 ```
 docker compose -f .\src\tracking_service\docker-compose.yml up
 ```

@@ -106,8 +106,8 @@ def create_other_params(index_load=list(),
     joblib.dump(scaler, params_folder + experiment_name + "_scaler.pkl")
     joblib.dump(classifier, params_folder + experiment_name + "_classifier.pkl")
 
-def get_params_service(params_folder=os.environ["PARAMS_FOLDER"], 
-                       experiment_name=os.environ["EXPERIMENT_NAME"],
+def get_params_service(params_folder="data/parameters/", 
+                       experiment_name="default",
                        service=str, **kwargs):
 
     with open(params_folder + experiment_name + "_paths.json", 'r') as f:

@@ -23,6 +23,9 @@ requirementstest.txt
 data_model_bash.sh
 old_BV
 
+# logs
+orchestration_service/logs
+
 # local dvc config
 .dvc/config
 /models
