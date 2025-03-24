@@ -2,6 +2,7 @@ from fastapi.testclient import TestClient
 
 from .main import app
 import bcrypt
+import sqlite3
 
 client = TestClient(app)
 
@@ -37,7 +38,7 @@ def test_login():
     response = client.post('/login', data = {'username' :'user1', 'password' : 'wrong_password'})
     assert response.status_code == 401
 
-    response = client.post('/login', data = {'username' :'user3', 'password' : 'password3'})
+    response = client.post('/login', data = {'username' :'user3', 'password' : 'password333'})
     assert response.status_code == 401
 
 
@@ -66,10 +67,21 @@ def test_dashboard():
     response = client.get('/dashboard', headers = {'Authorization' : f'Bearer {token}'})
     assert response.status_code == 401
 
-    response = client.post('/login', data = {'username' : 'user2', 'password' : 'password2'})
+    response = client.post('/login', data = {'username' : 'admin', 'password' : 'admin'})
     token = response.json()['access_token']
     response = client.get('/dashboard', headers = {'Authorization' : f'Bearer {token}'})
     assert response.status_code == 200
+
+def test_signup():
+    con = sqlite3.connect('../database.db')
+    cur = con.cursor()
+    res = cur.execute("SELECT name FROM sqlite_master WHERE name='spam'")
+    assert res.fetchone() is None
+
+    res = cur.execute("SELECT password FROM users WHERE username = 'admin'")
+    password =  res.fetchone()[0]
+    assert len(password) == 60
+    assert type(password) == bytes
 
 
 ### test fonction
