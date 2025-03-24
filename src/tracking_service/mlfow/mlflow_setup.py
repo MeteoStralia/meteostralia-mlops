@@ -7,6 +7,7 @@ import os
 
 from sklearn.preprocessing import MinMaxScaler, StandardScaler
 from sklearn.linear_model import LogisticRegression
+from sklearn.ensemble import RandomForestClassifier
 import datetime
 import sys
 sys.path.append('./')
@@ -17,9 +18,10 @@ dagshub.init(url=os.environ['MLFLOW_TRACKING_URI'], mlflow=True)
 # Setting experiment parameters
 experiment_name = "default"
 params_folder = "data/parameters/"
-run_name = "Logistic_Regression_run2"
-artifact_path = "lr_raintomorrow"
-
+#run_name = "Logistic_Regression_run2"
+run_name = "RandomForest_run1"
+#artifact_path = "lr_raintomorrow"
+artifact_path = "rf_raintomorrow"
 #mlflow.create_experiment(experiment_name)
 # artifact_location = f"s3://"+artifact_path
 # mlflow.create_experiment(experiment_name, artifact_location)
@@ -75,17 +77,27 @@ sep_method = "classic"
 scaler = MinMaxScaler
 
 # model parameters
-classifier_name = "LogisticRegression"
-classifier = LogisticRegression
+# classifier_name = "LogisticRegression"
+# classifier = LogisticRegression
 
+# model_params = {
+#     "class_weight": {0 : 0.3, 1 : 0.7},
+#     "C": 1, "max_iter": 500, "penalty": 'l1',
+#     "solver": 'liblinear', "n_jobs": -1}
+# model_params = {
+#     "class_weight": {0 : 1, 1 : 1},
+#     "C": 1, "max_iter": 100, "penalty": 'l1',
+#     "solver": 'liblinear', "n_jobs": -1}
+
+# testing another classifier       
+classifier_name = "RandomForestClassifier"
+classifier = RandomForestClassifier
 model_params = {
-    "class_weight": {0 : 0.3, 1 : 0.7},
-    "C": 1, "max_iter": 500, "penalty": 'l1',
-    "solver": 'liblinear', "n_jobs": -1}
-model_params = {
-    "class_weight": {0 : 1, 1 : 1},
-    "C": 1, "max_iter": 500, "penalty": 'l1',
-    "solver": 'liblinear', "n_jobs": -1}
+    "class_weight":{0: 0.3, 1: 0.7}, 
+    "criterion":"log_loss",
+    "max_depth":10,
+    "n_estimators":50,
+    "n_jobs":-1}
 
 target_column = "RainTomorrow"
 

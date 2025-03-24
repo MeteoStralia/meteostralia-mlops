@@ -1,4 +1,12 @@
 stages:
+  mlflow_setup:
+    cmd: python .\src\tracking_service\mlflow\mlflow_setup.py
+    deps:
+    #- .\src\mlflow.env
+    - .\src\tracking_service\mlfow\mlflow_setup.py
+    outs:
+    - .\data\parameters
+    #- .\src\docker.env
   reset_data:
     cmd: python .\src\data_service\ingest_data\reset_data.py
     deps:
