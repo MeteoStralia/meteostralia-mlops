@@ -8,7 +8,7 @@ x-airflow-common: &airflow-common
     AIRFLOW__CELERY__BROKER_URL: redis://:@redis:6379/0
     AIRFLOW__CORE__FERNET_KEY: ""
     AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: "true"
-    AIRFLOW__CORE__LOAD_EXAMPLES: "true"
+    AIRFLOW__CORE__LOAD_EXAMPLES: "false"
     AIRFLOW__API__AUTH_BACKEND: "airflow.api.auth.backend.basic_auth"
     AIRFLOW__SMTP__SMTP_HOST: "smtp.gmail.com" # A voir
     AIRFLOW__SMTP__SMTP_PORT: 587 # a voir
@@ -24,6 +24,8 @@ x-airflow-common: &airflow-common
     - /var/run/docker.sock:/var/run/docker.sock
     - ./data:/opt/airflow/data
     - ./src:/opt/airflow/src
+    - ./models:/opt/airflow/models
+    - ./metrics:/opt/airflow/models
     - type: bind
       source: ./data
       target: /app/data
@@ -120,6 +122,29 @@ services:
       timeout: 10s
       retries: 5
     restart: always
-
+  api:
+    build:
+      context: ./api
+      dockerfile: Dockerfile-api
+    container_name: api
+    networks:
+      - api/streamlit
+    ports:
+      - "2222:2222"
+  streamlit:
+    build:
+      context: ./streamlit
+      dockerfile: Dockerfile-streamlit
+    container_name: streamlit
+    environment:
+      - API_URL=api
+    networks:
+      - api/streamlit
+    ports:
+      - "1111:1111"
 volumes:
   postgres-db-volume:
+
+networks:
+  api/streamlit:
+    driver: bridge

@@ -6,19 +6,12 @@ import os
 from sklearn.base import TransformerMixin, ClassifierMixin
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.linear_model import LogisticRegression
+from sklearn.ensemble import RandomForestClassifier
 import datetime
 import json
 import joblib
 
-sys.path.append('./src/')
-sys.path.append('./')
-
-# Setting default parameters
-experiment_name = "default"
-os.environ["EXPERIMENT_NAME"] = experiment_name
-params_folder = "data/parameters/"
-os.environ["PARAMS_FOLDER"] = params_folder
-
+# creating parameters
 from src.global_functions import create_folder_if_necessary, create_paths_params, create_other_params, get_params_service
 
 # indexes
@@ -43,13 +36,28 @@ sep_method = "classic"
 scaler = MinMaxScaler
 
 # model parameters
-classifier_name = "LogisticRegression"
-classifier = LogisticRegression
+# classifier_name = "LogisticRegression"
+# classifier = LogisticRegression
 
+# model_params = {
+#     "class_weight": {0 : 0.3, 1 : 0.7},
+#     "C": 1, "max_iter": 500, "penalty": 'l1',
+#     "solver": 'liblinear', "n_jobs": -1}
+# model_params = {
+#     "class_weight": {0 : 1, 1 : 1},
+#     "C": 1, "max_iter": 100, "penalty": 'l1',
+#     "solver": 'liblinear', "n_jobs": -1}
+
+# testing another classifier       
+classifier_name = "RandomForestClassifier"
+classifier = RandomForestClassifier
 model_params = {
-    "class_weight": {0 : 0.3, 1 : 0.7},
-    "C": 1, "max_iter": 500, "penalty": 'l1',
-    "solver": 'liblinear', "n_jobs": -1}
+    "class_weight":{0: 0.3, 1: 0.7}, 
+    "criterion":"log_loss",
+    "max_depth":10,
+    "n_estimators":50,
+    "n_jobs":-1}
+
 target_column = "RainTomorrow"
 
 # predict date
@@ -71,10 +79,7 @@ station_ID_path = "data/add_data/station_ID.csv"
 model_folder = "models/"
 predictions_folder = "data/predictions/" 
 
-
-# creating parameters json files
-
-create_folder_if_necessary(params_folder)
+create_folder_if_necessary(os.environ["PARAMS_FOLDER"])
 
 create_paths_params(
     raw_data_path=raw_data_path,
@@ -91,8 +96,8 @@ create_paths_params(
     metrics_path=metrics_path,
     station_ID_path=station_ID_path,
     predictions_folder=predictions_folder,
-    params_folder=params_folder,
-    experiment_name=experiment_name)
+    params_folder=os.environ["PARAMS_FOLDER"],
+    experiment_name=os.environ["EXPERIMENT_NAME"])
 
 create_other_params(
     index_load=index_load,
@@ -110,21 +115,6 @@ create_other_params(
     classifier=classifier, 
     model_params=model_params,
     predict_date=predict_date,
-    params_folder=params_folder,
-    experiment_name=experiment_name)
+    params_folder=os.environ["PARAMS_FOLDER"],
+    experiment_name=os.environ["EXPERIMENT_NAME"])
 
-# # testing
-# params_data = get_params_service(
-#     params_folder=params_folder,
-#     experiment_name=experiment_name,
-#     service="data_service")
-# params_modeling = get_params_service(
-#     params_folder=params_folder,
-#     experiment_name=experiment_name,
-#     service="modeling_service")
-# params_inference = get_params_service(
-#     params_folder=params_folder,
-#     experiment_name=experiment_name,
-#     service="inference_service")
-
-# print(params_data)
