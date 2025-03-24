@@ -1,7 +1,7 @@
 import pandas as pd
 import os
 import sys
-sys.path.append('./src/')
+sys.path.append('./')
 from src.global_functions import get_params_service
 
 def load_data(file_path, index = None):

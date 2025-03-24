@@ -8,6 +8,12 @@ python3 -m venv env
 .\env\Scripts\activate
 pip install -r requirements.txt
 ```
+## Orchestration avec Airflow
+run at root
+```
+docker compose -f docker-compose-airflow.yml up -d
+```
+
 ## Connexion to Dagshub
 
 First connect Meteostralia github repo to dagshub (My repositories +New -> connect a repository -> Other -> set the adress to https://github.com/MeteoStralia/meteostralia-mlops -> identification needed with account name and password or token)
@@ -17,6 +23,7 @@ run at root
 ```
 docker compose -f .\src\tracking_service\docker-compose.yml build
 ```
+Then
 ```
 docker compose -f .\src\tracking_service\docker-compose.yml up
 ```
