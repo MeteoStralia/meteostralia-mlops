@@ -6,8 +6,10 @@ from airflow.operators.docker_operator import DockerOperator
 from docker.types import Mount
 import os
 #from airflow.operators.postgres_operator import PostgresOperator
-from datetime import date
 import datetime
+
+os.environ['PROJECTPATH'] = '/C:/Users/bruno/OneDrive/Documents/formation_data/projet_MLOPS/MeteoStralia/meteostralia-mlops'
+
 with DAG(
     dag_id='data_service',
     tags=['data', 'docker', 'meteostralia', 'datascientest'],
@@ -42,14 +44,13 @@ with DAG(
             image='reset_data:latest',
             auto_remove=True,
             command='python3 src/data_service/ingest_data/reset_data.py',
-            docker_url=f"tcp://host.docker.internal:2375", # a voir
+            docker_url=f"tcp://host.docker.internal:2375",
             network_mode="bridge",
-            #env_file = '../../docker.env',
             mounts=[
-                Mount(source='/C:/Users/bruno/OneDrive/Documents/formation_data/projet_MLOPS/MeteoStralia/meteostralia-mlops/data', 
+                Mount(source=os.environ['PROJECTPATH'] + '/data', 
                     target='/app/data', 
                     type='bind'),
-                Mount(source='/C:/Users/bruno/OneDrive/Documents/formation_data/projet_MLOPS/MeteoStralia/meteostralia-mlops/src', 
+                Mount(source=os.environ['PROJECTPATH'] + '/src', 
                     target='/app/src', 
                     type='bind')
             ]
@@ -60,18 +61,102 @@ with DAG(
             image='ingest_data:latest',
             auto_remove=True,
             command='python3 src/data_service/ingest_data/ingest_new_data.py',
-            docker_url=f"tcp://host.docker.internal:2375", # a voir
+            docker_url=f"tcp://host.docker.internal:2375",
             network_mode="bridge",
-            #env_file = '../../docker.env',
             mounts=[
-                Mount(source='/C:/Users/bruno/OneDrive/Documents/formation_data/projet_MLOPS/MeteoStralia/meteostralia-mlops/data', 
+                Mount(source=os.environ['PROJECTPATH'] + '/data', 
                     target='/app/data', 
                     type='bind'),
-                Mount(source='/C:/Users/bruno/OneDrive/Documents/formation_data/projet_MLOPS/MeteoStralia/meteostralia-mlops/src', 
+                Mount(source=os.environ['PROJECTPATH'] + '/src', 
                     target='/app/src', 
                     type='bind')
             ]
         )
-    
-hello >> reset_data >> ingest_new_data
+
+        complete_nas = DockerOperator(
+            task_id='complete_nas',
+            image='complete_nas:latest',
+            auto_remove=True,
+            command='python3 src/data_service/complete_nas/complete_nas.py',
+            docker_url=f"tcp://host.docker.internal:2375",
+            network_mode="bridge",
+            mounts=[
+                Mount(source=os.environ['PROJECTPATH'] + '/data', 
+                    target='/app/data', 
+                    type='bind'),
+                Mount(source=os.environ['PROJECTPATH'] + '/src', 
+                    target='/app/src', 
+                    type='bind')
+            ]
+        )
+
+        add_features = DockerOperator(
+            task_id='add_features',
+            image='features:latest',
+            auto_remove=True,
+            command='python3 src/data_service/features/add_features.py',
+            docker_url=f"tcp://host.docker.internal:2375",
+            network_mode="bridge",
+            mounts=[
+                Mount(source=os.environ['PROJECTPATH'] + '/data', 
+                    target='/app/data', 
+                    type='bind'),
+                Mount(source=os.environ['PROJECTPATH'] + '/src', 
+                    target='/app/src', 
+                    type='bind')
+            ]
+        )
+
+        encode_data = DockerOperator(
+            task_id='encode_data',
+            image='encode_data:latest',
+            auto_remove=True,
+            command='python3 src/data_service/encode_data/encode_data.py',
+            docker_url=f"tcp://host.docker.internal:2375",
+            network_mode="bridge",
+            mounts=[
+                Mount(source=os.environ['PROJECTPATH'] + '/data', 
+                    target='/app/data', 
+                    type='bind'),
+                Mount(source=os.environ['PROJECTPATH'] + '/src', 
+                    target='/app/src', 
+                    type='bind')
+            ]
+        )
+
+        split_data = DockerOperator(
+            task_id='split_data',
+            image='split_data:latest',
+            auto_remove=True,
+            command='python3 src/data_service/split_data/split_data.py',
+            docker_url=f"tcp://host.docker.internal:2375",
+            network_mode="bridge",
+            mounts=[
+                Mount(source=os.environ['PROJECTPATH'] + '/data', 
+                    target='/app/data', 
+                    type='bind'),
+                Mount(source=os.environ['PROJECTPATH'] + '/src', 
+                    target='/app/src', 
+                    type='bind')
+            ]
+        )
+
+        scale_data = DockerOperator(
+            task_id='scale_data_data',
+            image='scale_data_data:latest',
+            auto_remove=True,
+            command='python3 src/data_service/scale_data_data/scale_data_data.py',
+            docker_url=f"tcp://host.docker.internal:2375",
+            network_mode="bridge",
+            mounts=[
+                Mount(source=os.environ['PROJECTPATH'] + '/data', 
+                    target='/app/data', 
+                    type='bind'),
+                Mount(source=os.environ['PROJECTPATH'] + '/src', 
+                    target='/app/src', 
+                    type='bind')
+            ]
+        )
+
+hello >> reset_data >> ingest_new_data >> complete_nas >> add_features >> encode_data >> split_data >> scale_data
     
