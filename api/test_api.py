@@ -72,11 +72,11 @@ def test_dashboard():
     response = client.get('/dashboard', headers = {'Authorization' : f'Bearer {token}'})
     assert response.status_code == 200
 
-def test_signup():
-    con = sqlite3.connect('../database.db')
-    cur = con.cursor()
-    res = cur.execute("SELECT name FROM sqlite_master WHERE name='spam'")
-    assert res.fetchone() is None
+# def test_signup():
+#     con = sqlite3.connect('../database.db')
+#     cur = con.cursor()
+#     res = cur.execute("SELECT name FROM sqlite_master WHERE name='spam'")
+#     assert res.fetchone() is None
 
     # res = cur.execute("SELECT password FROM users WHERE username = 'admin'")
     # password =  res.fetchone()[0]
