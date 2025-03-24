@@ -28,7 +28,7 @@ class User(BaseModel):
     username : str
     email : EmailStr
     scope : Literal['user', 'admin'] = 'user'
-    disabled : Union[bool, None] = None
+    disabled :Literal['0', '1'] = '0'
 
 
 
@@ -132,7 +132,13 @@ async def welcome_page(current_user: Annotated[Optional[User], Depends(get_curre
 async def login_for_access_token(data: Annotated[OAuth2PasswordRequestForm,
                                                  Depends()],) -> Token:
     user = authenticate_user(data.username, data.password)
-    if not user or user.disabled:
+
+    if not user or user.disabled == 1:
+        raise HTTPException(status_code = status.HTTP_401_UNAUTHORIZED,
+                            detail = 'Incorrect username or password or email',
+                            headers={'WWW-Authenticate': 'Bearer'})
+
+    if user.disabled == True:
         raise HTTPException(status_code = status.HTTP_401_UNAUTHORIZED,
                             detail = 'Incorrect username or password or email',
                             headers={'WWW-Authenticate': 'Bearer'})
@@ -140,7 +146,7 @@ async def login_for_access_token(data: Annotated[OAuth2PasswordRequestForm,
     access_token_expires = timedelta(minutes = ACCESS_TOKEN_EXPIRE_MINUTES)
     access_token = create_access_token(data = {'sub' : user.username},
                                        expires_delta = access_token_expires)
-
+    print('user ici', user)
     return Token(access_token = access_token, token_type = 'bearer')
 
 @app.post('/sign_up')
@@ -172,6 +178,24 @@ async def register_user(data : UserInDB):
         con.close()
 
     return {'message': 'User created successfully'}
+
+@app.put('/disable_user')
+async def disable_user(current_user: Annotated[User, Depends(get_current_active_user)]):
+    conn = sqlite3.connect('../database.db')
+    cur = conn.cursor()
+    cur.execute("""UPDATE users SET disabled = ? WHERE username = ?""",
+                (True, current_user.username,))
+    conn.commit()
+
+    cur.execute("SELECT * FROM users WHERE username = ?", (current_user.username,))
+    new_current_user = cur.fetchone()
+    conn.close()
+
+
+
+    return {'ancien': current_user,
+            'nouveau' : new_current_user}
+
 
 @app.get('/users/me')
 async def read_users_me(current_user: Annotated[User, Depends(get_current_active_user)]):
