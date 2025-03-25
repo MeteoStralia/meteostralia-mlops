@@ -1,10 +1,12 @@
+from manage_db import *
+
 from datetime import datetime, timedelta, timezone
 
 import sqlite3
 import os
 from dotenv import load_dotenv
 
-from fastapi import FastAPI, Depends, HTTPException, status
+from fastapi import FastAPI, Depends, HTTPException, status, BackgroundTasks
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 
 from typing import Annotated, Union, Literal, Optional
@@ -18,6 +20,8 @@ import json
 SECRET_KEY = '94229c6c19e9ae7adebf61f8e7565d1990727ce8f13b8f11bf1aa3e481a94947'
 ALGORITHM = 'HS256'
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
+
+download_db_from_s3()
 
 
 load_dotenv()
@@ -174,27 +178,24 @@ async def register_user(data : UserInDB):
                         VALUES(?, ?, ?, ?)""",
                         (username, email, hashed_password, scope))
         con.commit()
+        BackgroundTasks(upload_db_to_s3())
     finally:
         con.close()
 
     return {'message': 'User created successfully'}
 
-@app.put('/disable_user')
+@app.delete('/disable_user')
 async def disable_user(current_user: Annotated[User, Depends(get_current_active_user)]):
-    conn = sqlite3.connect('../database.db')
+    conn = sqlite3.connect(f'{db_url}')
     cur = conn.cursor()
-    cur.execute("""UPDATE users SET disabled = ? WHERE username = ?""",
-                (True, current_user.username,))
+    cur.execute("""DELETE FROM users WHERE username = ?""",
+                (current_user.username,))
     conn.commit()
-
-    cur.execute("SELECT * FROM users WHERE username = ?", (current_user.username,))
-    new_current_user = cur.fetchone()
     conn.close()
+    BackgroundTasks(upload_db_to_s3())
 
 
-
-    return {'ancien': current_user.dict(),
-            'nouveau' : new_current_user}
+    return {'message' : 'user deleted'}
 
 
 @app.get('/users/me')

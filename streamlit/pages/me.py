@@ -2,6 +2,7 @@ import streamlit as st
 import requests
 import os
 from dotenv import load_dotenv
+import time
 
 load_dotenv()
 api_url = os.getenv('API_URL')
@@ -26,8 +27,11 @@ if token:
         if response.json()['username'] == 'admin':
             st.write('opération impossible')
         else:
-            response = requests.put(f'http://{api_url}:2222/disable_user', headers = headers )
+            response = requests.delete(f'http://{api_url}:2222/disable_user', headers = headers )
             if response.status_code == 200:
+                st.write(response.json())
+                time.sleep(2)
+
                 del st.session_state["token"]
                 st.session_state["authenticated"] = False
                 st.switch_page('app.py')
