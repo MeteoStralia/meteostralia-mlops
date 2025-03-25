@@ -9,7 +9,7 @@ __pycache__/
 ./api/__pycache__/
 ./api/src/__pycache__/
 ./api/.pytest_cache
-api/.env
+./api/.env
 
 # data temporaire à suivre dans DVC
 data/current_data
