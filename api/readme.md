@@ -1,5 +1,5 @@
 utiliisation en serveur seul ave uvicorn
----------> uvicorn main:app --host 0.0.0.0 --port 2222
+---------> uvicorn main:app --host 0.0.0.0 --port 2222 --reload
 
 
 pour le tester l'app voir la BDD dans main.py

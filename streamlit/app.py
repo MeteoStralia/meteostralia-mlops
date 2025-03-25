@@ -11,6 +11,7 @@ api_url = os.getenv('API_URL')
 
 token = st.session_state.get("token", None)
 
+# st.write(f'http://{api_url}:2222/login')
 
 if not token:
     col1, col2 = st.columns(2, vertical_alignment = 'center')
