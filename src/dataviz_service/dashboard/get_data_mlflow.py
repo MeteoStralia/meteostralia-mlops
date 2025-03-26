@@ -1,31 +1,30 @@
 import mlflow
 import dagshub
 import os
-os.environ['MLFLOW_TRACKING_USERNAME'] = "fde7dcd7368ad7d679356e489a202cb0dbbd4464"
-DAGSHUB_USER_TOKEN = "fde7dcd7368ad7d679356e489a202cb0dbbd4464"
-os.environ['MLFLOW_TRACKING_URI'] = "https://dagshub.com/bruno.vermont/meteostralia-mlops.mlflow"
 
-from sklearn.preprocessing import MinMaxScaler, StandardScaler
-from sklearn.linear_model import LogisticRegression
-from sklearn.ensemble import RandomForestClassifier
+from dotenv import load_dotenv
 import datetime
 from datetime import timedelta
 import matplotlib.pyplot as plt
 import seaborn as sns
-
 import sys
 #sys.path.append('./')
-sys.path.append('../../../src')
+sys.path.append('../../../')
+from src.global_functions import get_params_service
 
+load_dotenv(dotenv_path='../../mlflow.env')
 dagshub.auth.add_app_token(os.environ['MLFLOW_TRACKING_USERNAME'], host=None)
 mlflow.set_tracking_uri(os.environ['MLFLOW_TRACKING_URI'])
 dagshub.init(url=os.environ['MLFLOW_TRACKING_URI'], mlflow=True)
 
-# Setting experiment parameters
-experiment_name = "default"
-params_folder = "data/parameters/"
-run_name = "RandomForest_run1"
-artifact_path = "rf_raintomorrow"
+# getting current experiment parameters
+params_tracking = get_params_service(
+    params_folder='../../../data/parameters/',
+    service="tracking_service")
+
+experiment_name = params_tracking["experiment_name"]
+run_name = params_tracking["run_name"]
+artifact_path = params_tracking["artifact_path"]
 
 def get_experiment_id(name):
     exp = mlflow.get_experiment_by_name(name)
