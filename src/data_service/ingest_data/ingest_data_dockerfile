@@ -1,8 +1,8 @@
-FROM python:3.8-slim
+FROM python:3.10-slim
 WORKDIR /app/
-RUN pip install --upgrade pip && \
-pip install --no-cache-dir numpy pandas scikit-learn
-ADD reset_data.py .
+COPY requirements_ingest.txt .
+RUN pip install --no-cache-dir -r requirements_ingest.txt
+#ADD reset_data.py .
 ADD ingest_new_data.py .
-ADD scrap_data.py .
+#ADD scrap_data.py .
 CMD ["python","ingest_new_data.py"]

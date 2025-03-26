@@ -1,5 +1,7 @@
 import pandas as pd
 import numpy as np
+import os
+from dotenv import load_dotenv
 import sys
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import FunctionTransformer
@@ -94,8 +96,9 @@ def create_pipeline_nas(verbose=False):
 
 
 if __name__ == '__main__':
-
+    
     # paths and parameters
+    load_dotenv(dotenv_path='src/docker.env'
     params_data = get_params_service(service="data_service")
     index_load = params_data["index_load"]
     uptodate_data_path = params_data["uptodate_data_path"]

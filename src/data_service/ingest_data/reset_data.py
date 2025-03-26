@@ -1,5 +1,6 @@
 import sys
 sys.path.append('./')
+from dotenv import load_dotenv
 from src.data_service.ingest_data.ingest_new_data import load_data
 from src.global_functions import create_folder_if_necessary, get_params_service
 
@@ -12,9 +13,7 @@ def reset_data(raw_data_path="data/raw_data/weatherAUS.csv",
 
 if __name__ == '__main__':
     # # paths and parameters
-    # current_data_folder = "data/current_data/"
-    # raw_data_path = "data/raw_data/weatherAUS.csv"
-
+    load_dotenv(dotenv_path='src/docker.env')
     params_data = get_params_service(service="data_service")
     # reset data
     create_folder_if_necessary(params_data["current_data_folder"])

@@ -10,10 +10,12 @@ import datetime
 
 import os
 from dotenv import load_dotenv
-load_dotenv(dotenv_path='general.env')
-load_dotenv(dotenv_path='docker.env')
-load_dotenv(dotenv_path='mlflow.env')
-#os.environ['PROJECTPATH'] = Variable.get("PROJECTPATH")
+
+# load_dotenv(dotenv_path='general.env')
+# load_dotenv(dotenv_path='docker.env')
+# load_dotenv(dotenv_path='mlflow.env')
+
+os.environ['PROJECTPATH'] = Variable.get("PROJECTPATH")
 
 with DAG(
     dag_id='data_service',
@@ -33,10 +35,6 @@ with DAG(
         #     mode='poke' # A voir
         #     )
         
-
-        
-        Variable.update(key="PROJECTPATH", value=os.environ['PROJECTPATH'])
-
         def print_date_and_hello():
             print(datetime.datetime.now())
             print(os.getcwd())

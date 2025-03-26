@@ -1,8 +1,8 @@
 import pandas as pd
 import numpy as np
-# TODO régler les paths pour inclure les fonctions d'autres modules
 import sys
-sys.path.append('./src/')
+from dotenv import load_dotenv
+sys.path.append('./')
 from data_service.ingest_data.ingest_new_data import load_data, reindex_data
 from src.global_functions import get_params_service
 def get_season_AU(x):
@@ -31,6 +31,7 @@ def add_features(df, data_to_add_folder="data/add_data/"):
 
 if __name__ == '__main__':
     # paths and parameters
+    load_dotenv(dotenv_path='src/docker.env')
     params_data = get_params_service(service="data_service")
     processed_data_path = params_data['processed_data_path']
     data_to_add_folder = params_data["data_to_add_folder"]

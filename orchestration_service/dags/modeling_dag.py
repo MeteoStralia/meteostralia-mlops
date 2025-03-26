@@ -10,10 +10,9 @@ import datetime
 from airflow.models import Variable
 from dotenv import load_dotenv
 
-load_dotenv(dotenv_path='../params/general.env')
-load_dotenv(dotenv_path='../params/docker.env')
-load_dotenv(dotenv_path='../params/mlflow.env')
 os.environ['PROJECTPATH'] = Variable.get("PROJECTPATH")
+os.environ['MLFLOW_TRACKING_USERNAME'] = Variable.get("MLFLOW_TRACKING_USERNAME")
+os.environ['MLFLOW_TRACKING_URI'] = Variable.get("MLFLOW_TRACKING_URI")
 
 with DAG(
     dag_id='modeling_service',
@@ -73,11 +72,7 @@ with DAG(
             network_mode="bridge",
             environment = {
                  'MLFLOW_TRACKING_USERNAME': os.environ['MLFLOW_TRACKING_USERNAME'],
-                 'MLFLOW_TRACKING_URI': os.environ['MLFLOW_TRACKING_URI'],
-                 'EXPERIMENT_NAME': os.environ["EXPERIMENT_NAME"],
-                 'RUN_NAME' : os.environ["RUN_NAME"],
-                 'ARTIFACT_PATH': os.environ["ARTIFACT_PATH"]
-
+                 'MLFLOW_TRACKING_URI': os.environ['MLFLOW_TRACKING_URI']
             },
             mounts=[
                 Mount(source=os.environ['PROJECTPATH'] + '/data', 

@@ -1,5 +1,6 @@
 import pandas as pd
 import os
+from dotenv import load_dotenv
 import sys
 sys.path.append('./')
 from src.global_functions import get_params_service
@@ -65,9 +66,7 @@ def add_data(file_path, df_origin):
 
 if __name__ == '__main__':
     # # Paths and parameters
-    # current_data_path = 'data/current_data/current_data.csv'
-    # uptodate_data_path = 'data/current_data/uptodate_data.csv'
-    # new_data_folder = 'data/new_data/'
+    load_dotenv(dotenv_path='src/docker.env')
     params_data = get_params_service(service="data_service")
 
     # load current data

@@ -1,10 +1,23 @@
-import os
-from dotenv import load_dotenv
-from airflow.models import Variable
+# import os
+# import os
+# from airflow.models import Variable
+# from dotenv import load_dotenv
 
-load_dotenv(dotenv_path='general.env')
-load_dotenv(dotenv_path='docker.env')
-load_dotenv(dotenv_path='mlflow.env')
+# print(os.getcwd())
+# print(os.environ)
 
-Variable.set(key="PROJECTPATH", value=os.environ["PROJECTPATH"])
-Variable.update(key="PROJECTPATH", value="PROJECTPATH")
+# load_dotenv(dotenv_path='general.env')
+# load_dotenv(dotenv_path='mlflow.env')
+
+# # # test 
+# # os.environ['PROJECTPATH']
+# # os.environ['MLFLOW_TRACKING_USERNAME']
+# # os.environ['MLFLOW_TRACKING_URI']
+
+
+# Variable.set("PROJECTPATH") = os.getcwd()
+# Variable.set("MLFLOW_TRACKING_USERNAME") = os.environ["MLFLOW_TRACKING_USERNAME"]
+# Variable.set("MLFLOW_TRACKING_URI") = os.environ["MLFLOW_TRACKING_URI"]
+
+# # test
+# Variable.set(key="PROJECTPATH")
