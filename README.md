@@ -197,3 +197,23 @@ git checkout <HASH_CODE>
 dvc fetch
 dvc checkout
 ```
+
+## Setup sub-module "dockprom" for docker containers and docker host monitoring
+run at root
+```
+git submodule add https://github.com/stefanprodan/dockprom
+```
+Then
+```
+git submodule init
+git submodule update
+```
+go to folder
+```
+cd dockprom
+```
+Then build
+```
+docker-compose up -d
+```
+Finally, open Grafana session at http://127.0.0.1:3000/ with ADMIN_USER='admin' ADMIN_PASSWORD='admin'
