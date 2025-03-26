@@ -10,7 +10,7 @@ from sklearn.ensemble import RandomForestClassifier
 import datetime
 import json
 import joblib
-
+sys.path.append('./')
 # creating parameters
 from src.global_functions import create_folder_if_necessary
 
@@ -55,13 +55,20 @@ model_params = {
     "class_weight":{0: 0.3, 1: 0.7}, 
     "criterion":"log_loss",
     "max_depth":10,
-    "n_estimators":50,
+    "n_estimators":100,
     "n_jobs":-1}
 
 target_column = "RainTomorrow"
 
 # predict date
 predict_date = datetime.datetime.today().strftime('%Y-%m-%d')
+
+# Setting experiment parameters
+experiment_name = "default"
+#run_name = "Logistic_Regression_run2"
+run_name = "RandomForest_run_2603"
+#artifact_path = "lr_raintomorrow"
+artifact_path = "rf_raintomorrow"
 
 # paths and folder
 raw_data_path = "data/raw_data/weatherAUS.csv"
@@ -78,9 +85,9 @@ metrics_path = "metrics/" + target_column + "/"+classifier_name
 station_ID_path = "data/add_data/station_ID.csv"
 model_folder = "models/"
 predictions_folder = "data/predictions/" 
+params_folder = "data/parameters/"
 
-create_folder_if_necessary(os.environ["PARAMS_FOLDER"])
-
+create_folder_if_necessary(params_folder)
 
 def create_paths_params(
         raw_data_path=str,
@@ -97,8 +104,7 @@ def create_paths_params(
         metrics_path=str,
         station_ID_path=str,
         predictions_folder=str,
-        params_folder="data/parameters/",
-        experiment_name=str):
+        params_folder="data/parameters/"):
 
     
     params_paths = {
@@ -126,9 +132,10 @@ def create_paths_params(
             "station_ID_path": station_ID_path,
             "model_folder": model_folder,
             "predictions_folder":predictions_folder,
-            }
+            },
+        "tracking_service": {"param":""}
     }
-    with open(params_folder + experiment_name + "_paths.json", 'w') as f:
+    with open(params_folder + "paths_params.json", 'w') as f:
         json.dump(params_paths, f)
 
 def create_other_params(index_load=list(),
@@ -146,8 +153,10 @@ def create_other_params(index_load=list(),
                         classifier=ClassifierMixin, 
                         model_params=dict,
                         predict_date=str,
-                        params_folder="data/parameters/",
-                        experiment_name=str):
+                        experiment_name=str,
+                        run_name=str,
+                        artifact_path=str,
+                        params_folder="data/parameters/"):
     
     params_other = {
         "data_service": {
@@ -169,16 +178,18 @@ def create_other_params(index_load=list(),
         "inference_service":{
             "target_column": target_column,
             "classifier_name": classifier_name,
-            "predict_date": predict_date}
+            "predict_date": predict_date},
+        "tracking_service":{
+            "experiment_name": experiment_name,
+            "run_name": run_name,
+            "artifact_path": artifact_path}
     }
     
-    with open(params_folder + experiment_name + "_other.json", 'w') as f:
+    with open(params_folder + "other_params.json", 'w') as f:
         json.dump(params_other, f)
 
-    joblib.dump(scaler, params_folder + experiment_name + "_scaler.pkl")
-    joblib.dump(classifier, params_folder + experiment_name + "_classifier.pkl")
-
-
+    joblib.dump(scaler, params_folder +  "scaler.pkl")
+    joblib.dump(classifier, params_folder + "classifier.pkl")
 
 create_paths_params(
     raw_data_path=raw_data_path,
@@ -195,8 +206,7 @@ create_paths_params(
     metrics_path=metrics_path,
     station_ID_path=station_ID_path,
     predictions_folder=predictions_folder,
-    params_folder=os.environ["PARAMS_FOLDER"],
-    experiment_name=os.environ["EXPERIMENT_NAME"])
+    params_folder=params_folder)
 
 create_other_params(
     index_load=index_load,
@@ -214,6 +224,8 @@ create_other_params(
     classifier=classifier, 
     model_params=model_params,
     predict_date=predict_date,
-    params_folder=os.environ["PARAMS_FOLDER"],
-    experiment_name=os.environ["EXPERIMENT_NAME"])
+    experiment_name=experiment_name,
+    run_name=run_name,
+    artifact_path=artifact_path,
+    params_folder=params_folder)
 

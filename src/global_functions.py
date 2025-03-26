@@ -10,19 +10,18 @@ def create_folder_if_necessary(output_folderpath, **kwargs):
 
 
 
-def get_params_service(params_folder="data/parameters/", 
-                       experiment_name="default",
+def get_params_service(params_folder="data/parameters/",
                        service=str, **kwargs):
 
-    with open(params_folder + experiment_name + "_paths.json", 'r') as f:
+    with open(params_folder + "paths_params.json", 'r') as f:
         params_paths = json.load(f)
-    with open(params_folder + experiment_name + "_other.json", 'r') as f:
+    with open(params_folder + "other_params.json", 'r') as f:
         params_other = json.load(f)
 
     params_service = params_paths[service]
     params_service.update(params_other[service])
-    scaler = joblib.load(params_folder + experiment_name + "_scaler.pkl")
-    classifier = joblib.load(params_folder + experiment_name + "_classifier.pkl")
+    scaler = joblib.load(params_folder  + "scaler.pkl")
+    classifier = joblib.load(params_folder + "classifier.pkl")
     params_service.update({"scaler" : scaler})
     params_service.update({"classifier" : classifier})
 

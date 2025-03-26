@@ -1,9 +1,9 @@
 stages:
   mlflow_setup:
-    cmd: python .\src\tracking_service\mlflow\mlflow_setup.py
+    cmd: python .\src\tracking_service\mlflow\experiment_setup.py
     deps:
     #- .\src\mlflow.env
-    - .\src\tracking_service\mlfow\mlflow_setup.py
+    - .\src\tracking_service\mlfow\experiment_setup.py
     outs:
     - .\data\parameters
     #- .\src\docker.env
