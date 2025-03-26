@@ -1,5 +1,6 @@
 
 import pandas as pd
+from dotenv import load_dotenv
 import sys
 sys.path.append('./')
 from src.data_service.ingest_data.ingest_new_data import load_data
@@ -25,6 +26,7 @@ def scale_dataframe(data_to_scale, scaler=MinMaxScaler()):
 
 if __name__ == '__main__':
     # Paths and parameters
+    load_dotenv(dotenv_path='src/docker.env')
     params_data = get_params_service(service="data_service")
     processed_data_folder = params_data['processed_data_folder']
     scaler = params_data["scaler"]

@@ -14,8 +14,11 @@ from dotenv import load_dotenv
 # load_dotenv(dotenv_path='general.env')
 # load_dotenv(dotenv_path='docker.env')
 # load_dotenv(dotenv_path='mlflow.env')
+# os.environ['PROJECTPATH'] = Variable.get('projectpath')
+os.environ['PROJECTPATH'] = Variable.get('PROJECTPATH')
 
-os.environ['PROJECTPATH'] = Variable.get("PROJECTPATH")
+#os.environ['PROJECTPATH'] = os.environ['AIRFLOW_VAR_PROJECT_PATH']
+#os.environ['PROJECTPATH'] = os.getenv('AIRFLOW_VAR_PROJECTPATH')
 
 with DAG(
     dag_id='data_service',

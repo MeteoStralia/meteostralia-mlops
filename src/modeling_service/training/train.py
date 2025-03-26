@@ -3,6 +3,7 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.base import ClassifierMixin 
 from sklearn.ensemble import RandomForestClassifier
 import joblib
+from dotenv import load_dotenv
 import sys
 sys.path.append('./')
 from src.data_service.ingest_data.ingest_new_data import load_data
@@ -39,14 +40,13 @@ def train_model(processed_data_folder="data/processed_data/",
     
 if __name__ == "__main__":
     # paths and parameters
+    load_dotenv(dotenv_path='src/docker.env')
     params_model = get_params_service(service="modeling_service")
     processed_data_folder = params_model["processed_data_folder"]
     model_params = params_model["model_params"]
     classifier = params_model["classifier"]
     model_folder = params_model["model_folder"]
     target_column = params_model["target_column"]
-    
-
 
     # correction for class_weight
     if "class_weight" in model_params.keys():

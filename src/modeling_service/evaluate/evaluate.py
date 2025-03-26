@@ -47,7 +47,11 @@ def evaluate_model(
     save_metrics(metrics_path, metrics)
     print(f"metrics saved to {metrics_path}")
 
-    #mflow tracking
+    # mflow tracking
+    # loading train data to track them as artifacts
+    X_train = load_data(processed_data_folder + "X_train_scaled.csv")
+    y_train = load_data(processed_data_folder + "y_train.csv")
+    
     dagshub.auth.add_app_token(os.environ['MLFLOW_TRACKING_USERNAME'], host=None)
     mlflow.set_tracking_uri(os.environ['MLFLOW_TRACKING_URI'])
     dagshub.init(url=os.environ['MLFLOW_TRACKING_URI'], mlflow=True)

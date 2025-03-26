@@ -1,5 +1,6 @@
 import pandas as pd
 import datetime
+from dotenv import load_dotenv
 import sys
 sys.path.append('./src/')
 from scrap_last_data import scrap_last_predictdata, process_scrapped_data
@@ -21,6 +22,7 @@ def run_inference(model, data):
 
 if __name__ == "__main__": # TODO mettre en fonction
     # path and parameters
+    load_dotenv(dotenv_path='src/docker.env')
     params_inference = get_params_service(service="inference_service")
     processed_data_folder = params_inference["processed_data_folder"] 
     target_column = params_inference["target_column"] 

@@ -1,14 +1,12 @@
 import pandas as pd
 import numpy as np
-
+from dotenv import load_dotenv
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import OrdinalEncoder
 from sklearn.base import BaseEstimator, TransformerMixin
-
-# TODO régler les paths pour inclure les fonctions d'autres modules
 import sys
-sys.path.append('./src/')
-from data_service.ingest_data.ingest_new_data import load_data
+sys.path.append('./')
+from src.data_service.ingest_data.ingest_new_data import load_data
 from src.global_functions import get_params_service
 class trigo_encoder(BaseEstimator, TransformerMixin):
     """
@@ -201,6 +199,7 @@ def encode_newdata(data_origin, new_data,
 
 if __name__ == '__main__':
     # Paths and parameters
+    load_dotenv(dotenv_path='src/docker.env')
     params_data = get_params_service(service="data_service")
     augmented_data_path = params_data['augmented_data_path']
     encoded_data_path = params_data['encoded_data_path']

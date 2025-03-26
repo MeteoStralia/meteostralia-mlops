@@ -1,8 +1,9 @@
 import pandas as pd
 from sklearn.model_selection import train_test_split
+from dotenv import load_dotenv
 import sys
-sys.path.append('./src/')
-from data_service.ingest_data.ingest_new_data import load_data
+sys.path.append('./')
+from src.data_service.ingest_data.ingest_new_data import load_data
 from src.global_functions import get_params_service
 
 def split_data(df, target_column=str, test_size=float, 
@@ -45,6 +46,7 @@ def split_data(df, target_column=str, test_size=float,
 if __name__ == '__main__':
 
     # Paths and parameters
+    load_dotenv(dotenv_path='src/docker.env')
     params_data = get_params_service(service="data_service")
     encoded_data_path = params_data['encoded_data_path']
     processed_data_folder = params_data['processed_data_folder']

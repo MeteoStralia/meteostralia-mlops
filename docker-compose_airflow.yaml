@@ -158,9 +158,10 @@ services:
       <<: *airflow-common-depends-on
       airflow-init:
         condition: service_completed_successfully
-    # env_file:
-    #   - ./src/general.env
-    #   - ./src/mlflow.env
+    # environment:
+    #   AIRFLOW_VAR_PROJECT_PATH: ${AIRFLOW_VAR_PROJECT_PATH}
+    # #   - ./src/general.env
+    # #   - ./src/mlflow.env
     #   - ./src/docker.env
   
 

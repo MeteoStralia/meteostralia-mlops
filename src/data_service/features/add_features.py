@@ -3,8 +3,9 @@ import numpy as np
 import sys
 from dotenv import load_dotenv
 sys.path.append('./')
-from data_service.ingest_data.ingest_new_data import load_data, reindex_data
+from src.data_service.ingest_data.ingest_new_data import load_data, reindex_data
 from src.global_functions import get_params_service
+
 def get_season_AU(x):
 
     if (x.month, x.day) < (3, 20) or (x.month, x.day) > (12, 20):
