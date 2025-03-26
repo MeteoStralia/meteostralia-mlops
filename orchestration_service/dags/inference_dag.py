@@ -7,8 +7,14 @@ from docker.types import Mount
 import os
 #from airflow.operators.postgres_operator import PostgresOperator
 import datetime
+from airflow.models import Variable
 
-os.environ['PROJECTPATH'] = '/C:/Users/bruno/OneDrive/Documents/formation_data/projet_MLOPS/MeteoStralia/meteostralia-mlops'
+from dotenv import load_dotenv
+
+load_dotenv(dotenv_path='../config/general.env')
+load_dotenv(dotenv_path='../config/docker.env')
+load_dotenv(dotenv_path='../config/mlflow.env')
+os.environ['PROJECTPATH'] = Variable.get("PROJECTPATH")
 
 with DAG(
     dag_id='inference_service',
@@ -42,7 +48,7 @@ with DAG(
         inference = DockerOperator(
             task_id='inference',
             image='inference:latest',
-            auto_remove=True,
+            auto_remove='success',
             command='python3 src/inference_service/inference.py',
             docker_url=f"tcp://host.docker.internal:2375",
             network_mode="bridge",

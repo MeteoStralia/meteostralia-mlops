@@ -20,13 +20,18 @@
 # Run airflow command in container
 #
 
-PROJECT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-echo $PROJECT_DIR
-set -euo pipefail
+# PROJECT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# echo $PROJECT_DIR
+# set -euo pipefail
 
-export COMPOSE_FILE="${PROJECT_DIR}/docker-compose-airflow.yml"
-if [ $# -gt 0 ]; then
-    exec docker-compose run --rm airflow-worker "${@}"
-else
-    exec docker-compose run --rm airflow-worker
-fi
+# export COMPOSE_FILE="${PROJECT_DIR}/docker-compose-airflow.yml"
+# if [ $# -gt 0 ]; then
+#     exec docker-compose run --rm airflow-worker "${@}"
+# else
+#     exec docker-compose run --rm airflow-worker
+# fi
+
+
+chmod -R 777 orchestration_service/logs/
+chmod -R 777 orchestration_service/dags/
+chmod -R 777 orchestration_service/plugins/

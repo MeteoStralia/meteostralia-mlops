@@ -3,12 +3,17 @@ from airflow.utils.dates import days_ago
 from airflow.sensors.filesystem import FileSensor
 from airflow.operators.python import PythonOperator
 from airflow.operators.docker_operator import DockerOperator
-from docker.types import Mount
-import os
 #from airflow.operators.postgres_operator import PostgresOperator
+from docker.types import Mount
+from airflow.models import Variable
 import datetime
 
-os.environ['PROJECTPATH'] = '/C:/Users/bruno/OneDrive/Documents/formation_data/projet_MLOPS/MeteoStralia/meteostralia-mlops'
+import os
+from dotenv import load_dotenv
+load_dotenv(dotenv_path='general.env')
+load_dotenv(dotenv_path='docker.env')
+load_dotenv(dotenv_path='mlflow.env')
+#os.environ['PROJECTPATH'] = Variable.get("PROJECTPATH")
 
 with DAG(
     dag_id='data_service',
@@ -28,6 +33,10 @@ with DAG(
         #     mode='poke' # A voir
         #     )
         
+
+        
+        Variable.update(key="PROJECTPATH", value=os.environ['PROJECTPATH'])
+
         def print_date_and_hello():
             print(datetime.datetime.now())
             print(os.getcwd())
@@ -42,7 +51,7 @@ with DAG(
         reset_data = DockerOperator(
             task_id='reset_data',
             image='reset_data:latest',
-            auto_remove=True,
+            auto_remove='success',
             command='python3 src/data_service/ingest_data/reset_data.py',
             docker_url=f"tcp://host.docker.internal:2375",
             network_mode="bridge",
@@ -59,7 +68,7 @@ with DAG(
         ingest_new_data = DockerOperator(
             task_id='ingest_new_data',
             image='ingest_data:latest',
-            auto_remove=True,
+            auto_remove='success',
             command='python3 src/data_service/ingest_data/ingest_new_data.py',
             docker_url=f"tcp://host.docker.internal:2375",
             network_mode="bridge",
@@ -76,7 +85,7 @@ with DAG(
         complete_nas = DockerOperator(
             task_id='complete_nas',
             image='complete_nas:latest',
-            auto_remove=True,
+            auto_remove='success',
             command='python3 src/data_service/complete_nas/complete_nas.py',
             docker_url=f"tcp://host.docker.internal:2375",
             network_mode="bridge",
@@ -93,7 +102,7 @@ with DAG(
         add_features = DockerOperator(
             task_id='add_features',
             image='features:latest',
-            auto_remove=True,
+            auto_remove='success',
             command='python3 src/data_service/features/add_features.py',
             docker_url=f"tcp://host.docker.internal:2375",
             network_mode="bridge",
@@ -110,7 +119,7 @@ with DAG(
         encode_data = DockerOperator(
             task_id='encode_data',
             image='encode_data:latest',
-            auto_remove=True,
+            auto_remove='success',
             command='python3 src/data_service/encode_data/encode_data.py',
             docker_url=f"tcp://host.docker.internal:2375",
             network_mode="bridge",
@@ -127,7 +136,7 @@ with DAG(
         split_data = DockerOperator(
             task_id='split_data',
             image='split_data:latest',
-            auto_remove=True,
+            auto_remove='success',
             command='python3 src/data_service/split_data/split_data.py',
             docker_url=f"tcp://host.docker.internal:2375",
             network_mode="bridge",
@@ -144,7 +153,7 @@ with DAG(
         scale_data = DockerOperator(
             task_id='scale_data_data',
             image='scale_data:latest',
-            auto_remove=True,
+            auto_remove='success',
             command='python3 src/data_service/scale_data/scale_data.py',
             docker_url=f"tcp://host.docker.internal:2375",
             network_mode="bridge",

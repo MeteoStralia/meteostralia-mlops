@@ -8,9 +8,26 @@ python3 -m venv env
 .\env\Scripts\activate
 pip install -r requirements.txt
 ```
+
+## Environment variable to setup
+TODO faire un script bash ou un ficher de config
+
+```
+PROJECTPATH = <project path> -> local project path 
+```
+
 ## Orchestration with Airflow
 
 On windows, you have to enable on docker desktop the following option "Expose Daemon in tcp://localhost:2375 without TLS" cf(https://nickjanetakis.com/blog/setting-up-docker-for-windows-and-wsl-to-work-flawlessly#configure-docker-for-windows)
+
+At root
+```
+echo -e "AIRFLOW_UID=$(id -u)" > .env
+echo -e "AIRFLOW_PROJ_DIR=./orchestration_service"
+
+```
+
+Init db
 
 To launch the airflow services, run at root
 ```
@@ -24,7 +41,7 @@ docker container ls
 
 then go to http://localhost:8080/
 
-TODO -> Environment variable os.environ['PROJECTPATH'] = <project path>
+
 
 ## Connexion to Dagshub
 

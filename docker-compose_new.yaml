@@ -44,9 +44,15 @@
 #
 # Feel free to modify this file to suit your needs.
 ---
-x-airflow-common: &airflow-common
+x-airflow-common:
+  &airflow-common
+  # In order to add custom dependencies or upgrade provider packages you can use your extended image.
+  # Comment the image line, place your Dockerfile in the directory where you placed the docker-compose.yaml
+  # and uncomment the "build" line below, Then run `docker-compose build` to build the images.
   image: ${AIRFLOW_IMAGE_NAME:-apache/airflow:2.10.5}
-  environment: &airflow-common-env
+  # build: .
+  environment:
+    &airflow-common-env
     AIRFLOW__CORE__EXECUTOR: CeleryExecutor
     AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
     AIRFLOW__CELERY__RESULT_BACKEND: db+postgresql://airflow:airflow@postgres/airflow
@@ -60,12 +66,6 @@ x-airflow-common: &airflow-common
     # See https://airflow.apache.org/docs/apache-airflow/stable/administration-and-deployment/logging-monitoring/check-health.html#scheduler-health-check-server
     # yamllint enable rule:line-length
     AIRFLOW__SCHEDULER__ENABLE_HEALTH_CHECK: 'true'
-
-    # AIRFLOW__SMTP__SMTP_HOST: "smtp.gmail.com" # A voir
-    # AIRFLOW__SMTP__SMTP_PORT: 587 # a voir
-    # AIRFLOW__SMTP__SMTP_USER: "de.airflow@gmail.com" # A voir
-    # AIRFLOW__SMTP__SMTP_PASSWORD: "cfsrvkongsobheta" # A voir
-    # AIRFLOW__SMTP__SMTP_MAIL_FROM: "de.airflow@gmail.com" # A voir
     # WARNING: Use _PIP_ADDITIONAL_REQUIREMENTS option ONLY for a quick checks
     # for other purpose (development, test and especially production usage) build/extend Airflow image.
     _PIP_ADDITIONAL_REQUIREMENTS: ${_PIP_ADDITIONAL_REQUIREMENTS:- apache-airflow-providers-docker}
@@ -77,6 +77,7 @@ x-airflow-common: &airflow-common
     - ./orchestration_service/logs:/opt/airflow/logs
     - ./orchestration_service/plugins:/opt/airflow/plugins
     - ./orchestration_service/config:/opt/airflow/config
+    - ./orchestration_service/params:/opt/airflow/params
     - /var/run/docker.sock:/var/run/docker.sock
     - ./data:/opt/airflow/data
     - ./src:/opt/airflow/src
@@ -88,13 +89,14 @@ x-airflow-common: &airflow-common
     - type: bind
       source: ./src
       target: /app/src
-  user: "${AIRFLOW_UID:-50000}:${AIRFLOW_GID:-50000}" # A voir dans les venv
+  user: "${AIRFLOW_UID:-50000}:0"
   depends_on:
     &airflow-common-depends-on
     redis:
       condition: service_healthy
     postgres:
       condition: service_healthy
+
 services:
   postgres:
     image: postgres:13
@@ -115,7 +117,7 @@ services:
     # Redis is limited to 7.2-bookworm due to licencing change
     # https://redis.io/blog/redis-adopts-dual-source-available-licensing/
     image: redis:7.2-bookworm
-    ports:
+    expose:
       - 6379
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
@@ -156,10 +158,11 @@ services:
       <<: *airflow-common-depends-on
       airflow-init:
         condition: service_completed_successfully
-    env_file:
-      - ./src/general.env
-      - ./src/mlflow.env
-      - ./src/docker.env
+    # env_file:
+    #   - ./src/general.env
+    #   - ./src/mlflow.env
+    #   - ./src/docker.env
+  
 
   airflow-worker:
     <<: *airflow-common
@@ -260,12 +263,8 @@ services:
       _AIRFLOW_WWW_USER_PASSWORD: ${_AIRFLOW_WWW_USER_PASSWORD:-airflow}
       _PIP_ADDITIONAL_REQUIREMENTS: ''
     user: "0:0"
-    env_file:
-      - ./src/general.env
-      - ./src/mlflow.env
-      - ./src/docker.env
     volumes:
-      - ./orchestration_service/:/sources
+      -  ./orchestration_service:/sources
 
   airflow-cli:
     <<: *airflow-common
@@ -279,7 +278,7 @@ services:
       - bash
       - -c
       - airflow
-  
+
   # You can enable flower by adding "--profile flower" option e.g. docker-compose --profile flower up
   # or by explicitly targeted on the command line e.g. docker-compose up flower.
   # See: https://docs.docker.com/compose/profiles/
@@ -301,42 +300,6 @@ services:
       <<: *airflow-common-depends-on
       airflow-init:
         condition: service_completed_successfully
-  api:
-    build:
-      context: ./api
-      dockerfile: Dockerfile-api
-    container_name: api
-    env_file:
-      - ./api/.env
-    environment:
-
-      - DB_PATH=/app/database.db
-    volumes:
-      - ./database.db:/app/database.db
-    networks:
-      - api_streamlit
-    ports:
-      - "2222:2222"
-
-  streamlit:
-    build:
-      context: ./streamlit
-      dockerfile: Dockerfile-streamlit
-    container_name: streamlit
-    env_file:
-      - ./streamlit/.env
-    environment:
-      - API_URL=api
-    networks:
-      - api_streamlit
-    ports:
-      - "1111:1111"
-
-networks:
-  api_streamlit:
-    name: api_streamlit
-    driver: bridge
 
 volumes:
   postgres-db-volume:
-

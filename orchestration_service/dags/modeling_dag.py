@@ -7,21 +7,13 @@ from docker.types import Mount
 import os
 #from airflow.operators.postgres_operator import PostgresOperator
 import datetime
+from airflow.models import Variable
+from dotenv import load_dotenv
 
-# TODO A mettre AILLEURS
-experiment_name = "default"
-params_folder = "data/parameters/"
-#run_name = "Logistic_Regression_run2"
-run_name = "RandomForest_run1"
-#artifact_path = "lr_raintomorrow"
-artifact_path = "rf_raintomorrow"
-
-os.environ['PROJECTPATH'] = '/C:/Users/bruno/OneDrive/Documents/formation_data/projet_MLOPS/MeteoStralia/meteostralia-mlops'
-os.environ["EXPERIMENT_NAME"] = experiment_name
-os.environ["RUN_NAME"] = run_name
-os.environ["ARTIFACT_PATH"] = artifact_path
-os.environ['MLFLOW_TRACKING_USERNAME'] = "fde7dcd7368ad7d679356e489a202cb0dbbd4464"
-os.environ['MLFLOW_TRACKING_URI'] = "https://dagshub.com/bruno.vermont/meteostralia-mlops.mlflow"
+load_dotenv(dotenv_path='../params/general.env')
+load_dotenv(dotenv_path='../params/docker.env')
+load_dotenv(dotenv_path='../params/mlflow.env')
+os.environ['PROJECTPATH'] = Variable.get("PROJECTPATH")
 
 with DAG(
     dag_id='modeling_service',
@@ -55,7 +47,7 @@ with DAG(
         training = DockerOperator(
             task_id='training',
             image='training:latest',
-            auto_remove=True,
+            auto_remove='success',
             command='python3 src/modeling_service/training/train.py',
             docker_url=f"tcp://host.docker.internal:2375",
             network_mode="bridge",
@@ -75,7 +67,7 @@ with DAG(
         evaluate = DockerOperator(
             task_id='evaluate',
             image='evaluate:latest',
-            auto_remove=True,
+            auto_remove='success',
             command='python3 src/modeling_service/evaluate/evaluate.py',
             docker_url=f"tcp://host.docker.internal:2375",
             network_mode="bridge",
