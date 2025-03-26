@@ -193,29 +193,27 @@ async def disable_user(current_user: Annotated[User, Depends(get_current_active_
     conn.commit()
     conn.close()
     BackgroundTasks(upload_db_to_s3())
-
-
     return {'message' : 'user deleted'}
 
 
 @app.get('/users/me')
 async def read_users_me(current_user: Annotated[User, Depends(get_current_active_user)]):
     if current_user:
-        return current_user
+        return {'current_user' : current_user}
     else:
         return HTTPException(status_code = 401, detail = 'Unauthorized')
 
 @app.get('/previsions/')
 async def previsions_page(current_user: Annotated[User, Depends(get_current_active_user)]):
     if current_user:
-        return current_user
+        return {'current_user' : current_user}
     else:
         return HTTPException(status_code = 401, detail = 'Unauthorized')
 
 @app.get('/dashboard/')
 async def dashboard_page(current_user: Annotated[str, Depends(get_current_active_user)]):
-    print(current_user)
     if current_user.scope == 'admin':
-        return 'page autorisé'
+        return {'current_user' : current_user,
+                'message' : 'page autorisé'}
     else:
         raise HTTPException(status_code = 401, detail = 'Unauthorized')

@@ -4,16 +4,19 @@ import os
 from dotenv import load_dotenv
 import time
 
+from pages.navigation import header_menu
+
 load_dotenv()
 api_url = os.getenv('API_URL')
 
-
-st.write('page me from streamlit')
-
 token = st.session_state.get("token", None)
+
 headers = {'Authorization' :f'Bearer {token}'}
 response = requests.get(f'http://{api_url}:2222/users/me', headers = headers )
 
+header_menu(token, api_url, response)
+
+st.write('page me from streamlit')
 
 if token:
     st.write('################### from api me.py')
@@ -24,7 +27,7 @@ if token:
 
     if delete_account_button:
 
-        if response.json()['username'] == 'admin':
+        if response.json()['current_user']['username'] == 'admin':
             st.write('opération impossible')
         else:
             response = requests.delete(f'http://{api_url}:2222/disable_user', headers = headers )
