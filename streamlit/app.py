@@ -2,12 +2,20 @@ import streamlit as st
 import requests
 import os
 from dotenv import load_dotenv
-
+import emoji
 
 from pages import navigation
 
 load_dotenv()
 api_url = os.getenv('API_URL')
+
+
+st.set_page_config(
+    page_title = 'MeteoStralia - MLops',
+    page_icon = emoji.emojize('🦘'),
+    layout = 'wide',
+    initial_sidebar_state = "collapsed"
+)
 
 token = st.session_state.get("token", None)
 
