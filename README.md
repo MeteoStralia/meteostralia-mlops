@@ -1,5 +1,42 @@
-# meteostralia-mlops
+<div align="center">
+    # PRÉVISIONS MÉTÉO EN AUSTRALIE - Projet MLOps avec interface utilisateur interactive : meteostralia-mlops
+</div>
 
+Schéma Architecture à insérer
+
+## Introduction
+_________________________________________________________________________
+
+**Have you ever wondered** whether you should take an **umbrella** with you tomorrow?  
+This **machine learning pipeline** trains a model that aims to predict the **probability of rain** the next day with the target variable `RainTomorrow` for **49 major cities** in **Australia**.
+
+The main objective of this student project is to **translate the theoretical lessons into practice** by designing, building, and deploying a complete **MLOps architecture** based on the previous **Data Scientist project** - development of a machine learning solution.  
+In this context, the **customer** is the **user** of our application. 
+
+### Why is the **MLOps** approach relevant to this project?
+**MLOps** is the best approach for a **weather prediction project**, because it guarantees **accuracy**, **speed**, **automation**, and **scalability**, while optimizing **costs**. It's a must for **reliable**, **real-time forecasts**.
+
+The project will deal with two specific aspects:  
+- How to **manage daily data collection**? 
+- Produce a **turnkey solution** for users.
+
+**NB**: Due to the **limited time** available for the development of this project, we opted for a **simple solution** in the form of a **Minimum Viable Product (MVP)**. To achieve this, we chose to use a **Random Forest** prediction model in order to quickly address the **essential goals** while ensuring **robust performance**.
+
+---
+
+### Project Organization
+_________________________________________________________________________
+Arbre à insérer
+
+
+### Requirements
+_________________________________________________________________________
+
+**Tools**
+
+
+## Installation
+_________________________________________________________________________
 ## Virtual environment installation 
 Run at root 
 
