@@ -262,9 +262,13 @@ Finally, open Grafana session at http://127.0.0.1:3000/ with ADMIN_USER='admin' 
 
 ### Students
 **DataScientest oct24_bootcamp_mle**
+
 Mathieu AMACHER
+
 Viridiana BRENOT
+
 Yassine TAZIT
+
 Bruno VERMONT
 
 ### Mentor
