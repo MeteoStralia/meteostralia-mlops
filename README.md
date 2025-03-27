@@ -257,7 +257,11 @@ Finally, open Grafana session at http://127.0.0.1:3000/ with ADMIN_USER='admin' 
 # Customer application: instructions for use
 <hr style="border: 5px solid #555555;">
 
-This section describes the methodology of how to use the interface for the consumer who wants to know if it's going to rain tomorrow (user-client vision).
+This section describes the methodology of how to use the interface for the two types of consumer : 
+- The main one - who wants to know if it's going to rain tomorrow : user-client vision
+- The one who wants to verifies predictions and API data : data technical vision
+
+These two profiles will have different permissions and displays on the streamlit.
 
 ### Sign-in
 
