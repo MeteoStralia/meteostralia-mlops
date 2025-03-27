@@ -1,6 +1,6 @@
-<div align="center">
-    # PRÉVISIONS MÉTÉO EN AUSTRALIE - Projet MLOps avec interface utilisateur interactive : meteostralia-mlops
-</div>
+<h1 align="center" style="font-size: 50px;">
+    PRÉVISIONS MÉTÉO EN AUSTRALIE - Projet MLOps avec interface utilisateur interactive : meteostralia-mlops
+</h1>
 
 Schéma Architecture à insérer
 
@@ -25,12 +25,10 @@ The project will deal with two specific aspects:
 ---
 
 ### Project Organization
-_________________________________________________________________________
 Arbre à insérer
 
 
 ### Requirements
-_________________________________________________________________________
 
 **Tools**
 
