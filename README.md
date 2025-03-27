@@ -5,6 +5,7 @@
 Schéma Architecture à insérer
 
 # Introduction
+<hr style="border: 5px solid #555555;">
 
 **Have you ever wondered** whether you should take an **umbrella** with you tomorrow?  
 This **machine learning pipeline** trains a model that aims to predict the **probability of rain** the next day with the target variable `RainTomorrow` for **49 major cities** in **Australia**.
@@ -32,6 +33,7 @@ Arbre à insérer
 
 
 # Installation
+<hr style="border: 5px solid #555555;">
 
 ## Virtual environment installation 
 Run at root 
@@ -250,3 +252,7 @@ Then build
 docker-compose up -d
 ```
 Finally, open Grafana session at http://127.0.0.1:3000/ with ADMIN_USER='admin' ADMIN_PASSWORD='admin'
+
+
+# Customer application: instructions for use
+<hr style="border: 5px solid #555555;">
