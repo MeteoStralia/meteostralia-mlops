@@ -4,8 +4,8 @@
 
 Schéma Architecture à insérer
 
-## Introduction
-_________________________________________________________________________
+# Introduction
+<hr style="border: 5px solid #555555;">
 
 **Have you ever wondered** whether you should take an **umbrella** with you tomorrow?  
 This **machine learning pipeline** trains a model that aims to predict the **probability of rain** the next day with the target variable `RainTomorrow` for **49 major cities** in **Australia**.
@@ -22,7 +22,6 @@ The project will deal with two specific aspects:
 
 **NB**: Due to the **limited time** available for the development of this project, we opted for a **simple solution** in the form of a **Minimum Viable Product (MVP)**. To achieve this, we chose to use a **Random Forest** prediction model in order to quickly address the **essential goals** while ensuring **robust performance**.
 
----
 
 ### Project Organization
 Arbre à insérer
@@ -33,8 +32,9 @@ Arbre à insérer
 **Tools**
 
 
-## Installation
-_________________________________________________________________________
+# Installation
+<hr style="border: 5px solid #555555;">
+
 ## Virtual environment installation 
 Run at root 
 
@@ -252,3 +252,30 @@ Then build
 docker-compose up -d
 ```
 Finally, open Grafana session at http://127.0.0.1:3000/ with ADMIN_USER='admin' ADMIN_PASSWORD='admin'
+
+
+# Customer application: instructions for use
+<hr style="border: 5px solid #555555;">
+
+This section describes the methodology of how to use the interface for the consumer who wants to know if it's going to rain tomorrow (user-client vision).
+
+### Sign-in
+
+### Log-in
+
+# Creditors
+<hr style="border: 5px solid #555555;">
+
+### Students
+**DataScientest oct24_bootcamp_mle**
+
+Mathieu AMACHER
+
+Viridiana BRENOT
+
+Yassine TAZIT
+
+Bruno VERMONT
+
+### Mentor
+Sébastien SIME
