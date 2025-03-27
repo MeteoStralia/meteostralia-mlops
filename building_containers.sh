@@ -20,7 +20,7 @@ echo "Building api streamlit and airflow containers"
 echo "":
 docker compose -f docker-compose_airflow.yaml build
 
-docker compose -f docker-compose_airflow.yaml up airflow-init
+#docker compose -f docker-compose_airflow.yaml up airflow-init
 
 echo "stopping all containers"
 docker stop $(docker ps -a -q)
