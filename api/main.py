@@ -8,6 +8,7 @@ from dotenv import load_dotenv
 
 from fastapi import FastAPI, Depends, HTTPException, status, BackgroundTasks
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+from fastapi.responses import FileResponse
 
 from typing import Annotated, Union, Literal, Optional
 from pydantic import BaseModel, EmailStr
@@ -16,6 +17,7 @@ import jwt
 from jwt.exceptions import InvalidTokenError
 
 import json
+import csv
 
 SECRET_KEY = '94229c6c19e9ae7adebf61f8e7565d1990727ce8f13b8f11bf1aa3e481a94947'
 ALGORITHM = 'HS256'
@@ -206,7 +208,34 @@ async def read_users_me(current_user: Annotated[User, Depends(get_current_active
 @app.get('/previsions/')
 async def previsions_page(current_user: Annotated[User, Depends(get_current_active_user)]):
     if current_user:
-        return {'current_user' : current_user}
+
+        predictions_path = os.getenv('PREDICTION_PATH')
+        coordinates_path = os.getenv('COORDINATE')
+
+        predictions = {'location' : [], 'prediction' : []}
+        coordinates = {'location' : [], 'lat' : [], 'lon' : []}
+
+
+        with open(predictions_path, newline = '') as csvfile:
+            predictions_csv = csv.reader(csvfile)
+            next(predictions_csv)
+            for row in predictions_csv:
+                predictions['location'].append(row[0])
+                predictions['prediction'].append(row[2])
+
+        with open(coordinates_path, newline='') as csvfile:
+            coordinates_csv = csv.reader(csvfile)
+            next(coordinates_csv)
+            for row in coordinates_csv:
+                coordinates['location'].append(row[0])
+                coordinates['lat'].append(row[1])
+                coordinates['lon'].append(row[2])
+
+        return {'current_user' : current_user,
+                'predictions' : predictions,
+                'coordinates' : coordinates
+                }
+
     else:
         return HTTPException(status_code = 401, detail = 'Unauthorized')
 

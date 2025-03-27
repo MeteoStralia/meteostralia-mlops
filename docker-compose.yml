@@ -10,11 +10,15 @@ services:
       - ./api/.env
     environment:
       - DB_PATH=/app/database.db
+      - PREDICTION_PATH=/app/previsions.csv
+      - COORDINATE=/app/cities_coordinates.csv
       # - AIRFLOW_HOME=/opt/airflow
       # - AIRFLOW__CORE__DAGS_FOLDER=/opt/airflow/dags
     volumes:
       # - ./api/dags:/opt/airflow/dags
       - ./database.db:/app/database.db
+      - ./data/predictions/RainTomorrow_1742487379.csv:/app/previsions.csv
+      - ./data/raw_data/cities_coordinates.csv:/app/cities_coordinates.csv
     networks:
       - api_streamlit
     ports:
