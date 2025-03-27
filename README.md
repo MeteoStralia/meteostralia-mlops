@@ -4,8 +4,10 @@
 
 Schéma Architecture à insérer
 
-## Introduction
+<h2 style="font-size: 30px;">
+    Introduction
 _________________________________________________________________________
+</h2>
 
 **Have you ever wondered** whether you should take an **umbrella** with you tomorrow?  
 This **machine learning pipeline** trains a model that aims to predict the **probability of rain** the next day with the target variable `RainTomorrow` for **49 major cities** in **Australia**.
@@ -22,7 +24,6 @@ The project will deal with two specific aspects:
 
 **NB**: Due to the **limited time** available for the development of this project, we opted for a **simple solution** in the form of a **Minimum Viable Product (MVP)**. To achieve this, we chose to use a **Random Forest** prediction model in order to quickly address the **essential goals** while ensuring **robust performance**.
 
----
 
 ### Project Organization
 Arbre à insérer
