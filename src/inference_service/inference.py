@@ -3,9 +3,9 @@ import datetime
 from dotenv import load_dotenv
 import sys
 import os
-sys.path.append('./src/')
-from scrap_last_data import scrap_last_predictdata, process_scrapped_data
-from modeling_service.evaluate.evaluate import import_model
+sys.path.append('./')
+from src.inference_service.scrap_last_data import scrap_last_predictdata, process_scrapped_data
+from src.modeling_service.evaluate.evaluate import import_model
 from src.global_functions import create_folder_if_necessary, get_params_service
 
 def run_inference(model, data):
@@ -77,13 +77,14 @@ if __name__ == "__main__": # TODO mettre en fonction
                                index=features.index, 
                                columns=[target_column + "pred"])
     predictions["Date"] = predictions.index.get_level_values(1)
-    predictions["Location"] = predictions.index.get_level_values(1)
+    predictions["Location"] = predictions.index.get_level_values(0)
 
     # saving predictions
     create_folder_if_necessary(predictions_folder)
     
-    predictions.to_csv(predictions_folder + target_column + "_"+timestamp + ".csv")
+    predictions.to_csv(predictions_folder + "current_prediction" + ".csv")
     all_predictions = get_predictions_data(predictions_folder) 
+    all_predictions = all_predictions.drop_duplicates()
     all_predictions.to_csv(predictions_folder + "predict_history_" + target_column + ".csv")
 
 

@@ -35,7 +35,7 @@ echo -e "MLFLOW_TRACKING_URI=https://dagshub.com/meteostraliamlops/meteostralia-
 #echo -e "AIRFLOW_DOCKER_HOST=\"unix://var/run/docker.sock\"" >> .env #Pour linux
 echo -e "AIRFLOW_DOCKER_HOST=tcp://host.docker.internal:2375" >> .env 
 echo "stopping all containers"
-docker stop $(docker ps -a -q)
+#docker stop $(docker ps -a -q)
 
 echo "Téléchargement de la base de données depuis S3..."
 echo ""
