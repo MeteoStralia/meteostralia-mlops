@@ -256,3 +256,16 @@ Finally, open Grafana session at http://127.0.0.1:3000/ with ADMIN_USER='admin' 
 
 # Customer application: instructions for use
 <hr style="border: 5px solid #555555;">
+
+# Creditors
+<hr style="border: 5px solid #555555;">
+
+### Students
+**DataScientest oct24_bootcamp_mle**
+Mathieu AMACHER
+Viridiana BRENOT
+Yassine TAZIT
+Bruno VERMONT
+
+### Mentor
+Sébastien SIME
