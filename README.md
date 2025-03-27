@@ -77,7 +77,6 @@ docker container ls
 then go to http://localhost:8080/
 
 
-
 ## Connexion to Dagshub
 
 First connect Meteostralia github repo to dagshub (My repositories +New -> connect a repository -> Other -> set the adress to https://github.com/MeteoStralia/meteostralia-mlops -> identification needed with account name and password or token)
