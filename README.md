@@ -257,6 +257,12 @@ Finally, open Grafana session at http://127.0.0.1:3000/ with ADMIN_USER='admin' 
 # Customer application: instructions for use
 <hr style="border: 5px solid #555555;">
 
+This section describes the methodology of how to use the interface for the consumer who wants to know if it's going to rain tomorrow (user-client vision).
+
+### Sign-in
+
+### Log-in
+
 # Creditors
 <hr style="border: 5px solid #555555;">
 
