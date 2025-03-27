@@ -2,6 +2,7 @@ import streamlit as st
 import requests
 import os
 import csv
+import time
 from dotenv import load_dotenv
 import plotly.express as px
 import matplotlib.pyplot as plt
@@ -67,15 +68,7 @@ if token:
 
 
 
-# 'AliceSprings': (-23.6980, 133.8807),
-
-    # fig = px.scatter_map(
-    #     lat = -23.6980,
-    #     lon = 133.8807
-    # )
-
-    # fig.show()
-
-
 else:
-    st.write(response.status_code)
+    st.warning('you must be connected to acces this page', icon = "⚠️")
+    time.sleep(2)
+    st.switch_page('app.py')

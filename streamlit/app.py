@@ -27,3 +27,5 @@ response = requests.get(
 navigation.header_menu(token, api_url, response)
 
 st.title('Welcome MeteoStralia MLops (from streamlit)')
+if token:
+    st.write('Bienvenue : ', response.json()['current_user']['username'])

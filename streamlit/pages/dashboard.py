@@ -1,12 +1,23 @@
 import streamlit as st
 import requests
 import os
+import emoji
+import time
 from dotenv import load_dotenv
 
 from pages.navigation import header_menu
 
 load_dotenv()
 api_url = os.getenv('API_URL')
+
+st.set_page_config(
+    page_title = 'MeteoStralia - MLops',
+    page_icon = emoji.emojize('🦘'),
+    layout = 'wide',
+    initial_sidebar_state = "collapsed"
+)
+
+
 
 token = st.session_state.get("token", None)
 
@@ -28,4 +39,6 @@ if token:
     # st.write('scope :', response.json()['scope'])
 
 else:
-    st.write(response.status_code)
+    st.warning('you must be connected to acces this page', icon = "⚠️")
+    time.sleep(2)
+    st.switch_page('app.py')
