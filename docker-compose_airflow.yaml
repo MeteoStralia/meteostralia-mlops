@@ -316,6 +316,9 @@ services:
     volumes:
       # - ./api/dags:/opt/airflow/dags
       - ./database.db:/app/database.db
+      - type: bind
+        source: ./data
+        target: /app/data
     networks:
       - api_streamlit
     ports:

@@ -19,7 +19,7 @@ with DAG(
     tags=['model', 'docker', 'meteostralia', 'datascientest'],
     default_args={
         'owner': 'airflow',
-        'start_date': datetime.datetime(2021, 03 ,27, 8 ,0)  # tous les jours à 8h
+        'start_date': datetime.datetime(2021, 3 ,27, 8 ,0)  # tous les jours à 8h
     },
     schedule_interval= '0 8 * * *',
     catchup=False) as dag:
