@@ -301,6 +301,50 @@ services:
       <<: *airflow-common-depends-on
       airflow-init:
         condition: service_completed_successfully
+  
+  api:
+    build:
+      context: ./api
+      dockerfile: Dockerfile-api
+    container_name: api
+    env_file:
+      - ./api/.env
+    environment:
+      - DB_PATH=/app/database.db
+      # - AIRFLOW_HOME=/opt/airflow
+      # - AIRFLOW__CORE__DAGS_FOLDER=/opt/airflow/dags
+    volumes:
+      # - ./api/dags:/opt/airflow/dags
+      - ./database.db:/app/database.db
+    networks:
+      - api_streamlit
+    ports:
+      - "2222:2222"
+    # depends_on:
+    #   - airflow-webserver
+    #   - airflow-scheduler
+
+  streamlit:
+    build:
+      context: ./streamlit
+      dockerfile: Dockerfile-streamlit
+    container_name: streamlit
+    env_file:
+      - ./streamlit/.env
+    environment:
+      - API_URL=api
+    networks:
+      - api_streamlit
+    ports:
+      - "1111:1111"
+    depends_on:
+      - api
+
 
 volumes:
   postgres-db-volume:
+
+networks:
+  api_streamlit:
+    name: api_streamlit
+    driver: bridge

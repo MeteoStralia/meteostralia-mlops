@@ -16,8 +16,6 @@ index_load = ["id_Location", "id_Date"]
 df_pred = get_predictions_data(predictions_path, index_load)
 
 df_pred 
-
-
 # Ajout des coordonnées
 
 cities_coordinates = {

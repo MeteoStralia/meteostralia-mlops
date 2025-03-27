@@ -19,9 +19,9 @@ with DAG(
     tags=['model', 'docker', 'meteostralia', 'datascientest'],
     default_args={
         'owner': 'airflow',
-        'start_date': days_ago(2)  # A voir
+        'start_date': datetime.datetime(2021, 03 ,27, 8 ,0)  # tous les jours à 8h
     },
-    schedule_interval=None, #'0 17 * * *', # A voir
+    schedule_interval= '0 8 * * *',
     catchup=False) as dag:
 
         # new_data_sensor = FileSensor(
