@@ -21,7 +21,7 @@ def run_inference(model, data):
     """
     return model.predict(data)
 
-def get_predictions_data(predictions_path, index_load):
+def get_predictions_data(predictions_path, index_load = ["id_Location", "id_Date"]):
     predictions_data_files = os.listdir(predictions_path)
 
     df_pred = pd.DataFrame()
