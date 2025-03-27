@@ -54,7 +54,7 @@ with DAG(
             image='reset_data:latest',
             auto_remove='success',
             command='python3 src/data_service/ingest_data/reset_data.py',
-            docker_url=f"tcp://host.docker.internal:2375",
+            docker_url=os.environ['AIRFLOW_DOCKER_HOST'],
             network_mode="bridge",
             mounts=[
                 Mount(source=os.environ['PROJECTPATH'] + '/data', 
@@ -71,7 +71,7 @@ with DAG(
             image='ingest_data:latest',
             auto_remove='success',
             command='python3 src/data_service/ingest_data/ingest_new_data.py',
-            docker_url=f"tcp://host.docker.internal:2375",
+            docker_url=os.environ['AIRFLOW_DOCKER_HOST'],
             network_mode="bridge",
             mounts=[
                 Mount(source=os.environ['PROJECTPATH'] + '/data', 
@@ -88,7 +88,7 @@ with DAG(
             image='complete_nas:latest',
             auto_remove='success',
             command='python3 src/data_service/complete_nas/complete_nas.py',
-            docker_url=f"tcp://host.docker.internal:2375",
+            docker_url=os.environ['AIRFLOW_DOCKER_HOST'],
             network_mode="bridge",
             mounts=[
                 Mount(source=os.environ['PROJECTPATH'] + '/data', 
@@ -105,7 +105,7 @@ with DAG(
             image='features:latest',
             auto_remove='success',
             command='python3 src/data_service/features/add_features.py',
-            docker_url=f"tcp://host.docker.internal:2375",
+            docker_url=os.environ['AIRFLOW_DOCKER_HOST'],
             network_mode="bridge",
             mounts=[
                 Mount(source=os.environ['PROJECTPATH'] + '/data', 
@@ -122,7 +122,7 @@ with DAG(
             image='encode_data:latest',
             auto_remove='success',
             command='python3 src/data_service/encode_data/encode_data.py',
-            docker_url=f"tcp://host.docker.internal:2375",
+            docker_url=os.environ['AIRFLOW_DOCKER_HOST'],
             network_mode="bridge",
             mounts=[
                 Mount(source=os.environ['PROJECTPATH'] + '/data', 
@@ -139,7 +139,7 @@ with DAG(
             image='split_data:latest',
             auto_remove='success',
             command='python3 src/data_service/split_data/split_data.py',
-            docker_url=f"tcp://host.docker.internal:2375",
+            docker_url=os.environ['AIRFLOW_DOCKER_HOST'],
             network_mode="bridge",
             mounts=[
                 Mount(source=os.environ['PROJECTPATH'] + '/data', 
@@ -156,7 +156,7 @@ with DAG(
             image='scale_data:latest',
             auto_remove='success',
             command='python3 src/data_service/scale_data/scale_data.py',
-            docker_url=f"tcp://host.docker.internal:2375",
+            docker_url=os.environ['AIRFLOW_DOCKER_HOST'],
             network_mode="bridge",
             mounts=[
                 Mount(source=os.environ['PROJECTPATH'] + '/data', 

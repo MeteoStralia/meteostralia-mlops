@@ -48,7 +48,7 @@ with DAG(
             image='training:latest',
             auto_remove='success',
             command='python3 src/modeling_service/training/train.py',
-            docker_url=f"tcp://host.docker.internal:2375",
+            docker_url=os.environ['AIRFLOW_DOCKER_HOST'],
             network_mode="bridge",
             mounts=[
                 Mount(source=os.environ['PROJECTPATH'] + '/data', 
@@ -68,7 +68,7 @@ with DAG(
             image='evaluate:latest',
             auto_remove='success',
             command='python3 src/modeling_service/evaluate/evaluate.py',
-            docker_url=f"tcp://host.docker.internal:2375",
+            docker_url=os.environ['AIRFLOW_DOCKER_HOST'],
             network_mode="bridge",
             environment = {
                  'MLFLOW_TRACKING_USERNAME': os.environ['MLFLOW_TRACKING_USERNAME'],

@@ -50,7 +50,7 @@ with DAG(
             image='inference:latest',
             auto_remove='success',
             command='python3 src/inference_service/inference.py',
-            docker_url=f"tcp://host.docker.internal:2375",
+            docker_url=os.environ['AIRFLOW_DOCKER_HOST'],
             network_mode="bridge",
             mounts=[
                 Mount(source=os.environ['PROJECTPATH'] + '/data', 
