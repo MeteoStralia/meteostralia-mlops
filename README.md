@@ -4,10 +4,7 @@
 
 Schéma Architecture à insérer
 
-<h2 style="font-size: 30px;">
-    Introduction
-</h2>
-____________________________________________________________________________________________________________
+# Introduction
 
 **Have you ever wondered** whether you should take an **umbrella** with you tomorrow?  
 This **machine learning pipeline** trains a model that aims to predict the **probability of rain** the next day with the target variable `RainTomorrow` for **49 major cities** in **Australia**.
@@ -34,8 +31,8 @@ Arbre à insérer
 **Tools**
 
 
-## Installation
-_________________________________________________________________________
+# Installation
+
 ## Virtual environment installation 
 Run at root 
 
