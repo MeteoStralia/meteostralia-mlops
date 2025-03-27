@@ -14,7 +14,7 @@ from dotenv import load_dotenv
 # load_dotenv(dotenv_path='../config/general.env')
 # load_dotenv(dotenv_path='../config/docker.env')
 # load_dotenv(dotenv_path='../config/mlflow.env')
-os.environ['PROJECTPATH'] = Variable.get("PROJECTPATH")
+# os.environ['PROJECTPATH'] = Variable.get("PROJECTPATH")
 
 with DAG(
     dag_id='inference_service',

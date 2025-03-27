@@ -10,7 +10,6 @@ import pandas as pd
 
 predictions_path = "../../../data/predictions/"
 index_load = ["id_Location", "id_Date"]
-
 def get_predictions_data(predictions_path, index_load):
     predictions_data_files = os.listdir(predictions_path)
 

@@ -50,7 +50,7 @@ x-airflow-common:
   # Comment the image line, place your Dockerfile in the directory where you placed the docker-compose.yaml
   # and uncomment the "build" line below, Then run `docker-compose build` to build the images.
   image: ${AIRFLOW_IMAGE_NAME:-apache/airflow:2.10.5}
-  # build: .
+  #build: .
   environment:
     &airflow-common-env
     AIRFLOW__CORE__EXECUTOR: CeleryExecutor
@@ -58,9 +58,13 @@ x-airflow-common:
     AIRFLOW__CELERY__RESULT_BACKEND: db+postgresql://airflow:airflow@postgres/airflow
     AIRFLOW__CELERY__BROKER_URL: redis://:@redis:6379/0
     AIRFLOW__CORE__FERNET_KEY: ''
+    AIRFLOW__WEBSERVER__SECRET_KEY: '' #TODO
     AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: 'true'
     AIRFLOW__CORE__LOAD_EXAMPLES: 'false'
     AIRFLOW__API__AUTH_BACKENDS: 'airflow.api.auth.backend.basic_auth,airflow.api.auth.backend.session'
+    PROJECTPATH: PROJECTPATH=${PROJECTPATH}
+    MLFLOW_TRACKING_USERNAME: MLFLOW_TRACKING_USERNAME=${MLFLOW_TRACKING_USERNAME}
+    MLFLOW_TRACKING_URI: MLFLOW_TRACKING_URI=${MLFLOW_TRACKING_URI}
     # yamllint disable rule:line-length
     # Use simple http server on scheduler for health checks
     # See https://airflow.apache.org/docs/apache-airflow/stable/administration-and-deployment/logging-monitoring/check-health.html#scheduler-health-check-server
@@ -68,10 +72,11 @@ x-airflow-common:
     AIRFLOW__SCHEDULER__ENABLE_HEALTH_CHECK: 'true'
     # WARNING: Use _PIP_ADDITIONAL_REQUIREMENTS option ONLY for a quick checks
     # for other purpose (development, test and especially production usage) build/extend Airflow image.
-    _PIP_ADDITIONAL_REQUIREMENTS: ${_PIP_ADDITIONAL_REQUIREMENTS:- apache-airflow-providers-docker}
+    #_PIP_ADDITIONAL_REQUIREMENTS: ${_PIP_ADDITIONAL_REQUIREMENTS:- apache-airflow-providers-docker}
     # The following line can be used to set a custom config file, stored in the local config folder
     # If you want to use it, outcomment it and replace airflow.cfg with the name of your config file
     # AIRFLOW_CONFIG: '/opt/airflow/config/airflow.cfg'
+    
   volumes:
     - ./orchestration_service/dags:/opt/airflow/dags
     - ./orchestration_service/logs:/opt/airflow/logs
@@ -139,6 +144,8 @@ services:
       retries: 5
       start_period: 30s
     restart: always
+    environment:
+      <<: *airflow-common-env
     depends_on:
       <<: *airflow-common-depends-on
       airflow-init:
@@ -154,16 +161,13 @@ services:
       retries: 5
       start_period: 30s
     restart: always
+    environment:
+      <<: *airflow-common-env
     depends_on:
       <<: *airflow-common-depends-on
       airflow-init:
         condition: service_completed_successfully
-    # environment:
-    #   AIRFLOW_VAR_PROJECT_PATH: ${AIRFLOW_VAR_PROJECT_PATH}
-    # #   - ./src/general.env
-    # #   - ./src/mlflow.env
-    #   - ./src/docker.env
-  
+
 
   airflow-worker:
     <<: *airflow-common
@@ -187,6 +191,11 @@ services:
       <<: *airflow-common-depends-on
       airflow-init:
         condition: service_completed_successfully
+    volumes:
+      # Les workers ont souvent besoin des mêmes volumes que le scheduler
+      - ./orchestration_service/dags:/opt/airflow/dags
+      # Le worker a besoin d'accéder au socket Docker si DockerOperator s'exécute dessus
+      - /var/run/docker.sock:/var/run/docker.sock
 
   airflow-triggerer:
     <<: *airflow-common
@@ -198,6 +207,8 @@ services:
       retries: 5
       start_period: 30s
     restart: always
+    environment:
+      <<: *airflow-common-env
     depends_on:
       <<: *airflow-common-depends-on
       airflow-init:

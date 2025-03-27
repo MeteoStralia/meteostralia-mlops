@@ -2,6 +2,7 @@ import pandas as pd
 import datetime
 from dotenv import load_dotenv
 import sys
+import os
 sys.path.append('./src/')
 from scrap_last_data import scrap_last_predictdata, process_scrapped_data
 from modeling_service.evaluate.evaluate import import_model
@@ -19,6 +20,17 @@ def run_inference(model, data):
         pd.Series: Model predictions.
     """
     return model.predict(data)
+
+def get_predictions_data(predictions_path, index_load):
+    predictions_data_files = os.listdir(predictions_path)
+
+    df_pred = pd.DataFrame()
+
+    for file in predictions_data_files:
+        pred = pd.read_csv(predictions_path + file, index_col = index_load)
+        pred['Location'] = pred.index.get_level_values(0).values
+        df_pred = pd.concat([df_pred, pred])
+    return df_pred
 
 if __name__ == "__main__": # TODO mettre en fonction
     # path and parameters
@@ -71,5 +83,8 @@ if __name__ == "__main__": # TODO mettre en fonction
     create_folder_if_necessary(predictions_folder)
     
     predictions.to_csv(predictions_folder + target_column + "_"+timestamp + ".csv")
-    
+    all_predictions = get_predictions_data(predictions_folder) 
+    all_predictions.to_csv(predictions_folder + "predict_history_" + target_column + ".csv")
+
+
 

@@ -10,9 +10,9 @@ import datetime
 from airflow.models import Variable
 from dotenv import load_dotenv
 
-os.environ['PROJECTPATH'] = Variable.get("PROJECTPATH")
-os.environ['MLFLOW_TRACKING_USERNAME'] = Variable.get("MLFLOW_TRACKING_USERNAME")
-os.environ['MLFLOW_TRACKING_URI'] = Variable.get("MLFLOW_TRACKING_URI")
+# os.environ['PROJECTPATH'] = Variable.get("PROJECTPATH")
+# os.environ['MLFLOW_TRACKING_USERNAME'] = Variable.get("MLFLOW_TRACKING_USERNAME")
+# os.environ['MLFLOW_TRACKING_URI'] = Variable.get("MLFLOW_TRACKING_URI")
 
 with DAG(
     dag_id='modeling_service',
