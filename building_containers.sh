@@ -2,7 +2,7 @@
 # A DECLENCER A CHAQUE GIT PUSH ou FETCH
 
 echo "stopping all containers"
-docker stop $(docker ps -a -q)
+# docker stop $(docker ps -a -q)
 
 echo "Building data service containers"
 echo "":

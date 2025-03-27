@@ -2,7 +2,6 @@ import streamlit as st
 import requests
 import os
 import emoji
-import time
 from dotenv import load_dotenv
 
 from pages.navigation import header_menu
@@ -39,6 +38,4 @@ if token:
     # st.write('scope :', response.json()['scope'])
 
 else:
-    st.warning('you must be connected to acces this page', icon = "⚠️")
-    time.sleep(2)
-    st.switch_page('app.py')
+    st.write(response.status_code)

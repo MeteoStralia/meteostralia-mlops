@@ -17,7 +17,7 @@ services:
     volumes:
       # - ./api/dags:/opt/airflow/dags
       - ./database.db:/app/database.db
-      - ./data/predictions/RainTomorrow_1742487379.csv:/app/previsions.csv
+      - ./data/predictions/current_prediction.csv:/app/previsions.csv
       - ./data/raw_data/cities_coordinates.csv:/app/cities_coordinates.csv
     networks:
       - api_streamlit
