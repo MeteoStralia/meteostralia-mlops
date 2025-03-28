@@ -31,10 +31,10 @@ with DAG(
             dag = dag)
         
         with TaskGroup("Ingest_data_tasks") as Ingest_data_tasks:
-
+            
             reset_data = DockerOperator(
                 task_id='reset_data',
-                image='reset_data:'+os.environ["DOCKER_CURRENT_TAG"],
+                image='meteostralia/meteorepo:reset_data'+os.environ["DOCKER_CURRENT_TAG"],
                 auto_remove='success',
                 command='python3 src/data_service/ingest_data/reset_data.py',
                 docker_url=os.environ['AIRFLOW_DOCKER_HOST'],
@@ -51,7 +51,7 @@ with DAG(
             ingest_new_data = DockerOperator(
                 trigger_rule='all_success',
                 task_id='ingest_new_data',
-                image='ingest_data:latest',
+                image='meteostralia/meteorepo:ingest_data'+os.environ["DOCKER_CURRENT_TAG"],
                 auto_remove='success',
                 command='python3 src/data_service/ingest_data/ingest_new_data.py',
                 docker_url=os.environ['AIRFLOW_DOCKER_HOST'],
@@ -72,7 +72,7 @@ with DAG(
 
             complete_nas = DockerOperator(
                 task_id='complete_nas',
-                image='complete_nas:latest',
+                image='meteostralia/meteorepo:complete_nas'+os.environ["DOCKER_CURRENT_TAG"],
                 auto_remove='success',
                 command='python3 src/data_service/complete_nas/complete_nas.py',
                 docker_url=os.environ['AIRFLOW_DOCKER_HOST'],
@@ -89,7 +89,7 @@ with DAG(
 
             add_features = DockerOperator(
                 task_id='add_features',
-                image='features:latest',
+                image='meteostralia/meteorepo:features'+os.environ["DOCKER_CURRENT_TAG"],
                 auto_remove='success',
                 command='python3 src/data_service/features/add_features.py',
                 docker_url=os.environ['AIRFLOW_DOCKER_HOST'],
@@ -106,7 +106,7 @@ with DAG(
 
             encode_data = DockerOperator(
                 task_id='encode_data',
-                image='encode_data:latest',
+                image='meteostralia/meteorepo:encode_data'+os.environ["DOCKER_CURRENT_TAG"],
                 auto_remove='success',
                 command='python3 src/data_service/encode_data/encode_data.py',
                 docker_url=os.environ['AIRFLOW_DOCKER_HOST'],
@@ -123,7 +123,7 @@ with DAG(
 
             split_data = DockerOperator(
                 task_id='split_data',
-                image='split_data:latest',
+                image='meteostralia/meteorepo:split_data'+os.environ["DOCKER_CURRENT_TAG"],
                 auto_remove='success',
                 command='python3 src/data_service/split_data/split_data.py',
                 docker_url=os.environ['AIRFLOW_DOCKER_HOST'],
@@ -140,7 +140,7 @@ with DAG(
 
             scale_data = DockerOperator(
                 task_id='scale_data_data',
-                image='scale_data:latest',
+                image='meteostralia/meteorepo:scale_data'+os.environ["DOCKER_CURRENT_TAG"],
                 auto_remove='success',
                 command='python3 src/data_service/scale_data/scale_data.py',
                 docker_url=os.environ['AIRFLOW_DOCKER_HOST'],
@@ -158,7 +158,7 @@ with DAG(
         with TaskGroup("Modeling_tasks") as Modeling_tasks:
             training = DockerOperator(
             task_id='training',
-            image='training:latest',
+            image='meteostralia/meteorepo:training'+os.environ["DOCKER_CURRENT_TAG"],
             auto_remove='success',
             command='python3 src/modeling_service/training/train.py',
             docker_url=os.environ['AIRFLOW_DOCKER_HOST'],
@@ -178,7 +178,7 @@ with DAG(
 
             evaluate = DockerOperator(
                 task_id='evaluate',
-                image='evaluate:latest',
+                image='meteostralia/meteorepo:evaluate'+os.environ["DOCKER_CURRENT_TAG"],
                 auto_remove='success',
                 command='python3 src/modeling_service/evaluate/evaluate.py',
                 docker_url=os.environ['AIRFLOW_DOCKER_HOST'],

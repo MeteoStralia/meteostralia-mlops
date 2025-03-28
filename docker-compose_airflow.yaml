@@ -320,6 +320,7 @@ services:
     build:
       context: ./api
       dockerfile: Dockerfile-api
+    image: meteostralia/meteorepo:meteostralia-mlops-api${DOCKER_CURRENT_TAG}
     container_name: api
     env_file:
       - ./api/.env
@@ -345,6 +346,7 @@ services:
     build:
       context: ./streamlit
       dockerfile: Dockerfile-streamlit
+    image: meteostralia/meteorepo:meteostralia-mlops-streamlit${DOCKER_CURRENT_TAG}
     container_name: streamlit
     env_file:
       - ./streamlit/.env
