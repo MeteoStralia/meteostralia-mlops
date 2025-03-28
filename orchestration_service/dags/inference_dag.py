@@ -52,6 +52,11 @@ with DAG(
             command='python3 src/inference_service/inference.py',
             docker_url=os.environ['AIRFLOW_DOCKER_HOST'],
             network_mode="bridge",
+            environment = {
+                 'AIRFLOW_DAGSHUB_USER_TOKEN': os.environ['AIRFLOW_DAGSHUB_USER_TOKEN'],
+                 'AIRFLOW_MLFLOW_TRACKING_USERNAME': os.environ['AIRFLOW_MLFLOW_TRACKING_USERNAME'],
+                 'AIRFLOW_MLFLOW_TRACKING_URI': os.environ['AIRFLOW_MLFLOW_TRACKING_URI']
+            },
             mounts=[
                 Mount(source=os.environ['PROJECTPATH'] + '/data', 
                     target='/app/data', 

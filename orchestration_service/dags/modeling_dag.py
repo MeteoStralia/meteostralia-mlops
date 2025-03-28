@@ -71,8 +71,9 @@ with DAG(
             docker_url=os.environ['AIRFLOW_DOCKER_HOST'],
             network_mode="bridge",
             environment = {
-                 'MLFLOW_TRACKING_USERNAME': os.environ['MLFLOW_TRACKING_USERNAME'],
-                 'MLFLOW_TRACKING_URI': os.environ['MLFLOW_TRACKING_URI']
+                 'AIRFLOW_DAGSHUB_USER_TOKEN': os.environ['AIRFLOW_DAGSHUB_USER_TOKEN'],
+                 'AIRFLOW_MLFLOW_TRACKING_USERNAME': os.environ['AIRFLOW_MLFLOW_TRACKING_USERNAME'],
+                 'AIRFLOW_MLFLOW_TRACKING_URI': os.environ['AIRFLOW_MLFLOW_TRACKING_URI']
             },
             mounts=[
                 Mount(source=os.environ['PROJECTPATH'] + '/data', 

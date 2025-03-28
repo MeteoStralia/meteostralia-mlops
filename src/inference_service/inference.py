@@ -1,5 +1,7 @@
 import pandas as pd
 import datetime
+import mlflow
+import dagshub
 from dotenv import load_dotenv
 import sys
 import os
@@ -31,6 +33,34 @@ def get_predictions_data(predictions_path, index_load = ["id_Location", "id_Date
         pred['Location'] = pred.index.get_level_values(0).values
         df_pred = pd.concat([df_pred, pred])
     return df_pred
+
+def get_best_model():
+    mlflow.set_tracking_uri(os.environ['AIRFLOW_MLFLOW_TRACKING_URI'])
+    dagshub.init(url=os.environ['AIRFLOW_MLFLOW_MLFLOW_TRACKING_URI'], mlflow=True)
+
+    # getting current experiment parameters
+    params_tracking = get_params_service(
+        params_folder='data/parameters/',
+        service="tracking_service")
+
+    experiment_name = params_tracking["experiment_name"]
+    run_name = params_tracking["run_name"]
+    artifact_path = params_tracking["artifact_path"]
+
+    def get_experiment_id(name):
+        exp = mlflow.get_experiment_by_name(name)
+        if exp is None:
+            return 'No experiment with the name ' +  name
+        else :
+            return exp.experiment_id
+
+    experiment_id = get_experiment_id(experiment_name)
+
+    # get allruns data
+    runs = mlflow.search_runs(experiment_ids=experiment_id)
+    
+
+
 
 if __name__ == "__main__": # TODO mettre en fonction
     # path and parameters

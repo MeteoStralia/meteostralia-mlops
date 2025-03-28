@@ -12,20 +12,20 @@ import sys
 sys.path.append('../../../')
 from src.global_functions import get_params_service
 
-load_dotenv(dotenv_path='../../mlflow.env')
+load_dotenv(dotenv_path='.env')
 dagshub.auth.add_app_token(os.environ['MLFLOW_TRACKING_USERNAME'], host=None)
 mlflow.set_tracking_uri(os.environ['MLFLOW_TRACKING_URI'])
 dagshub.init(url=os.environ['MLFLOW_TRACKING_URI'], mlflow=True)
 
 # getting current experiment parameters
 params_tracking = get_params_service(
-    params_folder='../../../data/parameters/',
+    params_folder='data/parameters/',
     service="tracking_service")
 
 experiment_name = params_tracking["experiment_name"]
 run_name = params_tracking["run_name"]
 artifact_path = params_tracking["artifact_path"]
-
+mlflow.get_experiment_by_name(experiment_name)
 def get_experiment_id(name):
     exp = mlflow.get_experiment_by_name(name)
     if exp is None:
@@ -34,7 +34,6 @@ def get_experiment_id(name):
         return exp.experiment_id
 
 experiment_id = get_experiment_id(experiment_name)
-
 
 # last ten runs data
 runs = mlflow.search_runs(experiment_ids=experiment_id)
