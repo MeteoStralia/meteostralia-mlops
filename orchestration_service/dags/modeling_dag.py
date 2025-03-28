@@ -45,7 +45,7 @@ with DAG(
 
         training = DockerOperator(
             task_id='training',
-            image='training:latest',
+            image='meteostralia/meteorepo:training'+os.environ["DOCKER_CURRENT_TAG"],
             auto_remove='success',
             command='python3 src/modeling_service/training/train.py',
             docker_url=os.environ['AIRFLOW_DOCKER_HOST'],
@@ -65,7 +65,7 @@ with DAG(
 
         evaluate = DockerOperator(
             task_id='evaluate',
-            image='evaluate:latest',
+            image='meteostralia/meteorepo:evaluate'+os.environ["DOCKER_CURRENT_TAG"],
             auto_remove='success',
             command='python3 src/modeling_service/evaluate/evaluate.py',
             docker_url=os.environ['AIRFLOW_DOCKER_HOST'],

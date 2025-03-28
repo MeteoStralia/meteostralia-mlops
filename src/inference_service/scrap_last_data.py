@@ -1,16 +1,14 @@
 import pandas as pd
 import datetime
 import sys
-sys.path.append('./src/')
-# sys.path.append('../') # a virer 
-# sys.path.append('../../') # à virer
+sys.path.append('./')
 
 # import needed functions
-from data_service.ingest_data.ingest_new_data import load_data, reindex_data
-from data_service.ingest_data.scrap_data import scrap_data, format_scrapped_data, save_new_data
-from data_service.features.add_features import add_features
-from data_service.encode_data.encode_data import encode_data,encode_newdata, trigo_encoder_len, trigo_encoder
-from data_service.scale_data.scale_data import scale_data
+from src.data_service.ingest_data.ingest_new_data import load_data, reindex_data
+from src.data_service.ingest_data.scrap_data import scrap_data, format_scrapped_data, save_new_data
+from src.data_service.features.add_features import add_features
+from src.data_service.encode_data.encode_data import encode_data,encode_newdata, trigo_encoder_len, trigo_encoder
+from src.data_service.scale_data.scale_data import scale_data
 
 
 def scrap_last_predictdata(

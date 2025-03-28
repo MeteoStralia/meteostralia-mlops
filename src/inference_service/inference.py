@@ -9,6 +9,7 @@ sys.path.append('./')
 from src.inference_service.scrap_last_data import scrap_last_predictdata, process_scrapped_data
 from src.modeling_service.evaluate.evaluate import import_model
 from src.global_functions import create_folder_if_necessary, get_params_service
+from src.inference_service.get_best_model import get_best_model
 
 def run_inference(model, data):
     """
@@ -58,9 +59,6 @@ def get_best_model():
 
     # get allruns data
     runs = mlflow.search_runs(experiment_ids=experiment_id)
-    
-
-
 
 if __name__ == "__main__": # TODO mettre en fonction
     # path and parameters
@@ -96,11 +94,14 @@ if __name__ == "__main__": # TODO mettre en fonction
         processed_data_folder,
         target_column)
     
-    # Load the model
-    model = import_model(model_folder,
-                         target_column,
-                         classifier_name)
-    
+    # # Load the model
+    # model = import_model(model_folder,
+    #                      target_column,
+    #                      classifier_name)
+
+    # Load the model from MLFLOW
+    model = get_best_model(metric = 'f1_score')
+
     # Making predictions
     predictions = model.predict(features)
     predictions = pd.DataFrame(predictions, 

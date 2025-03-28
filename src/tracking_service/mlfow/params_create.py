@@ -68,7 +68,7 @@ experiment_name = "default"
 #run_name = "Logistic_Regression_run2"
 run_name = "RandomForest_run_2603"
 #artifact_path = "lr_raintomorrow"
-artifact_path = "rf_raintomorrow"
+artifact_path = "artifact"
 
 # paths and folder
 raw_data_path = "data/raw_data/weatherAUS.csv"

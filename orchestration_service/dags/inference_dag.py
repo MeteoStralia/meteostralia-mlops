@@ -47,7 +47,7 @@ with DAG(
 
         inference = DockerOperator(
             task_id='inference',
-            image='inference:latest',
+            image='meteostralia/meteorepo:inference'+os.environ["DOCKER_CURRENT_TAG"],
             auto_remove='success',
             command='python3 src/inference_service/inference.py',
             docker_url=os.environ['AIRFLOW_DOCKER_HOST'],
