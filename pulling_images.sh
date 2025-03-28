@@ -1,5 +1,6 @@
-
+#!/bin/bash
 timestamp=$DOCKER_CURRENT_TAG
+timestamp="28032025"
 docker login -u=meteostralia -p=meteostralia\*2410 # à sécuriser
 
 echo "Pulling images with tag "$timestamp

@@ -1,7 +1,7 @@
 #!/bin/bash
 # A DECLENCER A CHAQUE GIT PUSH ou FETCH
 echo "stopping all containers"
-docker stop $(docker ps -a -q)
+#docker stop $(docker ps -a -q)
 
 echo "Building data service images"
 echo "":
@@ -19,9 +19,9 @@ echo "Building api streamlit and airflow images"
 echo "":
 docker compose -f docker-compose_airflow.yaml build
 
-
 timestamp="28032025" # TODO à mettre en dynamique
 docker login -u=meteostralia -p=meteostralia\*2410  # à sécuriser
+
 
 echo "Pushing images with tag "$timestamp
 echo "":
@@ -49,8 +49,8 @@ docker push meteostralia/meteorepo:split_data$timestamp
 docker push meteostralia/meteorepo:training$timestamp
 docker push meteostralia/meteorepo:evaluate$timestamp
 docker push meteostralia/meteorepo:inference$timestamp
-docker push meteostralia/meteorepo:meteostralia-mlops-api$timestamp
-docker push meteostralia/meteorepo:meteostralia-mlops-streamlit$timestamp
+# docker push meteostralia/meteorepo:meteostralia-mlops-api$timestamp
+# docker push meteostralia/meteorepo:meteostralia-mlops-streamlit$timestamp
 
 # TODO airflow images
 

@@ -100,7 +100,7 @@ if __name__ == "__main__": # TODO mettre en fonction
     #                      classifier_name)
 
     # Load the model from MLFLOW
-    model = get_best_model(metric = 'f1_score')
+    model = get_best_model(metric='f1_score')
 
     # Making predictions
     predictions = model.predict(features)
