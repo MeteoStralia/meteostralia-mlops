@@ -85,5 +85,4 @@ stages:
   inference:
     cmd: python ./src/inference_service/inference.py
     outs:
-    -  ./data/predictions/current_prediction.csv
     -  ./models/RainTomorrow/best_current_model.pkl
