@@ -1,0 +1,21 @@
+on:
+  push:
+    branches:
+      - "dev-airflow"
+    paths:
+      - ".github/workflows/docker_build_and_push.yml.yaml"
+jobs:
+  building_images:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: .
+    steps:
+      - name: Check out the repository to the runner
+        uses: actions/checkout@v4  
+      - name: Make the script files executable
+        run: chmod +x building_images.sh pushing_images.sh
+      - name: Run the scripts
+        run: |
+          building_images.sh
+          pushing_images.sh
