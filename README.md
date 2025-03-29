@@ -96,6 +96,7 @@ docker container ls
 ```
 
 then go to http://localhost:8080/
+And test the dags : data_model_service and inference_service
 
 ## Connexion to Dagshub
 
