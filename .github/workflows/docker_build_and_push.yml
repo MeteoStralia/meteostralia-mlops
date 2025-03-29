@@ -1,9 +1,12 @@
+name: building_images
 on:
-  push:
-    branches:
-      - "dev-airflow"
-    paths:
-      - ".github/workflows/docker_build_and_push.yml.yaml"
+  # push:
+  #   branches:
+  #     - "dev-airflow"
+  #   paths:
+  #     - ".github/workflows/docker_build_and_push.yml.yaml"
+  workflow_dispatch:
+
 jobs:
   building_images:
     runs-on: ubuntu-latest
