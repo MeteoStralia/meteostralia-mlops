@@ -45,29 +45,50 @@ pip install -r requirements.txt
 ```
 
 ## Environment variable to setup
-TODO faire un script bash ou un ficher de config
+create environment variable
 
 ```
-PROJECTPATH = <project path> -> local project path 
+bash en_var_create.sh
 ```
 
-## Orchestration with Airflow
+## Building and pushing images
+Run at root (if images script are changed)
+```
+bash building_images.sh 
+```
+Then run (or directly run if build is already done)
+
+```
+bash pushing_images.sh 
+```
+
+## images cleanup
+TO remove none none images run at root
+```
+bash cleanup_images.sh
+```
+
+## pulling latest images
+Run at root 
+```
+bash pulling_images.sh 
+```
+
+## Initialization Airflow
+To init the airflow services (only first time), run at root
+```
+docker compose -f docker-compose-airflow.yml up airflow-init -d
+```
+
+## Launch all the containers
+Run at root 
+```
+bash launch_airflow.sh 
+```
+
+# Orchestration with Airflow
 
 On windows, you have to enable on docker desktop the following option "Expose Daemon in tcp://localhost:2375 without TLS" cf(https://nickjanetakis.com/blog/setting-up-docker-for-windows-and-wsl-to-work-flawlessly#configure-docker-for-windows)
-
-At root
-```
-echo -e "AIRFLOW_UID=$(id -u)" > .env
-echo -e "AIRFLOW_PROJ_DIR=./orchestration_service"
-
-```
-
-Init db
-
-To launch the airflow services, run at root
-```
-docker compose -f docker-compose-airflow.yml up -d
-```
 
 Check if all containers are healthy
 ```
@@ -75,15 +96,16 @@ docker container ls
 ```
 
 then go to http://localhost:8080/
-
-
+And test the dags : data_model_service and inference_service
 
 ## Connexion to Dagshub
 
 First connect Meteostralia github repo to dagshub (My repositories +New -> connect a repository -> Other -> set the adress to https://github.com/MeteoStralia/meteostralia-mlops -> identification needed with account name and password or token)
 
-## Setup MLFLOW and run parameters
-run at root
+## change MLFLOW setup and run parameters
+
+Modify the scripts src\tracking_service\mlfow\params_create.py and \src\tracking_service\mlfow\experiment_setup.py
+Then run at root
 ```
 docker compose -f .\src\tracking_service\docker-compose.yml build
 ```
@@ -102,21 +124,6 @@ TODO
 ## Inference service (src/inference_service)
 
 TODO
-
-## Configuration data_service et modeling_service
-Run at root (if first time)
-```
-docker compose -f .\src\data_service\docker-compose.yml build 
-docker compose -f .\src\modeling_service\docker-compose.yml build 
-docker compose -f .\src\inference_service\docker-compose.yml build 
-```
-Then run (or directly run if build is already done)
-
-```
-docker compose -f .\src\data_service\docker-compose.yml up 
-docker compose -f .\src\modeling_service\docker-compose.yml up
-docker compose -f .\src\inference_service\docker-compose.yml up
-```
 
 ## Configuration suivi DVC
 
@@ -162,15 +169,6 @@ dvc remote default origin
 
 to ensure that the remote storage is origin (dagshub)
 
-### Adding tracking folders
-
-```
-dvc add ./data/current_data
-dvc add ./data/processed_data
-dvc add ./models 
-dvc add ./metrics
-```
-
 ### Testing on current data and models
 
 removing local files
@@ -203,7 +201,7 @@ DVC repro
 
 Commit changes in dvc metadata 
 ```
-dvc commit
+dvc commit 
 ```
 
 Commit changes in metadata to git

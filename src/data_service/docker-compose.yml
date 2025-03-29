@@ -14,7 +14,7 @@ services:
         - type: bind
           source: ../../data
           target: /app/data
-      image: reset_data:latest
+      image: reset_data
       container_name: reset_data
       env_file:
         - path: ../docker.env

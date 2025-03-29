@@ -1,0 +1,28 @@
+name: building_images
+on:
+  schedule:
+    - cron: '0 7 * * *' # everyday at 7
+  # push:
+  #   branches:
+  #     - "dev-airflow"
+  #   paths:
+  #     - ".github/workflows/docker_build_and_push.yml.yaml"
+  workflow_dispatch:
+
+jobs:
+  building_images:
+    runs-on: ubuntu-latest
+    # defaults:
+    #   run:
+    #     working-directory: ./
+    steps:
+      - name: Check out the repository to the runner
+        uses: actions/checkout@v4  
+      - name: Make the script files executable
+        run: chmod +x building_images.sh pushing_images.sh
+      - name: building images
+        run: 
+          bash building_images.sh
+      - name: pushing images
+        run: 
+          bash pushing_images.sh

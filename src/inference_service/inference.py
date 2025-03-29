@@ -1,12 +1,17 @@
 import pandas as pd
 import datetime
+import mlflow
+import dagshub
 from dotenv import load_dotenv
 import sys
 import os
-sys.path.append('./src/')
-from scrap_last_data import scrap_last_predictdata, process_scrapped_data
-from modeling_service.evaluate.evaluate import import_model
+import joblib
+
+sys.path.append('./')
+from src.inference_service.scrap_last_data import scrap_last_predictdata, process_scrapped_data
+from src.modeling_service.evaluate.evaluate import import_model
 from src.global_functions import create_folder_if_necessary, get_params_service
+from src.inference_service.get_best_model import get_best_model
 
 def run_inference(model, data):
     """
@@ -66,10 +71,18 @@ if __name__ == "__main__": # TODO mettre en fonction
         processed_data_folder,
         target_column)
     
-    # Load the model
-    model = import_model(model_folder,
-                         target_column,
-                         classifier_name)
+    # # Load the model
+    # model = import_model(model_folder,
+    #                      target_column,
+    #                      classifier_name)
+
+    # Load the model from MLFLOW
+    model = get_best_model(metric='f1_score')
+
+    # save target and model name in model path
+    model_path = model_folder+ target_column +"/"+"best_current_model.pkl"   
+    joblib.dump(model, model_path)
+    print(f"Model saved to {model_path}")
     
     # Making predictions
     predictions = model.predict(features)
@@ -77,13 +90,14 @@ if __name__ == "__main__": # TODO mettre en fonction
                                index=features.index, 
                                columns=[target_column + "pred"])
     predictions["Date"] = predictions.index.get_level_values(1)
-    predictions["Location"] = predictions.index.get_level_values(1)
+    predictions["Location"] = predictions.index.get_level_values(0)
 
     # saving predictions
     create_folder_if_necessary(predictions_folder)
     
-    predictions.to_csv(predictions_folder + target_column + "_"+timestamp + ".csv")
+    predictions.to_csv(predictions_folder + "current_prediction" + ".csv")
     all_predictions = get_predictions_data(predictions_folder) 
+    all_predictions = all_predictions.drop_duplicates()
     all_predictions.to_csv(predictions_folder + "predict_history_" + target_column + ".csv")
 
 

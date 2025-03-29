@@ -45,10 +45,10 @@ with DAG(
 
         training = DockerOperator(
             task_id='training',
-            image='training:latest',
+            image='meteostralia/meteorepo:training'+os.environ["DOCKER_CURRENT_TAG"],
             auto_remove='success',
             command='python3 src/modeling_service/training/train.py',
-            docker_url=f"tcp://host.docker.internal:2375",
+            docker_url=os.environ['AIRFLOW_DOCKER_HOST'],
             network_mode="bridge",
             mounts=[
                 Mount(source=os.environ['PROJECTPATH'] + '/data', 
@@ -65,14 +65,15 @@ with DAG(
 
         evaluate = DockerOperator(
             task_id='evaluate',
-            image='evaluate:latest',
+            image='meteostralia/meteorepo:evaluate'+os.environ["DOCKER_CURRENT_TAG"],
             auto_remove='success',
             command='python3 src/modeling_service/evaluate/evaluate.py',
-            docker_url=f"tcp://host.docker.internal:2375",
+            docker_url=os.environ['AIRFLOW_DOCKER_HOST'],
             network_mode="bridge",
             environment = {
-                 'MLFLOW_TRACKING_USERNAME': os.environ['MLFLOW_TRACKING_USERNAME'],
-                 'MLFLOW_TRACKING_URI': os.environ['MLFLOW_TRACKING_URI']
+                 'AIRFLOW_DAGSHUB_USER_TOKEN': os.environ['AIRFLOW_DAGSHUB_USER_TOKEN'],
+                 'AIRFLOW_MLFLOW_TRACKING_USERNAME': os.environ['AIRFLOW_MLFLOW_TRACKING_USERNAME'],
+                 'AIRFLOW_MLFLOW_TRACKING_URI': os.environ['AIRFLOW_MLFLOW_TRACKING_URI']
             },
             mounts=[
                 Mount(source=os.environ['PROJECTPATH'] + '/data', 

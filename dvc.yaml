@@ -69,7 +69,7 @@ stages:
     - ./data/processed_data/y_train.csv
     - ./src/modeling_service/training/train.py
     outs:
-    - ./models/
+    -  ./models/RainTomorrow/last_run_model.pkl
   evaluate:
     cmd: python ./src/modeling_service/evaluate/evaluate.py
     deps:
@@ -80,5 +80,9 @@ stages:
     outs:
     -  ./metrics/
     metrics:
-    - metrics/RainTomorrow/LogisticRegression_metrics.json:
+    - metrics/RainTomorrow/lastmetrics.json:
         cache: false
+  inference:
+    cmd: python ./src/inference_service/inference.py
+    outs:
+    -  ./models/RainTomorrow/best_current_model.pkl

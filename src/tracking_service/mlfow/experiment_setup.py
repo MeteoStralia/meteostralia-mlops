@@ -10,12 +10,11 @@ import sys
 sys.path.append('./')
 from src.global_functions import get_params_service
 from dotenv import load_dotenv
-load_dotenv(dotenv_path='src/mlflow.env')
+load_dotenv(dotenv_path='.env')
 
-dagshub.auth.add_app_token(os.environ['MLFLOW_TRACKING_USERNAME'], host=None)
-mlflow.set_tracking_uri(os.environ['MLFLOW_TRACKING_URI'])
-dagshub.init(url=os.environ['MLFLOW_TRACKING_URI'], mlflow=True)
-
+dagshub.auth.add_app_token(os.environ['AIRFLOW_DAGSHUB_USER_TOKEN'], host=None)
+mlflow.set_tracking_uri(os.environ['AIRFLOW_MLFLOW_TRACKING_URI'])
+dagshub.init(url=os.environ['AIRFLOW_MLFLOW_TRACKING_URI'], mlflow=True)
 
 params_tracking = get_params_service(service="tracking_service")
 

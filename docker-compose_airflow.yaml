@@ -58,13 +58,16 @@ x-airflow-common:
     AIRFLOW__CELERY__RESULT_BACKEND: db+postgresql://airflow:airflow@postgres/airflow
     AIRFLOW__CELERY__BROKER_URL: redis://:@redis:6379/0
     AIRFLOW__CORE__FERNET_KEY: ''
-    AIRFLOW__WEBSERVER__SECRET_KEY: ${MLFLOW_TRACKING_USERNAME}
+    AIRFLOW__WEBSERVER__SECRET_KEY: ${AIRFLOW_DAGSHUB_USER_TOKEN} #TODO
     AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: 'true'
     AIRFLOW__CORE__LOAD_EXAMPLES: 'false'
     AIRFLOW__API__AUTH_BACKENDS: 'airflow.api.auth.backend.basic_auth,airflow.api.auth.backend.session'
     PROJECTPATH: ${PROJECTPATH}
-    MLFLOW_TRACKING_USERNAME: ${MLFLOW_TRACKING_USERNAME}
-    MLFLOW_TRACKING_URI: ${MLFLOW_TRACKING_URI}
+    AIRFLOW_DAGSHUB_USER_TOKEN: ${AIRFLOW_DAGSHUB_USER_TOKEN}
+    AIRFLOW_MLFLOW_TRACKING_USERNAME: ${AIRFLOW_MLFLOW_TRACKING_USERNAME}
+    AIRFLOW_MLFLOW_TRACKING_URI: ${AIRFLOW_MLFLOW_TRACKING_URI}
+    AIRFLOW_DOCKER_HOST: ${AIRFLOW_DOCKER_HOST}
+    DOCKER_CURRENT_TAG: ${DOCKER_CURRENT_TAG}
     # yamllint disable rule:line-length
     # Use simple http server on scheduler for health checks
     # See https://airflow.apache.org/docs/apache-airflow/stable/administration-and-deployment/logging-monitoring/check-health.html#scheduler-health-check-server
@@ -88,6 +91,9 @@ x-airflow-common:
     - ./src:/opt/airflow/src
     - ./models:/opt/airflow/models
     - ./metrics:/opt/airflow/models
+    - ${PWD}/dvc.lock:/opt/airflow/dvc.lock
+    - ${PWD}/.dvc/config:/opt/airflow/.dvc/config
+    - ${PWD}/.dvc/config.local:/opt/airflow/.dvc/config.local
     - type: bind
       source: ./data
       target: /app/data
@@ -317,16 +323,21 @@ services:
     build:
       context: ./api
       dockerfile: Dockerfile-api
+    image: meteostralia/meteorepo:api${DOCKER_CURRENT_TAG}
     container_name: api
     env_file:
       - ./api/.env
     environment:
       - DB_PATH=/app/database.db
+      - PREDICTION_PATH=/app/previsions.csv
+      - COORDINATE=/app/cities_coordinates.csv
       # - AIRFLOW_HOME=/opt/airflow
       # - AIRFLOW__CORE__DAGS_FOLDER=/opt/airflow/dags
     volumes:
       # - ./api/dags:/opt/airflow/dags
       - ./database.db:/app/database.db
+      - ./data/predictions/current_prediction.csv:/app/previsions.csv
+      - ./data/raw_data/cities_coordinates.csv:/app/cities_coordinates.csv
       - type: bind
         source: ./data
         target: /app/data
@@ -342,6 +353,7 @@ services:
     build:
       context: ./streamlit
       dockerfile: Dockerfile-streamlit
+    image: meteostralia/meteorepo:streamlit${DOCKER_CURRENT_TAG}
     container_name: streamlit
     env_file:
       - ./streamlit/.env

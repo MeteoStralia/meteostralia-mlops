@@ -68,7 +68,7 @@ experiment_name = "default"
 #run_name = "Logistic_Regression_run2"
 run_name = "RandomForest_run_2603"
 #artifact_path = "lr_raintomorrow"
-artifact_path = "rf_raintomorrow"
+artifact_path = "artifact"
 
 # paths and folder
 raw_data_path = "data/raw_data/weatherAUS.csv"
@@ -81,7 +81,7 @@ processed_data_path = 'data/processed_data/nas_completed_data.csv'
 data_to_add_folder = "data/add_data/"
 augmented_data_path = 'data/processed_data/augmented_data.csv'
 encoded_data_path = 'data/processed_data/encoded_data.csv'
-metrics_path = "metrics/" + target_column + "/"+classifier_name
+metrics_path = "metrics/" + target_column + "/"
 station_ID_path = "data/add_data/station_ID.csv"
 model_folder = "models/"
 predictions_folder = "data/predictions/" 

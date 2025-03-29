@@ -25,9 +25,9 @@ with DAG(
     tags=['data', 'docker', 'meteostralia', 'datascientest'],
     default_args={
         'owner': 'airflow',
-        'start_date': datetime.datetime(2021, 3 ,27, 8 ,0)  # tous les jours à 8h
+        'start_date': datetime.datetime(2021, 3 ,27, 8 ,0)  
     },
-    schedule_interval= '0 8 * * *',
+    schedule_interval= '0 8 * * *', # tous les jours à 8h
     catchup=False) as dag:
 
         # new_data_sensor = FileSensor(
@@ -51,10 +51,10 @@ with DAG(
 
         reset_data = DockerOperator(
             task_id='reset_data',
-            image='reset_data:latest',
+            image='meteostralia/meteorepo:reset_data'+os.environ["DOCKER_CURRENT_TAG"],
             auto_remove='success',
             command='python3 src/data_service/ingest_data/reset_data.py',
-            docker_url=f"tcp://host.docker.internal:2375",
+            docker_url=os.environ['AIRFLOW_DOCKER_HOST'],
             network_mode="bridge",
             mounts=[
                 Mount(source=os.environ['PROJECTPATH'] + '/data', 
@@ -68,10 +68,10 @@ with DAG(
 
         ingest_new_data = DockerOperator(
             task_id='ingest_new_data',
-            image='ingest_data:latest',
+            image='meteostralia/meteorepo:ingest_data'+os.environ["DOCKER_CURRENT_TAG"],
             auto_remove='success',
             command='python3 src/data_service/ingest_data/ingest_new_data.py',
-            docker_url=f"tcp://host.docker.internal:2375",
+            docker_url=os.environ['AIRFLOW_DOCKER_HOST'],
             network_mode="bridge",
             mounts=[
                 Mount(source=os.environ['PROJECTPATH'] + '/data', 
@@ -85,10 +85,10 @@ with DAG(
 
         complete_nas = DockerOperator(
             task_id='complete_nas',
-            image='complete_nas:latest',
+            image='meteostralia/meteorepo:complete_nas'+os.environ["DOCKER_CURRENT_TAG"],
             auto_remove='success',
             command='python3 src/data_service/complete_nas/complete_nas.py',
-            docker_url=f"tcp://host.docker.internal:2375",
+            docker_url=os.environ['AIRFLOW_DOCKER_HOST'],
             network_mode="bridge",
             mounts=[
                 Mount(source=os.environ['PROJECTPATH'] + '/data', 
@@ -102,10 +102,10 @@ with DAG(
 
         add_features = DockerOperator(
             task_id='add_features',
-            image='features:latest',
+            image='meteostralia/meteorepo:features'+os.environ["DOCKER_CURRENT_TAG"],
             auto_remove='success',
             command='python3 src/data_service/features/add_features.py',
-            docker_url=f"tcp://host.docker.internal:2375",
+            docker_url=os.environ['AIRFLOW_DOCKER_HOST'],
             network_mode="bridge",
             mounts=[
                 Mount(source=os.environ['PROJECTPATH'] + '/data', 
@@ -119,10 +119,10 @@ with DAG(
 
         encode_data = DockerOperator(
             task_id='encode_data',
-            image='encode_data:latest',
+            image='meteostralia/meteorepo:encode_data'+os.environ["DOCKER_CURRENT_TAG"],
             auto_remove='success',
             command='python3 src/data_service/encode_data/encode_data.py',
-            docker_url=f"tcp://host.docker.internal:2375",
+            docker_url=os.environ['AIRFLOW_DOCKER_HOST'],
             network_mode="bridge",
             mounts=[
                 Mount(source=os.environ['PROJECTPATH'] + '/data', 
@@ -136,10 +136,10 @@ with DAG(
 
         split_data = DockerOperator(
             task_id='split_data',
-            image='split_data:latest',
+            image='meteostralia/meteorepo:split_data'+os.environ["DOCKER_CURRENT_TAG"],
             auto_remove='success',
             command='python3 src/data_service/split_data/split_data.py',
-            docker_url=f"tcp://host.docker.internal:2375",
+            docker_url=os.environ['AIRFLOW_DOCKER_HOST'],
             network_mode="bridge",
             mounts=[
                 Mount(source=os.environ['PROJECTPATH'] + '/data', 
@@ -153,10 +153,10 @@ with DAG(
 
         scale_data = DockerOperator(
             task_id='scale_data_data',
-            image='scale_data:latest',
+            image='meteostralia/meteorepo:scale_data'+os.environ["DOCKER_CURRENT_TAG"],
             auto_remove='success',
             command='python3 src/data_service/scale_data/scale_data.py',
-            docker_url=f"tcp://host.docker.internal:2375",
+            docker_url=os.environ['AIRFLOW_DOCKER_HOST'],
             network_mode="bridge",
             mounts=[
                 Mount(source=os.environ['PROJECTPATH'] + '/data', 

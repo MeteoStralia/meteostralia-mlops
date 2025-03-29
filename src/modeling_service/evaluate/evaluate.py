@@ -7,11 +7,9 @@ import joblib
 import json
 import sys
 sys.path.append('./')
+#sys.path.append('../../../')
 from src.data_service.ingest_data.ingest_new_data import load_data
 from src.global_functions import create_folder_if_necessary, get_params_service
-
-
-
 
 def evaluate_model(
         model,
@@ -43,33 +41,37 @@ def evaluate_model(
        "roc_auc_score":roc_auc_score(y_test, y_pred)
     }
 
-    # Saving metrics to json file
-    save_metrics(metrics_path, metrics)
-    print(f"metrics saved to {metrics_path}")
-
     # mflow tracking
-    # loading train data to track them as artifacts
-    X_train = load_data(processed_data_folder + "X_train_scaled.csv")
-    y_train = load_data(processed_data_folder + "y_train.csv")
-    
-    dagshub.auth.add_app_token(os.environ['MLFLOW_TRACKING_USERNAME'], host=None)
-    mlflow.set_tracking_uri(os.environ['MLFLOW_TRACKING_URI'])
-    dagshub.init(url=os.environ['MLFLOW_TRACKING_URI'], mlflow=True)
+
+    dagshub.auth.add_app_token(os.environ['AIRFLOW_DAGSHUB_USER_TOKEN'], host=None)
+    mlflow.set_tracking_uri(os.environ['AIRFLOW_MLFLOW_TRACKING_URI'])
+    dagshub.init(url=os.environ['AIRFLOW_MLFLOW_TRACKING_URI'], mlflow=True)
     mlflow.set_experiment(os.environ["EXPERIMENT_NAME"])
+    
     with mlflow.start_run(run_name=os.environ["RUN_NAME"]) as run:
         mlflow.log_metrics(metrics)
         mlflow.log_params(model.get_params())
         mlflow.sklearn.log_model(
             sk_model=model, input_example=X_test,
               artifact_path=os.environ["ARTIFACT_PATH"])
-        
-    return metrics
+        run = mlflow.active_run()
+        run_id = run.info.run_id
+
+    # Saving metrics to json file
+    save_metrics(metrics_path, metrics, run_id)
+    print(f"metrics saved to {metrics_path}")
+
+    return metrics, run_id
 
 
-def save_metrics(metrics_path, metrics):
-    metrics_path = metrics_path + "_metrics.json"
-    with open(metrics_path, 'w') as f:
-        json.dump(metrics, f)
+def save_metrics(metrics_path, metrics, run_id):
+    metrics_path_history = metrics_path + "metrics_history.json"
+    metrics_id = {run_id:metrics}
+    with open(metrics_path_history, 'a') as f:
+        json.dump(metrics_id, f)
+    metrics_path_last = metrics_path + "lastmetrics.json"
+    with open(metrics_path_last, 'w') as f:
+        json.dump(metrics_id, f)
 
 def import_model(
         model_folder="models/",
@@ -89,7 +91,7 @@ def import_model(
     # Load the model
     model_path = model_folder+target_column+"/"+classifier_name+".pkl"    
     model = joblib.load(model_path)
-    return model
+    return model 
 
 if __name__ == "__main__":
     # # paths and parameters
@@ -105,4 +107,8 @@ if __name__ == "__main__":
     # Loading model
     model = import_model(model_folder, target_column, classifier_name)
     # Evaluate model and save metrics
-    evaluate_model(model, processed_data_folder, metrics_path)
+    metrics, run_id = evaluate_model(model, processed_data_folder, metrics_path)
+
+
+    
+       

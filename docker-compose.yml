@@ -1,11 +1,10 @@
-version: '3.8'
-
 services:
   api:
     build:
       context: ./api
       dockerfile: Dockerfile-api
     container_name: api
+    image: api:latest
     env_file:
       - ./api/.env
     environment:
@@ -27,6 +26,7 @@ services:
       context: ./streamlit
       dockerfile: Dockerfile-streamlit
     container_name: streamlit
+    image: streamlit:latest
     env_file:
       - ./streamlit/.env
     environment:
@@ -37,6 +37,7 @@ services:
       - "1111:1111"
     depends_on:
       - api
+
 
   prometheus:
     build:

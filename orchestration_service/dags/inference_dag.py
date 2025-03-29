@@ -21,9 +21,9 @@ with DAG(
     tags=['model', 'docker', 'meteostralia', 'datascientest'],
     default_args={
         'owner': 'airflow',
-        'start_date': datetime.datetime(2021, 3 ,27, 8 ,0)  # tous les jours à 8h
+        'start_date': datetime.datetime(2021, 3 ,27, 8 ,0)  
     },
-    schedule_interval= '0 8 * * *',
+    schedule_interval= '30 8 * * *', # tous les jours à 8h30
     catchup=False) as dag:
 
         # new_data_sensor = FileSensor(
@@ -47,11 +47,16 @@ with DAG(
 
         inference = DockerOperator(
             task_id='inference',
-            image='inference:latest',
+            image='meteostralia/meteorepo:inference'+os.environ["DOCKER_CURRENT_TAG"],
             auto_remove='success',
             command='python3 src/inference_service/inference.py',
-            docker_url=f"tcp://host.docker.internal:2375",
+            docker_url=os.environ['AIRFLOW_DOCKER_HOST'],
             network_mode="bridge",
+            environment = {
+                 'AIRFLOW_DAGSHUB_USER_TOKEN': os.environ['AIRFLOW_DAGSHUB_USER_TOKEN'],
+                 'AIRFLOW_MLFLOW_TRACKING_USERNAME': os.environ['AIRFLOW_MLFLOW_TRACKING_USERNAME'],
+                 'AIRFLOW_MLFLOW_TRACKING_URI': os.environ['AIRFLOW_MLFLOW_TRACKING_URI']
+            },
             mounts=[
                 Mount(source=os.environ['PROJECTPATH'] + '/data', 
                     target='/app/data', 
