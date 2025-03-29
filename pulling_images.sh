@@ -1,6 +1,6 @@
 #!/bin/bash
-timestamp=$DOCKER_CURRENT_TAG
-timestamp="28032025"
+timestamp=$DOCKER_CURRENT_TAG # TODO à mettre en dynamique
+timestamp="28032025" # TODO à mettre en dynamique
 docker login -u=meteostralia -p=meteostralia\*2410 # à sécuriser
 
 echo "Pulling images with tag "$timestamp

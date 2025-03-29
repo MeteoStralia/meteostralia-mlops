@@ -13,3 +13,4 @@ echo -e "AIRFLOW_MLFLOW_TRACKING_URI=https://dagshub.com/bruno.vermont/meteostra
 #echo -e "AIRFLOW_DOCKER_HOST=\"unix://var/run/docker.sock\"" >> .env #Pour linux
 echo -e "AIRFLOW_DOCKER_HOST=tcp://host.docker.internal:2375" >> .env 
 
+# TODO add docker username and password

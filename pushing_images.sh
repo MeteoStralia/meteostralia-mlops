@@ -1,27 +1,7 @@
 #!/bin/bash
 # A DECLENCER A CHAQUE GIT PUSH ou FETCH
-echo "stopping all containers"
-#docker stop $(docker ps -a -q)
-
-echo "Building data service images"
-echo "":
-docker compose -f src/data_service/docker-compose.yml build
-
-echo "Building modeling service images"
-echo "":
-docker compose -f src/modeling_service/docker-compose.yml build
-
-echo "Building inference service images"
-echo "":
-docker compose -f src/inference_service/docker-compose.yml build
-
-echo "Building api streamlit and airflow images"
-echo "":
-docker compose -f docker-compose_airflow.yaml build
-
 timestamp="28032025" # TODO à mettre en dynamique
 docker login -u=meteostralia -p=meteostralia\*2410  # à sécuriser
-
 
 echo "Pushing images with tag "$timestamp
 echo "":
@@ -36,8 +16,8 @@ docker tag  split_data:latest meteostralia/meteorepo:split_data$timestamp
 docker tag  training:latest meteostralia/meteorepo:training$timestamp 
 docker tag  evaluate:latest meteostralia/meteorepo:evaluate$timestamp 
 docker tag  inference:latest meteostralia/meteorepo:inference$timestamp 
-docker tag  meteostralia-mlops-api:latest meteostralia/meteorepo:meteostralia-mlops-api$timestamp 
-docker tag  meteostralia-mlops-streamlit:latest meteostralia/meteorepo:meteostralia-mlops-streamlit$timestamp 
+docker tag  api:latest meteostralia/meteorepo:api$timestamp 
+docker tag  streamlit:latest meteostralia/meteorepo:streamlit$timestamp 
 
 docker push meteostralia/meteorepo:reset_data$timestamp
 docker push meteostralia/meteorepo:ingest_data$timestamp
@@ -49,10 +29,10 @@ docker push meteostralia/meteorepo:split_data$timestamp
 docker push meteostralia/meteorepo:training$timestamp
 docker push meteostralia/meteorepo:evaluate$timestamp
 docker push meteostralia/meteorepo:inference$timestamp
-# docker push meteostralia/meteorepo:meteostralia-mlops-api$timestamp
-# docker push meteostralia/meteorepo:meteostralia-mlops-streamlit$timestamp
+docker push meteostralia/meteorepo:api$timestamp
+docker push meteostralia/meteorepo:streamlit$timestamp
 
-# TODO airflow images
+# TODO airflow images and monitoring images
 
 # Add tag to environment var
 echo -e "DOCKER_CURRENT_TAG="$timestamp >> .env 
