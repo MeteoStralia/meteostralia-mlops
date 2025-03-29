@@ -5,6 +5,8 @@ import dagshub
 from dotenv import load_dotenv
 import sys
 import os
+import joblib
+
 sys.path.append('./')
 from src.inference_service.scrap_last_data import scrap_last_predictdata, process_scrapped_data
 from src.modeling_service.evaluate.evaluate import import_model
@@ -77,6 +79,11 @@ if __name__ == "__main__": # TODO mettre en fonction
     # Load the model from MLFLOW
     model = get_best_model(metric='f1_score')
 
+    # save target and model name in model path
+    model_path = model_folder+ target_column +"/"+"best_current_model.pkl"   
+    joblib.dump(model, model_path)
+    print(f"Model saved to {model_path}")
+    
     # Making predictions
     predictions = model.predict(features)
     predictions = pd.DataFrame(predictions, 

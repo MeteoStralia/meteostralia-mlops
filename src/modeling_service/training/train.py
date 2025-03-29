@@ -34,7 +34,7 @@ def train_model(processed_data_folder="data/processed_data/",
     model.fit(X_train, y_train)
 
     # save target and model name in model path
-    model_path = model_folder+target_column+"/"+type(model).__name__+".pkl"    # Sauvegarder le modèle
+    model_path = model_folder+target_column+"/last_run_model.pkl"    # Sauvegarder le modèle
     joblib.dump(model, model_path)
     print(f"Model saved to {model_path}")
     

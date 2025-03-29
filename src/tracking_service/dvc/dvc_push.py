@@ -1,11 +1,16 @@
 import subprocess
 import datetime
+import json
+import os
 
-timestamp = datetime.datetime.now().timestamp()
-timestamp = str(int(round(timestamp)))
+with open("metrics/RainTomorrow/lastmetrics.json", "r") as file:
+    metrics = json.load(file)
+
+
+tag = list(metrics.keys())[0]
 subprocess.run('dvc commit -q')
 subprocess.run('git add DVC.lock')
-subprocess.run("git commit -m 'new_data and model" + timestamp + "'")
-subprocess.run("git tag -a " + timestamp + " -m 'new_data " + timestamp + "'")
+subprocess.run(f"git commit -m 'datamodel'")
+subprocess.run(f"git tag -a {tag} -m 'datamodel'")
 subprocess.run('git push origin --tags')
 subprocess.run('dvc push')

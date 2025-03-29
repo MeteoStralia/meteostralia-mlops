@@ -65,11 +65,11 @@ def evaluate_model(
 
 
 def save_metrics(metrics_path, metrics, run_id):
-    metrics_path_history = metrics_path + "_metrics_history.json"
+    metrics_path_history = metrics_path + "metrics_history.json"
     metrics_id = {run_id:metrics}
     with open(metrics_path_history, 'a') as f:
         json.dump(metrics_id, f)
-    metrics_path_last = metrics_path + "_lastmetrics.json"
+    metrics_path_last = metrics_path + "lastmetrics.json"
     with open(metrics_path_last, 'w') as f:
         json.dump(metrics_id, f)
 
