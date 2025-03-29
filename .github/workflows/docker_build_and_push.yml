@@ -1,7 +1,7 @@
 name: building_images
 on:
-  # schedule:
-  #   - cron: '* * * * 7,0'
+  schedule:
+    - cron: '0 7 * * * *' # everyday at 7
   # push:
   #   branches:
   #     - "dev-airflow"
@@ -20,7 +20,9 @@ jobs:
         uses: actions/checkout@v4  
       - name: Make the script files executable
         run: chmod +x building_images.sh pushing_images.sh
-      - name: Run the scripts
+      - name: building images
         run: 
           bash building_images.sh
+      - name: pushing images
+        run: 
           bash pushing_images.sh
