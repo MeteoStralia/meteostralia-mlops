@@ -201,7 +201,7 @@ DVC repro
 
 Commit changes in dvc metadata 
 ```
-dvc commit
+dvc commit 
 ```
 
 Commit changes in metadata to git

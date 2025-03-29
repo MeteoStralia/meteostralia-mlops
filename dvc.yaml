@@ -80,5 +80,5 @@ stages:
     outs:
     -  ./metrics/
     metrics:
-    - metrics/RainTomorrow/LogisticRegression_metrics.json:
+    - metrics/RainTomorrow/lastmetrics.json:
         cache: false

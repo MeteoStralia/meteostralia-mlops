@@ -2,7 +2,7 @@ FROM python:3.10-slim
 
 WORKDIR /app/
 COPY requirements.txt .
-ADD mlflow_setup.py .
+ADD experiment_setup.py .
 RUN pip install --no-cache-dir -r requirements.txt
 EXPOSE 3333:3333
 CMD ["python","experiment_setup.py"]

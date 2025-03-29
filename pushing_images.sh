@@ -6,19 +6,6 @@ docker login -u=meteostralia -p=meteostralia\*2410  # à sécuriser
 echo "Pushing images with tag "$timestamp
 echo "":
 
-docker tag  reset_data:latest meteostralia/meteorepo:reset_data$timestamp 
-docker tag  ingest_data:latest meteostralia/meteorepo:ingest_data$timestamp 
-docker tag  complete_nas:latest meteostralia/meteorepo:complete_nas$timestamp 
-docker tag  encode_data:latest meteostralia/meteorepo:encode_data$timestamp 
-docker tag  features:latest meteostralia/meteorepo:features$timestamp 
-docker tag  scale_data:latest meteostralia/meteorepo:scale_data$timestamp 
-docker tag  split_data:latest meteostralia/meteorepo:split_data$timestamp 
-docker tag  training:latest meteostralia/meteorepo:training$timestamp 
-docker tag  evaluate:latest meteostralia/meteorepo:evaluate$timestamp 
-docker tag  inference:latest meteostralia/meteorepo:inference$timestamp 
-docker tag  api:latest meteostralia/meteorepo:api$timestamp 
-docker tag  streamlit:latest meteostralia/meteorepo:streamlit$timestamp 
-
 docker push meteostralia/meteorepo:reset_data$timestamp
 docker push meteostralia/meteorepo:ingest_data$timestamp
 docker push meteostralia/meteorepo:complete_nas$timestamp

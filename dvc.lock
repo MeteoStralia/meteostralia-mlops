@@ -155,8 +155,8 @@ stages:
     outs:
     - path: ./models/
       hash: md5
-      md5: a08a8807dd24b62c2bd785e0d8c2b377.dir
-      size: 9446132
+      md5: 6e01f81c42f216e012691adea1f3491c.dir
+      size: 9585332
       nfiles: 2
   evaluate:
     cmd: python ./src/modeling_service/evaluate/evaluate.py
@@ -198,6 +198,6 @@ stages:
     outs:
     - path: .\data\parameters
       hash: md5
-      md5: b2544d523835acac022f75284dd4c1d9.dir
-      size: 2602
+      md5: 4589f5aaa663b8f8ec1f6136b07a8a2b.dir
+      size: 2227
       nfiles: 4

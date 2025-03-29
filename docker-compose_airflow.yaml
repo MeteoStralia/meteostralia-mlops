@@ -91,6 +91,9 @@ x-airflow-common:
     - ./src:/opt/airflow/src
     - ./models:/opt/airflow/models
     - ./metrics:/opt/airflow/models
+    - ${PWD}/dvc.lock:/opt/airflow/dvc.lock
+    - ${PWD}/.dvc/config:/opt/airflow/.dvc/config
+    - ${PWD}/.dvc/config.local:/opt/airflow/.dvc/config.local
     - type: bind
       source: ./data
       target: /app/data

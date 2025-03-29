@@ -1,4 +1,4 @@
 import subprocess
 
-subprocess.run('DVC fetch')
-subprocess.run('DVC checkout')
+subprocess.run('dvc fetch')
+subprocess.run('dvc checkout')
