@@ -21,6 +21,6 @@ jobs:
       - name: Make the script files executable
         run: chmod +x building_images.sh pushing_images.sh
       - name: Run the scripts
-        run: |
-          building_images.sh
-          pushing_images.sh
+        run: 
+          bash building_images.sh
+          bash pushing_images.sh
