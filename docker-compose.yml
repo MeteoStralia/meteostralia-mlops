@@ -12,20 +12,15 @@ services:
       - DB_PATH=/app/database.db
       - PREDICTION_PATH=/app/previsions.csv
       - COORDINATE=/app/cities_coordinates.csv
-      # - AIRFLOW_HOME=/opt/airflow
-      # - AIRFLOW__CORE__DAGS_FOLDER=/opt/airflow/dags
     volumes:
-      # - ./api/dags:/opt/airflow/dags
       - ./database.db:/app/database.db
       - ./data/predictions/current_prediction.csv:/app/previsions.csv
       - ./data/raw_data/cities_coordinates.csv:/app/cities_coordinates.csv
     networks:
       - api_streamlit
+      - api_prometheus
     ports:
       - "2222:2222"
-    # depends_on:
-    #   - airflow-webserver
-    #   - airflow-scheduler
 
   streamlit:
     build:
@@ -43,57 +38,26 @@ services:
     depends_on:
       - api
 
-  # airflow-webserver:
-  #   image: apache/airflow:2.2.0
-  #   container_name: airflow-webserver
-  #   environment:
-  #     - AIRFLOW__CORE__EXECUTOR=LocalExecutor
-  #     - AIRFLOW__WEB_SERVER__BASE_URL=http://localhost:8080
-  #     - AIRFLOW__WEB_SERVER__WEB_SERVER_PORT=8080
-  #   volumes:
-  #     - ./dags:/opt/airflow/dags
-  #     - ./logs:/opt/airflow/logs
-  #     - ./airflow.cfg:/opt/airflow/airflow.cfg
-  #   ports:
-  #     - "8080:8080"  # Expose the Airflow web UI on port 8080
-  #   networks:
-  #     - api_streamlit
-  #   depends_on:
-  #     - airflow-scheduler
-
-  # airflow-scheduler:
-  #   image: apache/airflow:2.2.0
-  #   container_name: airflow-scheduler
-  #   environment:
-  #     - AIRFLOW__CORE__EXECUTOR=LocalExecutor
-  #   volumes:
-  #     - ./dags:/opt/airflow/dags
-  #     - ./logs:/opt/airflow/logs
-  #     - ./airflow.cfg:/opt/airflow/airflow.cfg
-  #   networks:
-  #     - api_streamlit
+  prometheus:
+    build:
+      context: ./prometheus
+      dockerfile: Dockerfile-prometheus
+    container_name: prometheus
+    env_file:
+      - ./prometheus/.env
+    environment:
+      - TARGET_HOST=api
+    networks:
+      - api_prometheus
+    ports:
+      - "3333:3333"
+    depends_on:
+      - api
 
 networks:
   api_streamlit:
     name: api_streamlit
     driver: bridge
-
-
-  # Not working yet
-  # data_service:
-  #   build :
-  #     context: src/data_service/
-  #     dockerfile: data_service_dockerfile
-  #   image: data_service:latest
-  #   container_name: data_service
-  #   command: compose -f docker-compose.yml build
-  #   volumes:
-  #       - ./src/:/src
-  #       - type: bind
-  #         source: src/
-  #         target: /app_data/src
-  #       - ./data/:/data
-  #       - type: bind
-  #         source: data/
-  #         target: /app_data/data
-  #       - /var/run/docker.sock:/var/run/docker.sock
+  api_prometheus:
+    name: api_prometheus
+    driver: bridge

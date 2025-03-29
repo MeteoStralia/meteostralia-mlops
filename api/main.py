@@ -6,9 +6,12 @@ import sqlite3
 import os
 from dotenv import load_dotenv
 
-from fastapi import FastAPI, Depends, HTTPException, status, BackgroundTasks
+from fastapi import FastAPI, Depends, HTTPException, status, BackgroundTasks, Request
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
-from fastapi.responses import FileResponse
+from fastapi.responses import PlainTextResponse
+
+from prometheus_client import make_asgi_app, Counter, Gauge, generate_latest
+from prometheus_client import CollectorRegistry
 
 from typing import Annotated, Union, Literal, Optional
 from pydantic import BaseModel, EmailStr
@@ -50,11 +53,13 @@ class TokenData(BaseModel):
 
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl='login',
-                                     description = 'token pour authentifier l\'user lors de la conexion')
+                                     description = 'token pour authentifier \
+                                         l\'user lors de la conexion')
 
 
 
-app = FastAPI()
+
+
 
 
 def get_hash(password):
@@ -70,10 +75,11 @@ def get_user(username: str):
     con.row_factory = sqlite3.Row
     cur = con.cursor()
     try:
-        res = cur.execute("""SELECT username, email, scope, password as hashed_password
-                          FROM users
-                          WHERE username = ?""",
-                          (username,))
+        res = cur.execute("""SELECT username, email, scope, password as \
+            hashed_password
+            FROM users
+            WHERE username = ?""",
+            (username,))
         user = res.fetchone()
     except sqlite3.IntegrityError:
         return 'pas trouvé'
@@ -90,7 +96,9 @@ def authenticate_user(username : str, password : str):
         return False
     return user
 
-def create_access_token(data : dict, expires_delta : Union[timedelta , None] = None):
+def create_access_token(data : dict,
+                        expires_delta : Union[timedelta , None] = None):
+
     to_encode = data.copy()
     if expires_delta:
         expire = datetime.now(timezone.utc) + expires_delta
@@ -110,28 +118,53 @@ async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
         payload = jwt.decode(token, SECRET_KEY, algorithms = [ALGORITHM])
         username = payload.get('sub')
         if username is None:
-            raise credentials_exception
+            raise None
         token_data = TokenData(username=username)
     except InvalidTokenError:
-        raise credentials_exception
+        return None
+
     user = get_user(token_data.username)
     if user is None:
-        raise credentials_exception
+        return None
     return user
 
-async def get_current_active_user(current_user : Annotated[User, Depends(get_current_user)]):
+async def get_current_active_user(current_user : Annotated[User,
+                                                           Depends(get_current_user)]):
     if current_user.disabled:
         raise HTTPException(status_code = 400, detail = 'Inactive user')
     return current_user
 
 
+app = FastAPI()
+
+collector = CollectorRegistry()
+
+
+index_counter = Counter(name = 'api_request_home',
+                documentation = 'total home page request',
+                )
+
+metrics_app = make_asgi_app()
+app.mount("/metrics/", metrics_app)
+
+
 @app.get('/')
-async def welcome_page(current_user: Annotated[Optional[User], Depends(get_current_user)]):
+async def welcome_page(current_user: Annotated[Optional[User],
+                                               Depends(get_current_user)]):
+
+
+    index_counter.inc()
+
+
+
     if current_user:
-        return {'message' : f'Welcome to Meteostralia from API {current_user.username}',
+        return {'message' : f'Welcome to Meteostralia from API \
+                {current_user.username}',
                 'current_user' : current_user}
-    # else:
-    #     return{'message' : 'Welcome to Meteostralia from API disconnected'}
+    else:
+        if not current_user:
+            return{'message' : 'Welcome to Meteostralia from API disconnected'}
+
 
 
 @app.post('/login')
@@ -187,7 +220,8 @@ async def register_user(data : UserInDB):
     return {'message': 'User created successfully'}
 
 @app.delete('/disable_user')
-async def disable_user(current_user: Annotated[User, Depends(get_current_active_user)]):
+async def disable_user(current_user: Annotated[User,
+                                               Depends(get_current_active_user)]):
     conn = sqlite3.connect(f'{db_url}')
     cur = conn.cursor()
     cur.execute("""DELETE FROM users WHERE username = ?""",
@@ -199,14 +233,16 @@ async def disable_user(current_user: Annotated[User, Depends(get_current_active_
 
 
 @app.get('/users/me')
-async def read_users_me(current_user: Annotated[User, Depends(get_current_active_user)]):
+async def read_users_me(current_user: Annotated[User,
+                                                Depends(get_current_active_user)]):
     if current_user:
         return {'current_user' : current_user}
     else:
         return HTTPException(status_code = 401, detail = 'Unauthorized')
 
 @app.get('/previsions/')
-async def previsions_page(current_user: Annotated[User, Depends(get_current_active_user)]):
+async def previsions_page(current_user: Annotated[User,
+                                                  Depends(get_current_active_user)]):
     if current_user:
 
         predictions_path = os.getenv('PREDICTION_PATH')
@@ -240,9 +276,24 @@ async def previsions_page(current_user: Annotated[User, Depends(get_current_acti
         return HTTPException(status_code = 401, detail = 'Unauthorized')
 
 @app.get('/dashboard/')
-async def dashboard_page(current_user: Annotated[str, Depends(get_current_active_user)]):
+async def dashboard_page(current_user: Annotated[str,
+                                                 Depends(get_current_active_user)]):
     if current_user.scope == 'admin':
         return {'current_user' : current_user,
                 'message' : 'page autorisé'}
     else:
         raise HTTPException(status_code = 401, detail = 'Unauthorized')
+
+
+#################################
+#Prometheus
+
+
+
+
+
+
+
+async def my_metrics(resquest: Request):
+    text_to_display = generate_latest(collector)
+    return PlainTextResponse(content=text_to_display)
