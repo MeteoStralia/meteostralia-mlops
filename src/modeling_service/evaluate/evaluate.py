@@ -75,8 +75,7 @@ def save_metrics(metrics_path, metrics, run_id):
 
 def import_model(
         model_folder="models/",
-        target_column="RainTomorrow",
-        classifier_name="LogisticRegression"):
+        target_column="RainTomorrow"):
     """
     Load a saved model
 
@@ -89,7 +88,7 @@ def import_model(
         model : sklearn trained model
     """
     # Load the model
-    model_path = model_folder+target_column+"/"+classifier_name+".pkl"    
+    model_path = model_folder+target_column+"/last_run_model.pkl"   
     model = joblib.load(model_path)
     return model 
 
@@ -105,7 +104,7 @@ if __name__ == "__main__":
 
     create_folder_if_necessary("metrics/" + target_column + "/")
     # Loading model
-    model = import_model(model_folder, target_column, classifier_name)
+    model = import_model(model_folder, target_column)
     # Evaluate model and save metrics
     metrics, run_id = evaluate_model(model, processed_data_folder, metrics_path)
 

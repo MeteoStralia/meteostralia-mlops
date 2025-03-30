@@ -319,58 +319,58 @@ services:
       airflow-init:
         condition: service_completed_successfully
   
-  api:
-    build:
-      context: ./api
-      dockerfile: Dockerfile-api
-    image: meteostralia/meteorepo:api${DOCKER_CURRENT_TAG}
-    container_name: api
-    env_file:
-      - ./api/.env
-    environment:
-      - DB_PATH=/app/database.db
-      - PREDICTION_PATH=/app/previsions.csv
-      - COORDINATE=/app/cities_coordinates.csv
-      # - AIRFLOW_HOME=/opt/airflow
-      # - AIRFLOW__CORE__DAGS_FOLDER=/opt/airflow/dags
-    volumes:
-      # - ./api/dags:/opt/airflow/dags
-      - ./database.db:/app/database.db
-      - ./data/predictions/current_prediction.csv:/app/previsions.csv
-      - ./data/raw_data/cities_coordinates.csv:/app/cities_coordinates.csv
-      - type: bind
-        source: ./data
-        target: /app/data
-    networks:
-      - api_streamlit
-    ports:
-      - "2222:2222"
-    # depends_on:
-    #   - airflow-webserver
-    #   - airflow-scheduler
+  # api:
+  #   build:
+  #     context: ./api
+  #     dockerfile: Dockerfile-api
+  #   image: meteostralia/meteorepo:api${DOCKER_CURRENT_TAG}
+  #   container_name: api
+  #   env_file:
+  #     - ./api/.env
+  #   environment:
+  #     - DB_PATH=/app/database.db
+  #     - PREDICTION_PATH=/app/previsions.csv
+  #     - COORDINATE=/app/cities_coordinates.csv
+  #     # - AIRFLOW_HOME=/opt/airflow
+  #     # - AIRFLOW__CORE__DAGS_FOLDER=/opt/airflow/dags
+  #   volumes:
+  #     # - ./api/dags:/opt/airflow/dags
+  #     - ./database.db:/app/database.db
+  #     - ./data/predictions/current_prediction.csv:/app/previsions.csv
+  #     - ./data/raw_data/cities_coordinates.csv:/app/cities_coordinates.csv
+  #     - type: bind
+  #       source: ./data
+  #       target: /app/data
+  #   networks:
+  #     - api_streamlit
+  #   ports:
+  #     - "2222:2222"
+  #   # depends_on:
+  #   #   - airflow-webserver
+  #   #   - airflow-scheduler
 
-  streamlit:
-    build:
-      context: ./streamlit
-      dockerfile: Dockerfile-streamlit
-    image: meteostralia/meteorepo:streamlit${DOCKER_CURRENT_TAG}
-    container_name: streamlit
-    env_file:
-      - ./streamlit/.env
-    environment:
-      - API_URL=api
-    networks:
-      - api_streamlit
-    ports:
-      - "1111:1111"
-    depends_on:
-      - api
+  # streamlit:
+  #   build:
+  #     context: ./streamlit
+  #     dockerfile: Dockerfile-streamlit
+  #   image: meteostralia/meteorepo:streamlit${DOCKER_CURRENT_TAG}
+  #   container_name: streamlit
+  #   env_file:
+  #     - ./streamlit/.env
+  #   environment:
+  #     - API_URL=api
+  #   networks:
+  #     - api_streamlit
+  #   ports:
+  #     - "1111:1111"
+  #   depends_on:
+  #     - api
 
 
 volumes:
   postgres-db-volume:
 
-networks:
-  api_streamlit:
-    name: api_streamlit
-    driver: bridge
+# networks:
+#   api_streamlit:
+#     name: api_streamlit
+#     driver: bridge
