@@ -1,5 +1,6 @@
 import streamlit as st
 import requests
+import time
 import os
 import emoji
 from dotenv import load_dotenv
@@ -30,12 +31,18 @@ st.write('page_dashboard from streamlit')
 
 if token:
 
-    st.write(response.status_code)
+    # st.write(response.status_code)
     st.write('################### from api dashboard.py')
 
-    st.write(response.json())
+    # st.write(response.json())
+
+    st.page_link('http://localhost:9090/graph?g0.expr=api_request_home_total&g0.tab=0&g0.stacked=0&g0.show_exemplars=0&g0.range_input=5m',
+                 label = 'Prometheus',
+                 icon = '📊')
     # st.write('username :', response.json()['username'])
     # st.write('scope :', response.json()['scope'])
 
 else:
-    st.write(response.status_code)
+    st.warning('you must be connected to acces this page', icon = "⚠️")
+    time.sleep(2)
+    st.switch_page('app.py')
