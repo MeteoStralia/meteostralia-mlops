@@ -1,0 +1,23 @@
+# syntax=docker/dockerfile:1
+
+FROM python:3.9-slim
+
+# Définir le répertoire de travail
+WORKDIR /app/
+
+# Télécharger et installer Prometheus
+RUN apt-get update && apt-get install -y wget && \
+    wget https://github.com/prometheus/prometheus/releases/download/v2.45.0/prometheus-2.45.0.linux-amd64.tar.gz && \
+    tar -xvzf prometheus-2.45.0.linux-amd64.tar.gz && \
+    mv prometheus-2.45.0.linux-amd64/prometheus /usr/local/bin/ && \
+    mv prometheus-2.45.0.linux-amd64/promtool /usr/local/bin/ && \
+    rm -rf prometheus-2.45.0.linux-amd64.tar.gz prometheus-2.45.0.linux-amd64
+
+# Copier le fichier prometheus.yml dans l'image
+COPY prometheus.yml /app/prometheus.yml
+
+# Exposer le port 3333 pour accéder à Prometheus
+EXPOSE 9090
+
+# Commande pour démarrer Prometheus avec son fichier de configuration
+CMD ["prometheus", "--config.file=/app/prometheus.yml"]

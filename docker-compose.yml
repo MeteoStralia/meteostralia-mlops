@@ -11,20 +11,15 @@ services:
       - DB_PATH=/app/database.db
       - PREDICTION_PATH=/app/previsions.csv
       - COORDINATE=/app/cities_coordinates.csv
-      # - AIRFLOW_HOME=/opt/airflow
-      # - AIRFLOW__CORE__DAGS_FOLDER=/opt/airflow/dags
     volumes:
-      # - ./api/dags:/opt/airflow/dags
       - ./database.db:/app/database.db
       - ./data/predictions/current_prediction.csv:/app/previsions.csv
       - ./data/raw_data/cities_coordinates.csv:/app/cities_coordinates.csv
     networks:
       - api_streamlit
+      - api_prometheus
     ports:
       - "2222:2222"
-    # depends_on:
-    #   - airflow-webserver
-    #   - airflow-scheduler
 
   streamlit:
     build:
@@ -43,7 +38,26 @@ services:
     depends_on:
       - api
 
+
+  prometheus:
+    build:
+      context: ./prometheus
+      dockerfile: Dockerfile-prometheus
+    container_name: prometheus
+    image: prometheus:latest
+    environment:
+      - TARGET_HOST=api
+    networks:
+      - api_prometheus
+    ports:
+      - "9090:9090"
+    depends_on:
+      - api
+
 networks:
   api_streamlit:
     name: api_streamlit
+    driver: bridge
+  api_prometheus:
+    name: api_prometheus
     driver: bridge
