@@ -1,0 +1,34 @@
+services:
+  mflow:
+      build:
+        context: /mlfow
+        dockerfile: ./tracking_dockerfile
+      image: tracking:latest
+      container_name: tracking
+  dvc_fetch:
+    build:
+        context: /dvc
+        dockerfile: ./dvc_fetch_dockerfile
+    image: dvc_fetch:latest
+    container_name: dvc_fetch
+    # volumes:
+    #   # - app-vol:/dvcdata
+    #   # - ${PWD}/dvc.yaml:/app/dvc.yaml      
+    #   # - ${PWD}/dvc.lock:/app/dvc.lock 
+    #   - type: bind
+    #     source: ../../test_container_dvc
+    #     target: /app
+    #   - type: bind
+    #     source: ../../data
+    #     target: /app/tmp_dir/data
+    #   - type: bind
+    #     source: ../../models
+    #     target: /app/tmp_dir/models
+    #   - type: bind
+    #     source: ../../metrics
+    #     target: /app/tmp_dir/metrics
+    # ports:
+    #   - "8088:8088"
+# volumes:
+#   app-vol:
+    
