@@ -21,11 +21,6 @@ echo "Powered by :
 echo ""
 echo ""
 
-# chmod -R 777 orchestration_service/logs/
-# chmod -R 777 orchestration_service/dags/
-# chmod -R 777 orchestration_service/plugins/
-
-
 echo "stopping all containers"
 #docker stop $(docker ps -a -q)
 
