@@ -58,10 +58,6 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl='login',
 
 
 
-
-
-
-
 def get_hash(password):
     return bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
 

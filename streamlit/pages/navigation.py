@@ -30,11 +30,18 @@ def header_menu(token, api_url, response):
                         login_button = st.form_submit_button(label="login")
 
                         if login_button:
+
+                            with st.spinner():
+                                time.sleep(2)
+
+
                             data = {'username' : username,
                                     'password' : password}
 
                             response = requests.post(f'http://{api_url}:2222/login',
                                                     data = data)
+
+
 
                             if response.status_code == 200:
                                 st.session_state["token"] = response.json()["access_token"]
