@@ -44,14 +44,13 @@ services:
       context: ./prometheus
       dockerfile: Dockerfile-prometheus
     container_name: prometheus
-    env_file:
-      - ./prometheus/.env
+    image: prometheus:latest
     environment:
       - TARGET_HOST=api
     networks:
       - api_prometheus
     ports:
-      - "3333:3333"
+      - "9090:9090"
     depends_on:
       - api
 
