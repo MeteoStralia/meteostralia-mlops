@@ -130,8 +130,16 @@ async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
 
 async def get_current_active_user(current_user : Annotated[User,
                                                            Depends(get_current_user)]):
+    if current_user is None:  # Vérifier si l'utilisateur est None
+        raise HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="Invalid token or user not found"
+    )
     if current_user.disabled:
-        raise HTTPException(status_code = 400, detail = 'Inactive user')
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Inactive user"
+        )
     return current_user
 
 
@@ -152,10 +160,7 @@ app.mount("/metrics/", metrics_app)
 async def welcome_page(current_user: Annotated[Optional[User],
                                                Depends(get_current_user)]):
 
-
     index_counter.inc()
-
-
 
     if current_user:
         return {'message' : f'Welcome to Meteostralia from API \
