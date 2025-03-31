@@ -30,4 +30,6 @@ python ./api/manage_db.py
 
 echo "lancement du docker-compose"
 echo ""
-docker compose -f docker-compose_airflow.yaml up #-d
+docker compose -f docker-compose_airflow.yaml up -d
+docker-compose up --build --force-recreate
+
