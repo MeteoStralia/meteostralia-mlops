@@ -13,7 +13,7 @@ WORKDIR /app
 RUN git init
 RUN git clone --depth 1 --filter=blob:none -b main https:\/\/${GIT_TOKEN_NAME}:${GIT_TOKEN}@${GIT_REPO} tmp_dir
 RUN cd tmp_dir && \
-dvc remote modify origin endpointurl https://dagshub.com/bruno.vermont/meteostralia-mlops.s3 && \
+dvc remote modify origin endpointurl dagshubrepo.s3 && \
 dvc remote modify origin access_key_id ${ACCESS_KEY_ID} && \
 dvc remote modify origin secret_access_key ${SECRET_ACCESS_KEY} && \
 dvc remote default origin && \

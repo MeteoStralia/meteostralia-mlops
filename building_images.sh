@@ -29,7 +29,7 @@ echo "":
 
 # tagging images 
 timestamp="28032025" # TODO à mettre en dynamique
-docker login -u=meteostralia -p=meteostralia\*2410  # à sécuriser
+docker login -u=dockerusername -p=dockermp # à sécuriser
 
 docker tag  reset_data:latest meteostralia/meteorepo:reset_data$timestamp 
 docker tag  ingest_data:latest meteostralia/meteorepo:ingest_data$timestamp 
