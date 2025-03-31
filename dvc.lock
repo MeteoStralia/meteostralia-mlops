@@ -10,17 +10,17 @@ stages:
     outs:
     - path: .\data\parameters
       hash: md5
-      md5: 4589f5aaa663b8f8ec1f6136b07a8a2b.dir
-      size: 2227
+      md5: fc25c6804a82670f53cb751dfc12c833.dir
+      size: 2811
       nfiles: 4
   reset_data:
     cmd: python .\src\data_service\ingest_data\reset_data.py
     deps:
     - path: .\data\new_data\
       hash: md5
-      md5: d9a40844d7172f1bf377f978335971bc.dir
-      size: 168439
-      nfiles: 1
+      md5: a72ce7382279bc89c4d0fe12ea68909b.dir
+      size: 340792
+      nfiles: 2
     - path: .\data\raw_data\weatherAUS.csv
       hash: md5
       md5: 38be9d9fce05fc044df3443939cdd18d
@@ -32,15 +32,15 @@ stages:
     outs:
     - path: .\data\current_data\current_data.csv
       hash: md5
-      md5: d7f477ac8a20f9a4e8fcff738b2a071e
-      size: 18774683
+      md5: a94e71fa636a5488b11d41a696c3c342
+      size: 18780575
   ingest_new_data:
     cmd: python .\src\data_service\ingest_data\ingest_new_data.py
     deps:
     - path: .\data\current_data\current_data.csv
       hash: md5
-      md5: d7f477ac8a20f9a4e8fcff738b2a071e
-      size: 18774683
+      md5: a94e71fa636a5488b11d41a696c3c342
+      size: 18780575
     - path: .\src\data_service\ingest_data\ingest_new_data.py
       hash: md5
       md5: 1731b8066666703db050bd58ee4ad741
@@ -48,8 +48,8 @@ stages:
     outs:
     - path: .\data\current_data\uptodate_data.csv
       hash: md5
-      md5: d7f477ac8a20f9a4e8fcff738b2a071e
-      size: 18774683
+      md5: a94e71fa636a5488b11d41a696c3c342
+      size: 18780575
   complete_nas:
     cmd: python ./src/data_service/complete_nas/complete_nas.py
     deps:
@@ -59,20 +59,20 @@ stages:
       size: 5282
     - path: .\data\current_data\uptodate_data.csv
       hash: md5
-      md5: d7f477ac8a20f9a4e8fcff738b2a071e
-      size: 18774683
+      md5: a94e71fa636a5488b11d41a696c3c342
+      size: 18780575
     outs:
     - path: ./data/processed_data/nas_completed_data.csv
       hash: md5
-      md5: 1f3643e04979de6f5735303185d8ece6
-      size: 20181185
+      md5: e0f2a84e501d06c9d1b330e7c38dd2cd
+      size: 20186294
   add_features:
     cmd: python ./src/data_service/features/add_features.py
     deps:
     - path: ./data/processed_data/nas_completed_data.csv
       hash: md5
-      md5: 1f3643e04979de6f5735303185d8ece6
-      size: 20181185
+      md5: e0f2a84e501d06c9d1b330e7c38dd2cd
+      size: 20186294
     - path: ./src/data_service/features/add_features.py
       hash: md5
       md5: 2fa4fb8bce43053c6a811f5559f7f508
@@ -80,15 +80,15 @@ stages:
     outs:
     - path: ./data/processed_data/augmented_data.csv
       hash: md5
-      md5: f32dc1a2db00507d47a8bd29dd3db78b
-      size: 22688013
+      md5: d2308fe2db2a4ad078eabfff378d4a96
+      size: 22693989
   encode_data:
     cmd: python ./src/data_service/encode_data/encode_data.py
     deps:
     - path: ./data/processed_data/augmented_data.csv
       hash: md5
-      md5: f32dc1a2db00507d47a8bd29dd3db78b
-      size: 22688013
+      md5: d2308fe2db2a4ad078eabfff378d4a96
+      size: 22693989
     - path: ./src/data_service/encode_data/encode_data.py
       hash: md5
       md5: 3fa546642b1ecbe6d5c3aa27a7c54d67
@@ -96,15 +96,15 @@ stages:
     outs:
     - path: ./data/processed_data/encoded_data.csv
       hash: md5
-      md5: d38fe281c736c13ce3aeee5821357104
-      size: 46416225
+      md5: f265f35dc5decd0417d0171f4e30ea29
+      size: 46429521
   split_data:
     cmd: python ./src/data_service/split_data/split_data.py
     deps:
     - path: ./data/processed_data/encoded_data.csv
       hash: md5
-      md5: d38fe281c736c13ce3aeee5821357104
-      size: 46416225
+      md5: f265f35dc5decd0417d0171f4e30ea29
+      size: 46429521
     - path: ./src/data_service/split_data/split_data.py
       hash: md5
       md5: 57144aa3cd9f4b1dfbd4b8ad1e8842f3
@@ -112,31 +112,31 @@ stages:
     outs:
     - path: ./data/processed_data/X_test.csv
       hash: md5
-      md5: fb526bac79c65e2b7b30ebf37f153bc8
-      size: 7159379
+      md5: 099ed34840b4fcb88d324e58a102a34e
+      size: 7161836
     - path: ./data/processed_data/X_train.csv
       hash: md5
-      md5: 0c4a9b0143c92db522a164cb2ac07c0a
-      size: 28633417
+      md5: 8ca754125b08ab57b3d7d05e70a38bd5
+      size: 28641316
     - path: ./data/processed_data/y_test.csv
       hash: md5
-      md5: 2dc46ee320a0fd79699f1e859dc3ebb3
-      size: 52727
+      md5: 77f71bcfe9160da587314fd6f075c431
+      size: 52745
     - path: ./data/processed_data/y_train.csv
       hash: md5
-      md5: 4cbc77e19f9426df0931e2e1e79fa510
-      size: 210867
+      md5: 38f6638d8e0fb4876cf0bddd24f36ac2
+      size: 210935
   scale_data:
     cmd: python ./src/data_service/scale_data/scale_data.py
     deps:
     - path: ./data/processed_data/X_test.csv
       hash: md5
-      md5: fb526bac79c65e2b7b30ebf37f153bc8
-      size: 7159379
+      md5: 099ed34840b4fcb88d324e58a102a34e
+      size: 7161836
     - path: ./data/processed_data/X_train.csv
       hash: md5
-      md5: 0c4a9b0143c92db522a164cb2ac07c0a
-      size: 28633417
+      md5: 8ca754125b08ab57b3d7d05e70a38bd5
+      size: 28641316
     - path: ./src/data_service/scale_data/scale_data.py
       hash: md5
       md5: b7589885b9d573db04685b3ab0e4b761
@@ -144,23 +144,23 @@ stages:
     outs:
     - path: ./data/processed_data/X_test_scaled.csv
       hash: md5
-      md5: cbfd848cd50b1ef30c5bcca7d56b01fe
-      size: 15433546
+      md5: 5ecd5a02b563ba7588e18858d6afc806
+      size: 15152776
     - path: ./data/processed_data/X_train_scaled.csv
       hash: md5
-      md5: 5d6b0a16da8779aa046668989611f4ec
-      size: 61720857
+      md5: c83629fcd456d42da38bbe4b36bd33ca
+      size: 60599354
   train:
     cmd: python ./src/modeling_service/training/train.py
     deps:
     - path: ./data/processed_data/X_train_scaled.csv
       hash: md5
-      md5: 5d6b0a16da8779aa046668989611f4ec
-      size: 61720857
+      md5: c83629fcd456d42da38bbe4b36bd33ca
+      size: 60599354
     - path: ./data/processed_data/y_train.csv
       hash: md5
-      md5: 4cbc77e19f9426df0931e2e1e79fa510
-      size: 210867
+      md5: 38f6638d8e0fb4876cf0bddd24f36ac2
+      size: 210935
     - path: ./src/modeling_service/training/train.py
       hash: md5
       md5: c5fe851338ed5695ab7f9d8a8c691f75
@@ -168,23 +168,23 @@ stages:
     outs:
     - path: ./models/RainTomorrow/last_run_model.pkl
       hash: md5
-      md5: 97ee114bb8629153ae2da5b48a34d813
-      size: 9624825
+      md5: 0cdd0b277c5d46e4c2d415a9fe31ee62
+      size: 9703865
   evaluate:
     cmd: python ./src/modeling_service/evaluate/evaluate.py
     deps:
     - path: ./data/processed_data/X_test_scaled.csv
       hash: md5
-      md5: cbfd848cd50b1ef30c5bcca7d56b01fe
-      size: 15433546
+      md5: 5ecd5a02b563ba7588e18858d6afc806
+      size: 15152776
     - path: ./data/processed_data/y_test.csv
       hash: md5
-      md5: 2dc46ee320a0fd79699f1e859dc3ebb3
-      size: 52727
+      md5: 77f71bcfe9160da587314fd6f075c431
+      size: 52745
     - path: ./models/
       hash: md5
-      md5: 08b090bd5b4344e3cc7dc819b7aa6de0.dir
-      size: 19121922
+      md5: 8e8d0f4fcfcfa58e4e0a0560ce5fb695.dir
+      size: 19556146
       nfiles: 2
     - path: ./src/modeling_service/evaluate/evaluate.py
       hash: md5
@@ -193,17 +193,17 @@ stages:
     outs:
     - path: ./metrics/
       hash: md5
-      md5: b8140661e45e9ab3153afd5de037b121.dir
-      size: 2529
+      md5: a265cbf0f48f4c9bb7da493c0405d965.dir
+      size: 3415
       nfiles: 2
     - path: metrics/RainTomorrow/lastmetrics.json
       hash: md5
-      md5: e8ec0ee83b801fc00fd427610a74752c
-      size: 297
+      md5: 0e4d874698e920602f51965c3d510bb1
+      size: 295
   inference:
     cmd: python ./src/inference_service/inference.py
     outs:
     - path: ./models/RainTomorrow/best_current_model.pkl
       hash: md5
-      md5: a9f3554cb6d8001631e5a6f1e230ddf6
-      size: 9497097
+      md5: 5f1d685342d0405710c8ff2890f24c1b
+      size: 9852281
