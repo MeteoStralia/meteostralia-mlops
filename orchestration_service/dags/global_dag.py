@@ -17,7 +17,7 @@ with DAG(
         'owner': 'airflow',
         'start_date': datetime.datetime(2021, 3 ,27, 8 ,0)  # tous les jours à 8h
     },
-    schedule_interval= '0 8 * * *',
+    schedule_interval= '0 7 * * *',
     catchup=False) as dag:
     
         def print_date_and_hello():
