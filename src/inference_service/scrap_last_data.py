@@ -68,13 +68,16 @@ def scrap_last_predictdata(
     
     # print(scrapped_data)
     # keep data only for predict_date and predict date d-1
+    # predict_data = scrapped_data_c.loc[
+    #     scrapped_data_c["Date"].dt.strftime('%Y-%m-%d').isin([predict_date, predict_date_yesterday])]
     predict_data = scrapped_data_c.loc[
-        scrapped_data_c["Date"].dt.strftime('%Y-%m-%d').isin([predict_date, predict_date_yesterday])]
+        scrapped_data_c["Date"].dt.strftime('%Y-%m-%d').isin([predict_date])]
     
     # save scrapped data to new_data path to be added in training data (except data for predict_date)
+    # save_data = scrapped_data_c.loc[
+    #     scrapped_data_c["Date"].dt.strftime('%Y-%m-%d').isin([predict_date, predict_date_yesterday]) == False]
     save_data = scrapped_data_c.loc[
-        scrapped_data_c["Date"].dt.strftime('%Y-%m-%d').isin([predict_date, predict_date_yesterday]) == False]
-    
+        scrapped_data_c["Date"].dt.strftime('%Y-%m-%d').isin([predict_date]) == False]
     save_new_data(save_data, new_data_folder)
     
     return predict_data

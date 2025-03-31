@@ -55,7 +55,7 @@ if __name__ == "__main__": # TODO mettre en fonction
     timestamp = str(int(round(timestamp)))
 
     # predict date
-    predict_date = datetime.datetime.today()
+    predict_date = datetime.datetime.today() + datetime.timedelta(days=-1)
 
     # scrap predict data
     predict_data = scrap_last_predictdata(
