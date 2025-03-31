@@ -36,9 +36,17 @@ if token:
 
     # st.write(response.json())
 
-    st.page_link('http://localhost:9090/graph?g0.expr=api_request_home_total&g0.tab=0&g0.stacked=0&g0.show_exemplars=0&g0.range_input=5m',
-                 label = 'Prometheus',
-                 icon = '📊')
+    col1, col2, col3 = st.columns(3)
+
+    with col1:
+        st.page_link('http://localhost:9090/graph?g0.expr=api_request_home_total&g0.tab=0&g0.stacked=0&g0.show_exemplars=0&g0.range_input=5m',
+                    label = 'Prometheus',
+                    icon = '📊')
+
+    with col2:
+        st.page_link('http://localhost:8080/home',
+                     label = 'Airflow',
+                     icon = '📊')
     # st.write('username :', response.json()['username'])
     # st.write('scope :', response.json()['scope'])
 
