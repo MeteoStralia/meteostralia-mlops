@@ -10,8 +10,7 @@ from fastapi import FastAPI, Depends, HTTPException, status, BackgroundTasks, Re
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from fastapi.responses import PlainTextResponse
 
-from prometheus_client import make_asgi_app, Counter, Gauge, generate_latest
-from prometheus_client import CollectorRegistry
+from prometheus_service import *
 
 from typing import Annotated, Union, Literal, Optional
 from pydantic import BaseModel, EmailStr
@@ -141,14 +140,13 @@ async def get_current_active_user(current_user : Annotated[User,
 
 app = FastAPI()
 
-collector = CollectorRegistry()
+
+#service prometheus
+home_counter = home_counter()
+login_counter = login_counter()
+login_wrong_user_counter = login_wrong_user_counter()
 
 
-index_counter = Counter(name = 'api_request_home',
-                documentation = 'total home page request',
-                )
-
-metrics_app = make_asgi_app()
 app.mount("/metrics/", metrics_app)
 
 
@@ -156,7 +154,7 @@ app.mount("/metrics/", metrics_app)
 async def welcome_page(current_user: Annotated[Optional[User],
                                                Depends(get_current_user)]):
 
-    index_counter.inc()
+    home_counter.inc()
 
     if current_user:
         return {'message' : f'Welcome to Meteostralia from API \
@@ -171,9 +169,13 @@ async def welcome_page(current_user: Annotated[Optional[User],
 @app.post('/login')
 async def login_for_access_token(data: Annotated[OAuth2PasswordRequestForm,
                                                  Depends()],) -> Token:
+
+    login_counter.inc()
+
     user = authenticate_user(data.username, data.password)
-    print(user)
+    # print(user)
     if not user or user.disabled:
+        login_wrong_user_counter.inc()
         raise HTTPException(status_code = status.HTTP_401_UNAUTHORIZED,
                             detail = 'Incorrect username or password or email',
                             headers={'WWW-Authenticate': 'Bearer'})
