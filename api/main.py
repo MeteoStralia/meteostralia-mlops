@@ -144,17 +144,16 @@ app = FastAPI()
 #service prometheus
 home_counter = home_counter()
 login_counter = login_counter()
-login_wrong_user_counter = login_wrong_user_counter()
-
+home_summary = home_summary().observe(10)
 
 app.mount("/metrics/", metrics_app)
-
 
 @app.get('/')
 async def welcome_page(current_user: Annotated[Optional[User],
                                                Depends(get_current_user)]):
 
-    home_counter.inc()
+    home_counter.labels(method = 'GET', endpoint = '/').inc()
+    home_summary
 
     if current_user:
         return {'message' : f'Welcome to Meteostralia from API \
@@ -170,12 +169,10 @@ async def welcome_page(current_user: Annotated[Optional[User],
 async def login_for_access_token(data: Annotated[OAuth2PasswordRequestForm,
                                                  Depends()],) -> Token:
 
-    login_counter.inc()
-
     user = authenticate_user(data.username, data.password)
     # print(user)
     if not user or user.disabled:
-        login_wrong_user_counter.inc()
+        login_counter.labels(status_code = 401).inc()
         raise HTTPException(status_code = status.HTTP_401_UNAUTHORIZED,
                             detail = 'Incorrect username or password or email',
                             headers={'WWW-Authenticate': 'Bearer'})
@@ -188,6 +185,8 @@ async def login_for_access_token(data: Annotated[OAuth2PasswordRequestForm,
     access_token_expires = timedelta(minutes = ACCESS_TOKEN_EXPIRE_MINUTES)
     access_token = create_access_token(data = {'sub' : user.username},
                                        expires_delta = access_token_expires)
+
+    login_counter.labels(status_code = 200).inc()
 
     return Token(access_token = access_token, token_type = 'bearer')
 

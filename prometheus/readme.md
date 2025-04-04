@@ -1,7 +1,8 @@
 if you download load on your computer
 
-lancer prometheus
----> ./promeheus config.file=prometheus.yml
+lancer prometheus avec serveur de l'applicatione en local
+
+---> ./promeheus config.file=prometheus_local.yml
 
 # en local
 voir les targets
